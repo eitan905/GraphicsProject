@@ -35,6 +35,55 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 {
 	// TODO: Implement bresenham algorithm
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
+	//(x_0,y_0) is the left endpoint
+	if (p1.x < p2.x) {
+		x_0 = p1.x;
+		y_0 = p1.y;
+		x_1 = p2.x;
+		y_1 = p2.y;
+	}
+	else {
+		x_0 = p2.x;
+		y_0 = p2.y;
+		x_1 = p1.x;
+		y_1 = p1.y;
+	}
+	//compute delta_x and delta_y
+	delta_x = x_1 - x_0;
+	if (y_0 - y_1 > 0) {
+		delta_y = y_0 - y_1;
+	}
+	else {
+		delta_y = y_1 - y_0;
+	}
+	//compute the step of the while
+	int st = 0;
+	if (delta_x < delta_y) {
+		st = delta_y;
+	}
+	else {
+		st = delta_x;
+	}
+	//compute some const
+	p_0 = 2 * delta_y - delta_x;
+	two_delta_y = 2 * delta_y;
+	two_delta_x_y = two_delta_y - 2 * delta_x;
+	//load (x_0,y_0) pixel
+	PutPixel(x_0, y_0, color);
+	while (st > 0) {
+		if (p_0 < 0) {
+			x_0++;
+			p_0 = p_0 + two_delta_y;
+		}
+		else {
+			x_0++;
+			y_0++;
+			p_0 = p_0 + two_delta_x_y;
+		}
+		PutPixel(x_0, y_0, color);
+		st--;
+	}
 }
 
 void Renderer::CreateBuffers(int w, int h)
