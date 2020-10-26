@@ -36,21 +36,8 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
-	int deltaY = p2[1] - p1[1], deltaX = p2[0] - p1[0];
-	int a = deltaY / deltaX;
-	int c = p1[1] + a * p1[0];
-	int x = p1[0], y = p1[1], e = -deltaX;
 
-	while (x <= p2[0]) {
-		e = 2 * (deltaY * x + deltaX * c - deltaX * y - 1);
-		if (e > 0) {
-			y++;
-			e = e - (2 * deltaX);
-		}
-		PutPixel(x, y, color);
-		x = x + 1;
-		e = e + 2 * deltaX;
-	}
+
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
 	//(x_0,y_0) is the left endpoint
@@ -101,8 +88,12 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 
 		for (int j = x_0 - thickness; j < x_0 + thickness; j++)
 		{
-			PutPixel(j, y_0, color);
+			for (int i = y_0 - thickness; i < y_0 + thickness; i++)
+			{
+				PutPixel(j, i, color);
+			}
 		}
+		
 		
 		st--;
 	}
@@ -262,7 +253,7 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
-	DrawLine(glm::ivec2(600, 600), glm::ivec2(200, 100), glm::ivec3(1,0,1));
+	DrawLine(glm::ivec2(300, 300), glm::ivec2(700, 600), glm::ivec3(1,0,1));
 }
 
 int Renderer::GetViewportWidth() const
