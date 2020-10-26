@@ -240,7 +240,26 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
-	DrawLine(glm::ivec2(40, 50), glm::ivec2(300, 100), glm::ivec3(1,0,1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + radius, 400), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * thirty_degrees), 400 + (radius * 0.5)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 + radius), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 + (radius * 0.5)), glm::ivec3(1, 0, 1));
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - radius, 400), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 - radius), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
 }
 
 int Renderer::GetViewportWidth() const
