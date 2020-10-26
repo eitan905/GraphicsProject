@@ -8,6 +8,12 @@
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
 
+void Renderer::Switch(int& x, int& y) {
+	int temp = x;
+	x = y;
+	y = temp;
+}
+
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
 	viewport_height_(viewport_height)
@@ -33,14 +39,12 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-<<<<<<< HEAD
-=======
+
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
 
 
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
 	//(x_0,y_0) is the left endpoint
@@ -88,20 +92,12 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 			y_0++;
 			p_0 = p_0 + two_delta_x_y;
 		}
-<<<<<<< HEAD
 		PutPixel(x_0, y_0, color);
-=======
+		
 
-		for (int j = x_0 - thickness; j < x_0 + thickness; j++)
-		{
-			for (int i = y_0 - thickness; i < y_0 + thickness; i++)
-			{
-				PutPixel(j, i, color);
-			}
-		}
+
 		
 		
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
 		st--;
 	}
 }
@@ -259,11 +255,32 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
-<<<<<<< HEAD
-	DrawLine(glm::ivec2(1000, 1000), glm::ivec2(1000, 15000), glm::ivec3(1,0,1));
-=======
-	DrawLine(glm::ivec2(300, 300), glm::ivec2(700, 600), glm::ivec3(1,0,1));
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
+	double thirty_degrees = (sqrt(3) / 2);
+	double fourty_five_degrees = (sqrt(2) / 2);
+	double radius = 200;
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + radius, 400), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius*thirty_degrees), 400 + (radius*0.5)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 + radius), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 + (radius * 0.5)), glm::ivec3(1, 0, 1));
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - radius, 400), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 - radius), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
+
+
 }
 
 int Renderer::GetViewportWidth() const
