@@ -33,39 +33,33 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-<<<<<<< HEAD
-=======
-	int half_width = viewport_width_ / 2;
-	int half_height = viewport_height_ / 2;
-	int thickness = 15;
+	int delta_x, delta_y, x_1, y_1, x_2, y_2, p_0, two_delta_y, two_delta_x_y, st = 0,move_x,move_y;
 
+	x_1 = p1.x;
+	y_1 = p1.y;
+	x_2 = p2.x;
+	y_2 = p2.y;
 
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
-	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
-	//(x_0,y_0) is the left endpoint
-	if (p1.x < p2.x) {
-		x_0 = p1.x;
-		y_0 = p1.y;
-		x_1 = p2.x;
-		y_1 = p2.y;
-	}
-	else {
-		x_0 = p2.x;
-		y_0 = p2.y;
-		x_1 = p1.x;
-		y_1 = p1.y;
-	}
 	//compute delta_x and delta_y
-	delta_x = x_1 - x_0;
-	if (y_0 - y_1 > 0) {
-		delta_y = y_0 - y_1;
+	delta_x = abs(x_2 - x_1);
+	delta_y = abs(y_2 - y_1);
+
+	//compute move_x,move_y
+	if (x_1 < x_2) move_x = 1;
+	else move_x = -1;
+
+	if (y_1 < y_2) move_y = 1;
+	else move_y = -1;
+
+	if (delta_x == 0) {
+		move_x = 0;
+		if (y_1 < y_2)
+			move_y = 1;
+		else move_y = -1;
 	}
-	else {
-		delta_y = y_1 - y_0;
-	}
+	
 	//compute the step of the while
-	int st = 0;
+
 	if (delta_x < delta_y) {
 		st = delta_y;
 	}
@@ -77,31 +71,18 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	two_delta_y = 2 * delta_y;
 	two_delta_x_y = two_delta_y - 2 * delta_x;
 	//load (x_0,y_0) pixel
-	PutPixel(x_0, y_0, color);
+	PutPixel(x_1, y_1, color);
 	while (st > 0) {
 		if (p_0 < 0) {
-			x_0++;
+			x_1+=move_x;
 			p_0 = p_0 + two_delta_y;
 		}
 		else {
-			x_0++;
-			y_0++;
+			x_1+=move_x;
+			y_1+=move_y;
 			p_0 = p_0 + two_delta_x_y;
 		}
-<<<<<<< HEAD
-		PutPixel(x_0, y_0, color);
-=======
-
-		for (int j = x_0 - thickness; j < x_0 + thickness; j++)
-		{
-			for (int i = y_0 - thickness; i < y_0 + thickness; i++)
-			{
-				PutPixel(j, i, color);
-			}
-		}
-		
-		
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
+		PutPixel(x_1, y_1, color);
 		st--;
 	}
 }
@@ -259,11 +240,7 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
-<<<<<<< HEAD
-	DrawLine(glm::ivec2(1000, 1000), glm::ivec2(1000, 15000), glm::ivec3(1,0,1));
-=======
-	DrawLine(glm::ivec2(300, 300), glm::ivec2(700, 600), glm::ivec3(1,0,1));
->>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
+	DrawLine(glm::ivec2(100, 500), glm::ivec2(1200, 500), glm::ivec3(1,0,1));
 }
 
 int Renderer::GetViewportWidth() const
