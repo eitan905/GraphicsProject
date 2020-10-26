@@ -240,7 +240,7 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
-	DrawLine(glm::ivec2(100, 500), glm::ivec2(1200, 500), glm::ivec3(1,0,1));
+	DrawLine(glm::ivec2(40, 50), glm::ivec2(300, 100), glm::ivec3(1,0,1));
 }
 
 int Renderer::GetViewportWidth() const
