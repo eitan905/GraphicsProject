@@ -33,7 +33,21 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-	// TODO: Implement bresenham algorithm
+	int deltaY = p2[1] - p1[1], deltaX = p2[0] - p1[0];
+	int a = deltaY / deltaX;
+	int c = p1[1] + a * p1[0];
+	int x = p1[0], y = p1[1], e = -deltaX;
+
+	while (x <= p2[0]) {
+		e = 2 * (deltaY * x + deltaX * c - deltaX * y - 1);
+		if (e > 0) {
+			y++;
+			e = e - (2 * deltaX);
+		}
+		PutPixel(x, y, color);
+		x = x + 1;
+		e = e + 2 * deltaX;
+	}
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
 	//(x_0,y_0) is the left endpoint
@@ -170,6 +184,7 @@ void Renderer::InitOpenGLRendering()
 
 	// Tells the shader to use GL_TEXTURE0 as the texture id.
 	glUniform1i(glGetUniformLocation(program, "texture"),0);
+
 }
 
 void Renderer::CreateOpenGLBuffer()
@@ -237,8 +252,9 @@ void Renderer::Render(const Scene& scene)
 		for (int j = half_width - thickness; j < half_width + thickness; j++)
 		{
 			PutPixel(j, i, glm::vec3(1, 0, 1));
-		}
+		}	
 	}
+	DrawLine(glm::ivec2(0, 0), glm::ivec2(200, 100), glm::ivec3(1,0,1));
 }
 
 int Renderer::GetViewportWidth() const
@@ -249,4 +265,9 @@ int Renderer::GetViewportWidth() const
 int Renderer::GetViewportHeight() const
 {
 	return viewport_height_;
+}
+
+void Renderer::UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
+{
+	DrawLine(p1, p2, color);
 }
