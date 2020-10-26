@@ -33,6 +33,14 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
+<<<<<<< HEAD
+=======
+	int half_width = viewport_width_ / 2;
+	int half_height = viewport_height_ / 2;
+	int thickness = 15;
+
+
+>>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 	int delta_x, delta_y,x_0,y_0,x_1,y_1,p_0,two_delta_y,two_delta_x_y;
 	//(x_0,y_0) is the left endpoint
@@ -80,7 +88,20 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 			y_0++;
 			p_0 = p_0 + two_delta_x_y;
 		}
+<<<<<<< HEAD
 		PutPixel(x_0, y_0, color);
+=======
+
+		for (int j = x_0 - thickness; j < x_0 + thickness; j++)
+		{
+			for (int i = y_0 - thickness; i < y_0 + thickness; i++)
+			{
+				PutPixel(j, i, color);
+			}
+		}
+		
+		
+>>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
 		st--;
 	}
 }
@@ -238,7 +259,11 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}	
 	}
+<<<<<<< HEAD
 	DrawLine(glm::ivec2(1000, 1000), glm::ivec2(1000, 15000), glm::ivec3(1,0,1));
+=======
+	DrawLine(glm::ivec2(300, 300), glm::ivec2(700, 600), glm::ivec3(1,0,1));
+>>>>>>> ad9eb4426372cd8eea7a05acf670940196962153
 }
 
 int Renderer::GetViewportWidth() const
