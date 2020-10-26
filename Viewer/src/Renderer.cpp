@@ -33,10 +33,10 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-	int deltaY = p1[1] - p2[1], deltaX = p1[0] - p2[0];
+	int deltaY = p2[1] - p1[1], deltaX = p2[0] - p1[0];
 	int a = deltaY / deltaX;
 	int c = p1[1] + a * p1[0];
-	int x = p1[0], y = p1[1], e = -1;
+	int x = p1[0], y = p1[1], e = -deltaX;
 
 	while (x <= p2[0]) {
 		e = 2 * (deltaY * x + deltaX * c - deltaX * y - 1);
@@ -203,9 +203,9 @@ void Renderer::Render(const Scene& scene)
 		for (int j = half_width - thickness; j < half_width + thickness; j++)
 		{
 			PutPixel(j, i, glm::vec3(1, 0, 1));
-		}
+		}	
 	}
-	DrawLine(glm::ivec2(0, 0), glm::ivec2(2, 1), glm::ivec3(1,0,1));
+	DrawLine(glm::ivec2(0, 0), glm::ivec2(200, 100), glm::ivec3(1,0,1));
 }
 
 int Renderer::GetViewportWidth() const
