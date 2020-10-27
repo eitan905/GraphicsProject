@@ -94,7 +94,7 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 		if (p_0 < 0) {
 			y_1 += move_y;
 			p_0 = p_0 + two_delta_x;
-		}
+		} 
 		else {
 			y_1 += move_y;
 			x_1 += move_x;
