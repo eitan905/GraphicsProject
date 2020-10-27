@@ -33,7 +33,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-	int delta_x, delta_y, x_1, y_1, x_2, y_2, p_0, two_delta_y,two_delta_x, two_delta_x_y, st = 0,move_x,move_y,flag=0;
+	int delta_x, delta_y, x_1, y_1, x_2, y_2, distance_to_line, doubled_delta_y,doubled_delta_x, doubled_delta_x_y, distance_to_end = 0,direction_x,direction_y,flag=0;
 
 	x_1 = p1.x;
 	y_1 = p1.y;
@@ -45,65 +45,70 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	delta_y = abs(y_2 - y_1);
 
 	//compute move_x,move_y
-	if (x_1 < x_2) move_x = 1;
-	else move_x = -1;
+	if (x_1 < x_2) direction_x = 1;
+	else direction_x = -1;
 
-	if (y_1 < y_2) move_y = 1;
-	else move_y = -1;
+	if (y_1 < y_2) direction_y = 1;
+	else direction_y = -1;
 
 	if (delta_x == 0) {
-		move_x = 0;
-		if (y_1 < y_2)
-			move_y = 1;
-		else move_y = -1;
+		direction_x = 0;
 	}
 	
 	//compute the step of the while
 
 	if (delta_x < delta_y) {
-		st = delta_y;
+		distance_to_end = delta_y;
 		flag = 1;
 	}
 	else {
-		st = delta_x;
+		distance_to_end = delta_x;
 	}
-	//compute some const
-	p_0 = 2 * delta_y - delta_x;
-	two_delta_y = 2 * delta_y;
-	two_delta_x = 2 * delta_x;
-	two_delta_x_y = two_delta_y - two_delta_x;
+	
+
+	doubled_delta_y = 2 * delta_y;
+	doubled_delta_x = 2 * delta_x;
+	doubled_delta_x_y = doubled_delta_y - doubled_delta_x;
 	//load (x_0,y_0) pixel
 	PutPixel(x_1, y_1, color);
-	while (st > 0&&flag==0) {
-		if (p_0 < 0 ) {
-			x_1 += move_x;
-			p_0 = p_0 + two_delta_y;
+
+	//compute some const
+	distance_to_line = 2 * delta_y - delta_x;
+	while (distance_to_end > 0&&flag==0) {
+		if (distance_to_line < 0 ) {
+			x_1 += direction_x;
+			distance_to_line = distance_to_line + doubled_delta_y;
 		}
 		else {
-			x_1+=move_x;
-			y_1+=move_y;
-			p_0 = p_0 + two_delta_x_y;
+			x_1+= direction_x;
+			y_1+= direction_y;
+			distance_to_line = distance_to_line + doubled_delta_x_y;
 		}
 		PutPixel(x_1, y_1, color);
-		st--;
+		distance_to_end--;
 	}
+
+
 	//compute some const
-	p_0 = 2 * delta_x - delta_y;
-	two_delta_x_y = two_delta_x - two_delta_y;
-	while (st > 0 && flag == 1) {
-		if (p_0 < 0) {
-			y_1 += move_y;
-			p_0 = p_0 + two_delta_x;
+	distance_to_line = 2 * delta_x - delta_y;
+	doubled_delta_x_y = doubled_delta_x - doubled_delta_y;
+	while (distance_to_end > 0 && flag == 1) {
+		if (distance_to_line < 0) {
+			y_1 += direction_y;
+			distance_to_line = distance_to_line + doubled_delta_x;
 		} 
 		else {
-			y_1 += move_y;
-			x_1 += move_x;
-			p_0 = p_0 + two_delta_x_y;
+			y_1 += direction_y;
+			x_1 += direction_x;
+			distance_to_line = distance_to_line + doubled_delta_x_y;
 		}
 		PutPixel(x_1, y_1, glm::ivec3(1, 0, 1));
-		st--;
+		distance_to_end--;
 	}
 }
+
+
+
 void Renderer::CreateBuffers(int w, int h)
 {
 	CreateOpenGLBuffer(); //Do not remove this line.
@@ -271,7 +276,13 @@ void Renderer::Render(const Scene& scene)
 		y = -sqrt(pow(radius, 2) - pow(i - x_c, 2)) + y_c;
 		DrawLine(glm::ivec2(x_c, y_c), glm::ivec2(i, y), glm::ivec3(1, 0, 1));
 	}
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(401, 600), glm::ivec3(1, 0,1 ));
+
+	for (int i = y_c - radius; i <= y_c + radius; i++) {
+		y = sqrt(pow(radius, 2) - pow(i - y_c, 2)) + x_c;
+		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(y, i), glm::ivec3(1, 0, 1));
+		y = -sqrt(pow(radius, 2) - pow(i - x_c, 2)) + y_c;
+		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(y, i), glm::ivec3(1, 0, 1));
+	}
 	
 }
 
