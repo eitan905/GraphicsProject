@@ -33,7 +33,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-	int delta_x, delta_y, x_1, y_1, x_2, y_2, p_0, two_delta_y, two_delta_x_y, st = 0,move_x,move_y;
+	int delta_x, delta_y, x_1, y_1, x_2, y_2, p_0, two_delta_y,two_delta_x, two_delta_x_y, st = 0,move_x,move_y,flag=0;
 
 	x_1 = p1.x;
 	y_1 = p1.y;
@@ -62,6 +62,7 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 
 	if (delta_x < delta_y) {
 		st = delta_y;
+		flag = 1;
 	}
 	else {
 		st = delta_x;
@@ -69,12 +70,13 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	//compute some const
 	p_0 = 2 * delta_y - delta_x;
 	two_delta_y = 2 * delta_y;
-	two_delta_x_y = two_delta_y - 2 * delta_x;
+	two_delta_x = 2 * delta_x;
+	two_delta_x_y = two_delta_y - two_delta_x;
 	//load (x_0,y_0) pixel
 	PutPixel(x_1, y_1, color);
-	while (st > 0) {
-		if (p_0 < 0) {
-			x_1+=move_x;
+	while (st > 0&&flag==0) {
+		if (p_0 < 0 ) {
+			x_1 += move_x;
 			p_0 = p_0 + two_delta_y;
 		}
 		else {
@@ -83,6 +85,22 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 			p_0 = p_0 + two_delta_x_y;
 		}
 		PutPixel(x_1, y_1, color);
+		st--;
+	}
+	//compute some const
+	p_0 = 2 * delta_x - delta_y;
+	two_delta_x_y = two_delta_x - two_delta_y;
+	while (st > 0 && flag == 1) {
+		if (p_0 < 0) {
+			y_1 += move_y;
+			p_0 = p_0 + two_delta_x;
+		}
+		else {
+			y_1 += move_y;
+			x_1 += move_x;
+			p_0 = p_0 + two_delta_x_y;
+		}
+		PutPixel(x_1, y_1, glm::ivec3(1, 0, 1));
 		st--;
 	}
 }
@@ -244,27 +262,17 @@ void Renderer::Render(const Scene& scene)
 
 	double thirty_degrees = (sqrt(3) / 2);
 	double fourty_five_degrees = (sqrt(2) / 2);
-	double radius = 200;
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + radius, 400), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * thirty_degrees), 400 + (radius * 0.5)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
-
-
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 + radius), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 + (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 + (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 + (radius * 0.5)), glm::ivec3(1, 0, 1));
-
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - radius, 400), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 - (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
-
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400, 400 - radius), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * 0.5), 400 - (radius * thirty_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * fourty_five_degrees), 400 - (radius * fourty_five_degrees)), glm::ivec3(1, 0, 1));
-	DrawLine(glm::ivec2(400, 400), glm::ivec2(400 + (radius * thirty_degrees), 400 - (radius * 0.5)), glm::ivec3(1, 0, 1));
+	int radius = 100;
+	int x_c = 400, y_c = 400;
+	int  y=0;
+	for (int i = x_c-radius; i <= x_c+radius; i++) {
+		y=sqrt( pow(radius ,2)-pow(i-x_c,2))+y_c;
+		DrawLine(glm::ivec2(x_c, y_c), glm::ivec2(i, y), glm::ivec3(1, 0, 1));
+		y = -sqrt(pow(radius, 2) - pow(i - x_c, 2)) + y_c;
+		DrawLine(glm::ivec2(x_c, y_c), glm::ivec2(i, y), glm::ivec3(1, 0, 1));
+	}
+	DrawLine(glm::ivec2(400, 400), glm::ivec2(401, 600), glm::ivec3(1, 0,1 ));
+	
 }
 
 int Renderer::GetViewportWidth() const
