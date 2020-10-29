@@ -297,24 +297,32 @@ void Renderer::Render(const Scene& scene)
 	PutPixel(x, y, glm::ivec3(1, 1, 1));
 	PutPixel(x, y, glm::ivec3(1, 1, 1));*/
 	//DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 1, 1));
-	for (int i = 1; i <= a; i++) {
-		if (i <= 25) {
-			j = 2 * i;
-		}
-		else {
-			j = 2 * i - 50;
-		}
-		for (j; j <= a; j *= 2) {
-			temp = (2 * 3.14 * (50-j)) / a;
-			x = x_c + r * sin(temp);
-			y = y_c + r * cos(temp);
-			temp1 = (2 * 3.14 * j) / a;
-			x1 = x_c + r * sin(temp1);
-			y1 = y_c + r * cos(temp1);
-			DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 0, 1));
-		}
 
+	glm::ivec3 myVec(0, 0, 1);
+	for (r; r > 4; r = (5 * r) / 8) {
+		for (int i = 1; i <= a; i++) {
+			if (i <= 25) {
+				j = 2 * i;
+			}
+			else {
+				j = 2 * i - 50;
+			}
+			for (j; j <= a; j *= 2) {
+				temp = (2 * 3.14 * (50 - j)) / a;
+				x = x_c + r * sin(temp);
+				y = y_c + r * cos(temp);
+				temp1 = (2 * 3.14 * j) / a;
+				x1 = x_c + r * sin(temp1);
+				y1 = y_c + r * cos(temp1);
+				DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), myVec);
+			}
+		}
+		double change = myVec[2] / 2;
+		myVec[0] += change;
+		myVec[2] -= change;
 	}
+
+
 }
 
 
