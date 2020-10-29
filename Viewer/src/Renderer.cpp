@@ -247,8 +247,8 @@ void Renderer::Render(const Scene& scene)
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
-	
-	for(int i = 0; i < viewport_width_; i++)
+
+	for (int i = 0; i < viewport_width_; i++)
 	{
 		for (int j = half_height - thickness; j < half_height + thickness; j++)
 		{
@@ -261,30 +261,60 @@ void Renderer::Render(const Scene& scene)
 		for (int j = half_width - thickness; j < half_width + thickness; j++)
 		{
 			PutPixel(j, i, glm::vec3(1, 0, 1));
-		}	
+		}
 	}
 
 
 	double thirty_degrees = (sqrt(3) / 2);
 	double fourty_five_degrees = (sqrt(2) / 2);
-	int radius = 100;
+	int r = 100, a = 50;
 	int x_c = 400, y_c = 400;
-	int  y=0;
-	for (int i = x_c-radius; i <= x_c+radius; i++) {
-		y=sqrt( pow(radius ,2)-pow(i-x_c,2))+y_c;
-		DrawLine(glm::ivec2(x_c, y_c), glm::ivec2(i, y), glm::ivec3(1, 0, 1));
-		y = -sqrt(pow(radius, 2) - pow(i - x_c, 2)) + y_c;
-		DrawLine(glm::ivec2(x_c, y_c), glm::ivec2(i, y), glm::ivec3(1, 0, 1));
-	}
+	int  y = 0, x = 0,x1=0,y1=0;
+	double temp = 0,temp1=0;
+	/*for (int i = 0; i <=a ; i++) {
+		temp = (2 * 3.14 * i )/ a;
+		x = x_c + r * sin(temp);
+		y = y_c + r * cos(temp);
+		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(x, y), glm::ivec3(1, 0, 1));
 
-	for (int i = y_c - radius; i <= y_c + radius; i++) {
-		y = sqrt(pow(radius, 2) - pow(i - y_c, 2)) + x_c;
-		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(y, i), glm::ivec3(1, 0, 1));
-		y = -sqrt(pow(radius, 2) - pow(i - x_c, 2)) + y_c;
-		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(y, i), glm::ivec3(1, 0, 1));
+	}*/
+
+	for (int i = 1; i <= a; i++) {
+		temp = (2 * 3.14 * i) / a;
+		x = x_c + r * sin(temp);
+		y = y_c + r * cos(temp);
+		PutPixel(x, y, glm::ivec3(1, 0, 1));
+		//DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(x, y), glm::ivec3(1, 0, 1));
+
 	}
-	
+	int j = 26,i=1;
+	temp = (2 * 3.14 * i) / a;
+	x = x_c + r * sin(temp);
+	y = y_c + r * cos(temp);
+	temp1 = (2 * 3.14 * j) / a;
+	x1 = x_c + r * sin(temp1);
+	y1 = y_c + r * cos(temp1);
+	PutPixel(x, y, glm::ivec3(1, 1, 1));
+	PutPixel(x, y, glm::ivec3(1, 1, 1));
+	DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 1, 1));
+	/*for (int i = 1; i <= a; i++) {
+		if (i <= 25) {
+			j = 2 * i;
+		}
+		else {
+			j = 2 * i - 50;
+		}
+		temp = (2 * 3.14 * i) / a;
+		x = x_c + r * sin(temp);
+		y = y_c + r * cos(temp);
+		temp1 = (2 * 3.14 * j) / a;
+		x1 = x_c + r * sin(temp1);
+		y1 = y_c + r * cos(temp1);
+		DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 0, 1));
+
+	}*/
 }
+
 
 int Renderer::GetViewportWidth() const
 {
