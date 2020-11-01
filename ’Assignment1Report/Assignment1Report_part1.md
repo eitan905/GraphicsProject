@@ -1,7 +1,7 @@
 #
 Bresenham algorithm
 
-'''
+```
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
@@ -80,5 +80,5 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 }
 
 
-'''
+```
 
