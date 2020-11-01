@@ -74,7 +74,7 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 			x_1 += direction_x;
 			distance_to_line = distance_to_line + doubled_delta_x_y;
 		}
-		PutPixel(x_1, y_1, glm::ivec3(1, 0, 1));
+		PutPixel(x_1, y_1, color);
 		distance_to_end--;
 	}
 }
