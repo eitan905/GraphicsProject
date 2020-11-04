@@ -40,9 +40,12 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 
 		issLine >> std::ws >> lineType;
 
+		std::cout << curLine << std::endl;
+
 		// based on the type parse data
 		if (lineType == "v")
 		{
+			
 			vertices.push_back(Utils::Vec3fFromStream(issLine));
 		}
 		else if (lineType == "vn")

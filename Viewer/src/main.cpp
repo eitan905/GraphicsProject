@@ -51,8 +51,12 @@ int main(int argc, char **argv)
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
 
+
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
+
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\obj.txt"));
+
 	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);

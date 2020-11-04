@@ -8,7 +8,6 @@ class Renderer
 public:
 	Renderer(int viewportWidth, int viewportHeight);
 	virtual ~Renderer();
-	void Switch(int& x, int& y);
 	void Render(const Scene& scene);
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);

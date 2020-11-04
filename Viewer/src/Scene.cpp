@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "MeshModel.h"
 #include <string>
+#include "Utils.h"
 
 Scene::Scene() :
 	active_camera_index_(0),
@@ -11,6 +12,7 @@ Scene::Scene() :
 
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
+	
 	mesh_models_.push_back(mesh_model);
 }
 
