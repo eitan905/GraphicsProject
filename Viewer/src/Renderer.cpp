@@ -265,6 +265,27 @@ void Renderer::Render(const Scene& scene)
 	}*/
 
 
+
+	MeshModel obj = scene.GetModel(0);
+
+	for (int i = 0; i < obj.GetFacesCount(); i++) {
+		Face face = obj.GetFace(i);
+		int point0 = face.GetVertexIndex(0);
+		int point1 = face.GetVertexIndex(1);
+		int point2 = face.GetVertexIndex(2);
+
+		glm::vec2 p1 (obj.getVerticeAtIndex(0)[0], obj.getVerticeAtIndex(0)[1]);
+		glm::vec2 p2 (obj.getVerticeAtIndex(1)[0], obj.getVerticeAtIndex(1)[1]);
+		glm::vec2 p3 (obj.getVerticeAtIndex(2)[0], obj.getVerticeAtIndex(2)[1]);
+
+		
+
+		DrawLine(p1,p2, glm::vec3(1, 0, 1));
+		DrawLine(p1,p3, glm::vec3(1, 0, 1));
+		DrawLine(p2,p3, glm::vec3(1, 0, 1));
+	}
+
+
 	double thirty_degrees = (sqrt(3) / 2);
 	double fourty_five_degrees = (sqrt(2) / 2);
 	double r = 250, a = 72;
@@ -306,7 +327,7 @@ void Renderer::Render(const Scene& scene)
 								glm::vec3(0.7, 0.0, 0.0)
 	};
 	int counter = 0;
-	for (r; r > 4; r = (11 * r) / 16) {
+	/*for (r; r > 4; r = (11 * r) / 16) {
 		
 		for (int i = 1; i <= a; i++) {
 			if (i <= 25) {
@@ -331,7 +352,7 @@ void Renderer::Render(const Scene& scene)
 		counter %= 6;
 		
 		
-	}
+	}*/
 
 
 }
