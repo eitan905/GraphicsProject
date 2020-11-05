@@ -784,3 +784,6 @@ vertices j: 269 0: 0.02031 1: 0.09 2: -0.00226
 vertices j: 270 0: 0.02077 1: 0.09 2: -0.00259
 vertices j: 271 0: 0.02152 1: 0.09 2: -0.00266
 ```
+
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/banana_pic.png)
