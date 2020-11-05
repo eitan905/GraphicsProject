@@ -19,6 +19,7 @@
 #include "Scene.h"
 #include "Utils.h"
 
+#include "Transformations.h"
 /**
  * Fields
  */
@@ -227,6 +228,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
 		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,a=0.0f;
+		MeshModel obj = scene.GetModel(0);
 		
 		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
@@ -242,13 +244,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
 
 		ImGui::InputFloat("alfa", &a, 0.01f, 1.0f);
-		std::cout << x;
+		Transformations trans;
 		static ImGuiColorEditFlags alpha_flags = 0;
 		if (ImGui::RadioButton("Translation", &alpha_flags, 0)) {
-			
+			for (int i = 0; i < obj.getVerticesSize(); i++) {
+				obj.getVerticeAtIndex(i)=trans.Transform3(x, y, z, obj.getVerticeAtIndex(i));
+			}
 		}
 		ImGui::SameLine();
-		ImGui::RadioButton("scaling ", &alpha_flags, ImGuiColorEditFlags_AlphaPreview); //ImGui::SameLine();
+		ImGui::RadioButton("scaling ", &alpha_flags, ImGuiColorEditFlags_AlphaPreview);
+		ImGui::RadioButton("local", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
+		ImGui::RadioButton("world", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
+		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
 
@@ -276,6 +283,3 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 }
 
-void Translation(int x, int y, int z) {
-
-}

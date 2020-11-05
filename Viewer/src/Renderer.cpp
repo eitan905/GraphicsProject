@@ -269,7 +269,6 @@ void Renderer::Render(const Scene& scene)
 
 
 	MeshModel obj = scene.GetModel(0);
-<<<<<<< HEAD
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
 		int point0 = face.GetVertexIndex(0)-1;
@@ -279,24 +278,9 @@ void Renderer::Render(const Scene& scene)
 		glm::vec2 p1 (obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1]);
 		glm::vec2 p2 (obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1]);
 		glm::vec2 p3 (obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1]);
-=======
 
 
-
-	for (int i = 0; i < obj.GetFacesCount(); i++) {
-		Face face = obj.GetFace(i);
-		
-		int point0 = face.GetVertexIndex(0);
-		int point1 = face.GetVertexIndex(1);
-		int point2 = face.GetVertexIndex(2);
-
-		glm::vec2 p1 (obj.getVerticeAtIndex(point0-1)[0], obj.getVerticeAtIndex(point0-1)[1]);
-		glm::vec2 p2 (obj.getVerticeAtIndex(point1-1)[0], obj.getVerticeAtIndex(point1-1)[1]);
-		glm::vec2 p3 (obj.getVerticeAtIndex(point2-1)[0], obj.getVerticeAtIndex(point2-1)[1]);
->>>>>>> 6e62a614b4866edbee95bdf6f3245cb384b1ade6
-
-		
-
+	
 		DrawLine(p1,p2, glm::vec3(1, 0, 1));
 		DrawLine(p1,p3, glm::vec3(1, 0, 1));
 		DrawLine(p2,p3, glm::vec3(1, 0, 1));
