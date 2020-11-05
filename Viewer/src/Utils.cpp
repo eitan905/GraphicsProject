@@ -40,7 +40,7 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 
 		issLine >> std::ws >> lineType;
 
-		std::cout << curLine << std::endl;
+		//std::cout << curLine << std::endl;
 
 		// based on the type parse data
 		if (lineType == "v")
@@ -68,6 +68,13 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		{
 			std::cout << "Found unknown line Type \"" << lineType << "\"";
 		}
+	}
+	for (int i = 0; i < faces.size(); i++) {
+		std::cout << "faces i: "<<i<<" 0: "<<faces[i].GetVertexIndex(0) <<" 1: "<< faces[i].GetVertexIndex(1)<<" 2: " <<faces[i].GetVertexIndex(2)<<   std::endl;   // problem line
+	}
+	for (int j = 0; j < vertices.size(); j++) {
+		std::cout << "vertices j: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
+
 	}
 
 	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));

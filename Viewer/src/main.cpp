@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\obj.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
 
 	
 	ImGuiIO& io = SetupDearImgui(window);
