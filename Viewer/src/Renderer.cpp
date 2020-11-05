@@ -314,19 +314,6 @@ void Renderer::Render(const Scene& scene)
 	PutPixel(x, y, glm::ivec3(1, 1, 1));*/
 	//DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 1, 1));
 
-	
-	glm::vec3 points[6] = {
-										glm::vec3(1,0,1),
-
-								glm::vec3(-0.5, 0.5, 0.0),
-
-								glm::vec3(1.000,0.833,0.224),
-								glm::vec3(0.149,0.141,0.912),
-
-								glm::vec3(0.5, 0.5, 0.0),
-								glm::vec3(0.7, 0.0, 0.0)
-	};
-	int counter = 0;
 	/*for (r; r > 4; r = (11 * r) / 16) {
 		
 		for (int i = 1; i <= a; i++) {

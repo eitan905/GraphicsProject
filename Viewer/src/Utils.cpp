@@ -76,6 +76,50 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		std::cout << "vertices j: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
 
 	}
+	glm::mat4x4 m = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		500, 500, 500, 1
+	);
+	glm::mat3x3 s = glm::mat3x3(
+		1500, 0, 0, 
+		0, 1500, 0, 
+		0, 0, 1500 
+	);
+	glm::vec3 b;
+	for (int j = 0; j < vertices.size(); j++) {
+		b = s * vertices[j]; 
+		vertices[j] = b;
+	}
+	//-------------------------
+	/*for (int j = 0; j < vertices.size(); j++) {
+		std::cout << "vertices num: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
+	}*/
+	//------------------------------
+	glm::vec4 a;
+	std::vector <glm::vec4> vertices_4;
+	std::vector <glm::vec4> ans;
+
+	for (int j = 0; j < vertices.size(); j++) {
+		a = { vertices[j][0] ,vertices[j][1] ,vertices[j][2] ,1 };
+		vertices_4.push_back(a);
+	}
+	
+	for (int j = 0; j < vertices_4.size(); j++) {
+		a = m * vertices_4[j];
+		ans.push_back(a);
+	}
+
+	for (int j = 0; j < ans.size(); j++) {
+		vertices[j][0] = ans[j][0];
+		vertices[j][1] = ans[j][1];
+		vertices[j][2] = ans[j][2];
+
+	}
+	for (int j = 0; j < vertices.size(); j++) {
+		std::cout << "vertices numnum: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
+	}
 
 	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));
 }
