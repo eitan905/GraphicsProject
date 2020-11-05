@@ -69,13 +69,13 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 			std::cout << "Found unknown line Type \"" << lineType << "\"";
 		}
 	}
-	for (int i = 0; i < faces.size(); i++) {
+	/*for (int i = 0; i < faces.size(); i++) {
 		std::cout << "faces i: "<<i<<" 0: "<<faces[i].GetVertexIndex(0) <<" 1: "<< faces[i].GetVertexIndex(1)<<" 2: " <<faces[i].GetVertexIndex(2)<<   std::endl;   // problem line
 	}
 	for (int j = 0; j < vertices.size(); j++) {
 		std::cout << "vertices j: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
 
-	}
+	}*/
 	glm::mat4x4 m = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -117,9 +117,9 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		vertices[j][2] = ans[j][2];
 
 	}
-	for (int j = 0; j < vertices.size(); j++) {
+	/*for (int j = 0; j < vertices.size(); j++) {
 		std::cout << "vertices numnum: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
-	}
+	}*/
 
 	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));
 }

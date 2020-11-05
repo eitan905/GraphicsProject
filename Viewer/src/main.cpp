@@ -1,7 +1,13 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <imgui/imgui.h>
+
 #include <stdio.h>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <nfd.h>
@@ -220,23 +226,41 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
-		static float f = 0.0f;
+		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,a=0.0f;
+		
+		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
-
+		//ImGuiInputTextFlags INPUT_TEXT_CHARS_DECIMAL =0;
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
+	
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
+		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
+		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
+		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
+
+		ImGui::InputFloat("alfa", &a, 0.01f, 1.0f);
+		std::cout << x;
+		static ImGuiColorEditFlags alpha_flags = 0;
+		if (ImGui::RadioButton("Translation", &alpha_flags, 0)) {
+			
+		}
+		ImGui::SameLine();
+		ImGui::RadioButton("scaling ", &alpha_flags, ImGuiColorEditFlags_AlphaPreview); //ImGui::SameLine();
+		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
+
+
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
 
 		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 			counter++;
 		ImGui::SameLine();
 		ImGui::Text("counter = %d", counter);
-
+		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
@@ -250,4 +274,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			show_another_window = false;
 		ImGui::End();
 	}
+}
+
+void Translation(int x, int y, int z) {
+
 }

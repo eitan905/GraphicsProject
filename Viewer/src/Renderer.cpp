@@ -2,6 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include <iostream>
+
 #include "Renderer.h"
 #include "InitShader.h"
 
@@ -267,16 +269,15 @@ void Renderer::Render(const Scene& scene)
 
 
 	MeshModel obj = scene.GetModel(0);
-
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
-		int point0 = face.GetVertexIndex(0);
-		int point1 = face.GetVertexIndex(1);
-		int point2 = face.GetVertexIndex(2);
+		int point0 = face.GetVertexIndex(0)-1;
+		int point1 = face.GetVertexIndex(1)-1;
+		int point2 = face.GetVertexIndex(2)-1;
 
-		glm::vec2 p1 (obj.getVerticeAtIndex(0)[0], obj.getVerticeAtIndex(0)[1]);
-		glm::vec2 p2 (obj.getVerticeAtIndex(1)[0], obj.getVerticeAtIndex(1)[1]);
-		glm::vec2 p3 (obj.getVerticeAtIndex(2)[0], obj.getVerticeAtIndex(2)[1]);
+		glm::vec2 p1 (obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1]);
+		glm::vec2 p2 (obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1]);
+		glm::vec2 p3 (obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1]);
 
 		
 
@@ -284,7 +285,6 @@ void Renderer::Render(const Scene& scene)
 		DrawLine(p1,p3, glm::vec3(1, 0, 1));
 		DrawLine(p2,p3, glm::vec3(1, 0, 1));
 	}
-
 
 	double thirty_degrees = (sqrt(3) / 2);
 	double fourty_five_degrees = (sqrt(2) / 2);
