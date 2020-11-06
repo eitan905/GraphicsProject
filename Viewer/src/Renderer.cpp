@@ -268,8 +268,9 @@ void Renderer::Render(const Scene& scene)
 
 
 
-	DrawModel(scene.GetModel(0),scene);
+	DrawModel(scene.GetModel(0));
 	
+
 
 	double thirty_degrees = (sqrt(3) / 2);
 	double fourty_five_degrees = (sqrt(2) / 2);
@@ -345,7 +346,7 @@ void Renderer::UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm
 	DrawLine(p1, p2, color);
 }
 
-void Renderer::DrawModel(MeshModel obj,const Scene& scene)
+void Renderer::DrawModel(MeshModel obj)
 {
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);

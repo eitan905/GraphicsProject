@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
 
 	
 	ImGuiIO& io = SetupDearImgui(window);
@@ -293,9 +293,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::RadioButton("scaling ", &alpha_flags,4);
 		
 		if (flag) {
-			/*for (int i = 0; i < obj.getVerticesSize(); i++) {
+			for (int i = 0; i < obj.getVerticesSize(); i++) {
 				obj.getVerticeAtIndex(i)=Transform3(x, y, z, obj.getVerticeAtIndex(i));
-			}*/
+			}
 			std::cout << "manor";
 		}
 		
