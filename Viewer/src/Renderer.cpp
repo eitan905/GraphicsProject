@@ -250,85 +250,12 @@ void Renderer::Render(const Scene& scene)
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
 
-	/*for (int i = 0; i < viewport_width_; i++)
-	{
-		for (int j = half_height - thickness; j < half_height + thickness; j++)
-		{
-			PutPixel(i, j, glm::vec3(1, 1, 0));
-		}
-	}
-
-	for (int i = 0; i < viewport_height_; i++)
-	{
-		for (int j = half_width - thickness; j < half_width + thickness; j++)
-		{
-			PutPixel(j, i, glm::vec3(1, 0, 1));
-		}
-	}*/
-
-
-
 	DrawModel(scene.GetModel(0));
 	
-
-
-	double thirty_degrees = (sqrt(3) / 2);
-	double fourty_five_degrees = (sqrt(2) / 2);
-	double r = 250, a = 72;
-	double x_c = 300, y_c = 300;
-	double  y = 0, x = 0,x1=0,y1=0;
-	double temp = 0,temp1=0;
-	/*for (int i = 0; i <=a ; i++) {
-		temp = (2 * 3.14 * i )/ a;
-		x = x_c + r * sin(temp);
-		y = y_c + r * cos(temp);
-		DrawLine(glm::ivec2(y_c, x_c), glm::ivec2(x, y), glm::ivec3(1, 0, 1));
-
-	}*/
-
-
-
 	
-	double j = 48,i=1;
-	/*temp = (2 * 3.14 * i) / a;
-	x = x_c + r * sin(temp);
-	y = y_c + r * cos(temp);
-	temp1 = (2 * 3.14 * j) / a;
-	x1 = x_c + r * sin(temp1);
-	y1 = y_c + r * cos(temp1);
-	PutPixel(x, y, glm::ivec3(1, 1, 1));
-	PutPixel(x, y, glm::ivec3(1, 1, 1));*/
-	//DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), glm::ivec3(1, 1, 1));
-
-	/*for (r; r > 4; r = (11 * r) / 16) {
-		
-		for (int i = 1; i <= a; i++) {
-			if (i <= 25) {
-				j = 2 * i;
-			}
-			else {
-				j = 2 * i - 50;
-			}
-			for (j; j <= a; j *= 2) {
-				temp = (2 * 3.14 * (a - j)) / a;
-				x = x_c + r * sin(temp);
-				y = y_c + r * cos(temp);
-				temp1 = (2 * 3.14 * j) / a;
-				x1 = x_c + r * sin(temp1);
-				y1 = y_c + r * cos(temp1);
-				DrawLine(glm::ivec2(y1, x1), glm::ivec2(x, y), points[counter]);
-				
-			}
-
-		}
-		counter++;
-		counter %= 6;
-		
-		
-	}*/
-
 
 }
+
 
 
 int Renderer::GetViewportWidth() const

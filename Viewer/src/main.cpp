@@ -29,10 +29,10 @@ glm::vec4 ToHomogeneous4(glm::vec3 vector)
 glm::vec3 FromHomogeneous4(glm::vec4 vector)
 {
 
-	glm::vec3 temp(vector[0] / vector[4], vector[1] / vector[4], vector[2] / vector[4]);
+	glm::vec3 temp(vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]);
 	return temp;
 }
-glm::vec3 Scale3(double x, double y, double z, glm::vec3 vector)
+glm::vec3 Scale3(double x, double y, double z, glm::vec3& vector)
 {
 	glm::mat3 temp(
 		x, 0, 0,
@@ -42,12 +42,12 @@ glm::vec3 Scale3(double x, double y, double z, glm::vec3 vector)
 	return vector;
 }
 
-glm::vec3  Transform3(double x, double y, double z, glm::vec3 vector)
+void  Transform3(float x, float y, float z, glm::vec3& vector)
 {
 	glm::mat4 transform(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
 		x, y, z, 1);
 
 	glm::vec4 temp = ToHomogeneous4(vector);
@@ -55,7 +55,7 @@ glm::vec3  Transform3(double x, double y, double z, glm::vec3 vector)
 	temp = transform * temp;
 
 	vector = FromHomogeneous4(temp);
-	return vector;
+
 }
 
 
@@ -181,6 +181,14 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		// TODO: Handle keyboard events here
 		if (io.KeysDown[65])
 		{
+			MeshModel obj = scene.GetModel(0);
+		
+			for (int i = 0; i < obj.getVerticesSize(); i++) {
+				Transform3(200,-100, 0, obj.getVerticeAtIndex(i));
+				obj.getVerticeAtIndex(i)[0] += 200;
+				obj.getVerticeAtIndex(i)[1] -= 100;
+
+			}
 			// A key is down
 			// Use the ASCII table for more key codes (https://www.asciitable.com/)
 		}
@@ -294,7 +302,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		
 		if (flag) {
 			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				obj.getVerticeAtIndex(i)=Transform3(x, y, z, obj.getVerticeAtIndex(i));
+				Transform3(x, y, z, obj.getVerticeAtIndex(i));
 			}
 			std::cout << "manor";
 		}
@@ -302,8 +310,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		//std::cout << flag;
 		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
 			std::cout <<obj.getVerticeAtIndex(i)[0];
-		}
-		*/
+		}*/
+		
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
