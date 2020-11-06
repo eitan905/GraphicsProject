@@ -19,7 +19,46 @@
 #include "Scene.h"
 #include "Utils.h"
 
-#include "Transformations.h"
+// "Transformations.h"
+glm::vec4 ToHomogeneous4(glm::vec3 vector)
+{
+	return  (glm::vec4(vector[0], vector[1], vector[2], 1));
+
+}
+
+glm::vec3 FromHomogeneous4(glm::vec4 vector)
+{
+
+	glm::vec3 temp(vector[0] / vector[4], vector[1] / vector[4], vector[2] / vector[4]);
+	return temp;
+}
+glm::vec3 Scale3(double x, double y, double z, glm::vec3 vector)
+{
+	glm::mat3 temp(
+		x, 0, 0,
+		0, y, 0,
+		0, 0, z);
+	vector = temp * vector;
+	return vector;
+}
+
+glm::vec3  Transform3(double x, double y, double z, glm::vec3 vector)
+{
+	glm::mat4 transform(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		x, y, z, 1);
+
+	glm::vec4 temp = ToHomogeneous4(vector);
+
+	temp = transform * temp;
+
+	vector = FromHomogeneous4(temp);
+	return vector;
+}
+
+
 /**
  * Fields
  */
@@ -242,19 +281,29 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
-
+		
+			
 		ImGui::InputFloat("alfa", &a, 0.01f, 1.0f);
-		Transformations trans;
-		static ImGuiColorEditFlags alpha_flags = 0;
-		if (ImGui::RadioButton("Translation", &alpha_flags, 0)) {
-			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				obj.getVerticeAtIndex(i)=trans.Transform3(x, y, z, obj.getVerticeAtIndex(i));
-			}
-		}
+		static ImGuiColorEditFlags alpha_flags = 1;
+		bool flag=ImGui::RadioButton("Translation", &alpha_flags,1) ;
 		ImGui::SameLine();
-		ImGui::RadioButton("scaling ", &alpha_flags, ImGuiColorEditFlags_AlphaPreview);
-		ImGui::RadioButton("local", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
-		ImGui::RadioButton("world", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
+		//ImGui::RadioButton("scaling ", &alpha_flags);
+		ImGui::RadioButton("local", &alpha_flags,2);
+		ImGui::RadioButton("world", &alpha_flags,3);
+		ImGui::RadioButton("scaling ", &alpha_flags,4);
+		
+		if (flag) {
+			/*for (int i = 0; i < obj.getVerticesSize(); i++) {
+				obj.getVerticeAtIndex(i)=Transform3(x, y, z, obj.getVerticeAtIndex(i));
+			}*/
+			std::cout << "manor";
+		}
+		
+		//std::cout << flag;
+		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
+			std::cout <<obj.getVerticeAtIndex(i)[0];
+		}
+		*/
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
