@@ -14,6 +14,9 @@ public:
 	glm::vec3& getVerticeAtIndex(int index) {
 		return vertices_[index];
 	}
+	std::vector<glm::vec3>& getVertices() {
+		return vertices_;
+	}
 	int getVerticesSize() {
 		return vertices_.size();
 	}

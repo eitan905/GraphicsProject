@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <imgui/imgui.h>
-
+ 
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -182,16 +182,15 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		if (io.KeysDown[65])
 		{
 			MeshModel obj = scene.GetModel(0);
-		
-			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				Transform3(200,-100, 0, obj.getVerticeAtIndex(i));
-				obj.getVerticeAtIndex(i)[0] += 200;
-				obj.getVerticeAtIndex(i)[1] -= 100;
 
+			std::vector<glm::vec3> vertices = obj.getVertices();
+
+
+			for (int i = 0; i < obj.getVerticesSize(); i++) {
+				Transform3(200, -100, 0, scene.GetModel(0).getVerticeAtIndex(i)); \
 			}
-			// A key is down
-			// Use the ASCII table for more key codes (https://www.asciitable.com/)
 		}
+
 	}
 
 	if (!io.WantCaptureMouse)
@@ -302,7 +301,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		
 		if (flag) {
 			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				Transform3(x, y, z, obj.getVerticeAtIndex(i));
+				Transform3(x, y, z, scene.GetModel(0).getVerticeAtIndex(i));
 			}
 			std::cout << "manor";
 		}

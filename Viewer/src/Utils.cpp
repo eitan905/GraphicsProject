@@ -80,12 +80,12 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
-		500, 500, 500, 1
+		500, 300, 500, 1
 	);
 	glm::mat3x3 s = glm::mat3x3(
-		1500, 0, 0, 
-		0, 1500, 0, 
-		0, 0, 1500 
+		400, 0, 0, 
+		0, 400, 0, 
+		0, 0, 400 
 	);
 	glm::vec3 b;
 	for (int j = 0; j < vertices.size(); j++) {

@@ -71,7 +71,7 @@ int NFDi_SafeStrncpy( char *dst, const char *src, size_t maxCopy )
     assert( src );
     assert( dst );
     
-    while ( n > 0 && *src != '\0' )    
+    while ( n > 0 && *src != NULL )    
     {
         *d++ = *src++;
         --n;
