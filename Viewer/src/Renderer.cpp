@@ -304,3 +304,4 @@ void Renderer::DrawModel(MeshModel obj)
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
 	}
 }
+

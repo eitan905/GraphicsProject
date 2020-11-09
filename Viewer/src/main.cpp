@@ -394,7 +394,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 						obj.SetLocalTransform(temp);
 						x = y = z = 0.0f;
 					}
-					if (checkedWorld) {
+					if (checkedWorld) {	
 						std::cout << "world flag" << std::endl;
 						obj.SetWorldTransform(temp);
 						x = y = z = 0.0f;
@@ -460,6 +460,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
 			obj.getVerticeAtIndex(i)[0] = f;
 		}*/
+		ImGui::SliderFloat("Scale", &f, 1.0f, 1000.0f);
+		obj.SetScaleBarValue(f);
+		
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 		
 

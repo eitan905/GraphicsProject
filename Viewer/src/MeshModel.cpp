@@ -8,7 +8,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	
 {
 	objectTransform = glm::mat4x4(
-		1, 0, 0, 0,
+		1 , 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
@@ -44,7 +44,11 @@ const std::string& MeshModel::GetModelName() const
 
 glm::mat4x4 MeshModel::GetTransform()
 {
-	return worldTransform * objectTransform;
+	glm::mat4x4 temp = objectTransform;
+	temp[0][0] += scaleBarValue;
+	temp[1][1] += scaleBarValue;
+	temp[2][2] += scaleBarValue;
+	return worldTransform * temp;
 }
 
 void MeshModel::SetLocalTransform(glm::mat4x4 mat)
@@ -65,4 +69,9 @@ void MeshModel::SetWorldTransform(glm::mat4x4 mat)
 void MeshModel::SetModelName(std::string name)
 {
 	model_name_ = name;
+}
+
+void MeshModel::SetScaleBarValue(float value)
+{
+	scaleBarValue = value;
 }

@@ -25,6 +25,7 @@ public:
 	void SetLocalRotationTransform(glm::mat4x4 mat);
 	void SetWorldTransform(glm::mat4x4 mat);
 	void SetModelName(std::string name);
+	void SetScaleBarValue(float value);
 
 
 
@@ -35,4 +36,5 @@ private:
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;
 	std::string model_name_;
+	float scaleBarValue;
 };
