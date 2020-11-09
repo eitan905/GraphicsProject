@@ -89,11 +89,11 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-	objectTransform = localScaleTransform * localTranslateTransform * localRotationTransform;
+	objectTransform = localTranslateTransform * localScaleTransform * localRotationTransform;
 }
 
 void MeshModel::GETworld() {
-	 worldTransform= worldScaleTransform * worldTranslateTransform * worldRotationTransform;
+	 worldTransform= worldTranslateTransform * worldScaleTransform * worldRotationTransform;
 }
 
 
@@ -176,7 +176,9 @@ float& MeshModel::GetScaleBarValue()
 
 void MeshModel::SetRotateBarValue(float value)
 {
-	localRotateBarValue = value;
+	localScaleTransform[0][0] += value;
+	localScaleTransform[1][1] += value;
+	localScaleTransform[2][2] += value;
 }
 
 
