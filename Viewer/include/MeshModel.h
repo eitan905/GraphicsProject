@@ -26,15 +26,20 @@ public:
 	void SetWorldTransform(glm::mat4x4 mat);
 	void SetModelName(std::string name);
 	void SetScaleBarValue(float value);
+	float& GetScaleBarValue();
+	void SetRotateBarValue(float value);
+	void setRotationTransfrom(glm::mat4x4 mat);
 
 
 
 private:
 	static glm::mat4x4 worldTransform;
 	glm::mat4x4 objectTransform;
+	glm::mat4x4 rotationTransform;
 	std::vector<Face> faces_;
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;
 	std::string model_name_;
 	float scaleBarValue;
+	float rotateBarValue;
 };

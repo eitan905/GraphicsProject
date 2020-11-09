@@ -14,7 +14,7 @@ Scene::Scene() :
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
 	active_model_index_ = mesh_models_.size();
-	mesh_models_.push_back(mesh_model);
+	mesh_models_.push_back(mesh_model);	
 	std::cout << GetActiveModel().GetModelName();
 
 }
