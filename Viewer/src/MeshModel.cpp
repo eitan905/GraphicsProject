@@ -7,34 +7,29 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	model_name_(model_name)
 
 {
-	rotateBarValue = 0;
-	scaleBarValue = 1;
-	translateBarValueX = 0;
-	translateBarValueY = 0;
-	translateBarValueZ = 0;
-	scaleValueX = 1;
-	scaleValueY = 1;
-	scaleValueZ = 1;
+	localRotateBarValue = 0;
+	localScaleBarValue = 1;
+
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
-	rotationTransform =
+	localRotationTransform =
 		glm::mat4x4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1
 		);
-	translateTransform = glm::mat4x4(
+	localTranslateTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
-	ScaleTransform = glm::mat4x4(
+	localScaleTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
@@ -49,28 +44,23 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		0, 0, 0, 1
 	);
 
-	 WrotateBarValue = 0;
-	 WtranslateBarValueX = 0;
-	 WtranslateBarValueY = 0;
-	 WtranslateBarValueZ = 0;
-	 WscaleValueX = 1;
-	 WscaleValueY = 1;
-	 WscaleValueZ = 1;
+	 worldRotateBarValue = 0;
+	
 	 
-	 WrotationTransform =
+	 worldRotationTransform =
 			 glm::mat4x4(
 				 1, 0, 0, 0,
 				 0, 1, 0, 0,
 				 0, 0, 1, 0,
 				 0, 0, 0, 1
 			 );
-	 WtranslateTransform = glm::mat4x4(
+	 worldTranslateTransform = glm::mat4x4(
 		 1, 0, 0, 0,
 		 0, 1, 0, 0,
 		 0, 0, 1, 0,
 		 0, 0, 0, 1
 	 );
-	 WScaleTransform = glm::mat4x4(
+	 worldScaleTransform = glm::mat4x4(
 		 1, 0, 0, 0,
 		 0, 1, 0, 0,
 		 0, 0, 1, 0,
@@ -99,58 +89,54 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-	objectTransform = ScaleTransform * translateTransform * rotationTransform;
+	objectTransform = localScaleTransform * localTranslateTransform * localRotationTransform;
 }
 
 void MeshModel::GETworld() {
-	 worldTransform= WScaleTransform * WtranslateTransform * WrotationTransform;
+	 worldTransform= worldScaleTransform * worldTranslateTransform * worldRotationTransform;
 }
 
-glm::mat4x4 MeshModel::GETMAT() {
-	GETlocal();
-	GETworld();
-	return worldTransform * objectTransform;
+
+
+void MeshModel::LocalRotationTransform(const float alfa) {
+	localRotateBarValue += alfa;
+	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
 }
 
-void MeshModel::setRotationTransfromLOCAL(const float alfa) {
-	rotateBarValue += alfa;
-	rotationTransform[0][0] = cos((rotateBarValue * 3.14) / 180);
-	rotationTransform[0][1] = sin((rotateBarValue * 3.14) / 180);
-	rotationTransform[1][0] = -sin((rotateBarValue * 3.14) / 180);
-	rotationTransform[1][1] = cos((rotateBarValue * 3.14) / 180);
+void MeshModel::WorldRotationTransform(const float alfa) {
+	worldRotateBarValue += alfa;
+	worldRotationTransform[0][0] = cos((worldRotateBarValue * 3.14) / 180);
+	worldRotationTransform[0][1] = sin((worldRotateBarValue * 3.14) / 180);
+	worldRotationTransform[1][0] = -sin((worldRotateBarValue * 3.14) / 180);
+	worldRotationTransform[1][1] = cos((worldRotateBarValue * 3.14) / 180);
 }
 
-void MeshModel::setRotationTransfromWORLD(const float alfa) {
-	WrotateBarValue += alfa;
-	WrotationTransform[0][0] = cos((WrotateBarValue * 3.14) / 180);
-	WrotationTransform[0][1] = sin((WrotateBarValue * 3.14) / 180);
-	WrotationTransform[1][0] = -sin((WrotateBarValue * 3.14) / 180);
-	WrotationTransform[1][1] = cos((WrotateBarValue * 3.14) / 180);
-}
-
-void MeshModel::setTranslateTransfromLOCAL(const float x, const float y, const float z) {
-	translateTransform[3][0] += x;
-	translateTransform[3][1] += y;
-	translateTransform[3][2] += z;
+void MeshModel::LocalTranslateTransform(const float x, const float y, const float z) {
+	localTranslateTransform[3][0] += x;
+	localTranslateTransform[3][1] += y;
+	localTranslateTransform[3][2] += z;
 
 }
 
-void MeshModel::setTranslateTransfromWORLD(const float x, const float y, const float z) {
-	WtranslateTransform[3][0] += x;
-	WtranslateTransform[3][1] += y;
-	WtranslateTransform[3][2] += z;
+void MeshModel::WorldTranslateTransform(const float x, const float y, const float z) {
+	worldTranslateTransform[3][0] += x;
+	worldTranslateTransform[3][1] += y;
+	worldTranslateTransform[3][2] += z;
 
 }
-void MeshModel::setScaleTransfromLOCAL(const float x, const float y, const float z)
+void MeshModel::LocalScaleTransform(const float x, const float y, const float z)
 {
-	ScaleTransform[0][0] *= x;
-	ScaleTransform[1][1] *= y;
-	ScaleTransform[2][2] *= z;
+	localScaleTransform[0][0] *= x;
+	localScaleTransform[1][1] *= y;
+	localScaleTransform[2][2] *= z;
 }
-void MeshModel::setScaleTransfromWORLD(const float x, const float y, const float z) {
-	WScaleTransform[0][0] *= x;
-	WScaleTransform[1][1] *= y;
-	WScaleTransform[2][2] *= z;
+void MeshModel::WorldScaleTransform(const float x, const float y, const float z) {
+	worldScaleTransform[0][0] *= x;
+	worldScaleTransform[1][1] *= y;
+	worldScaleTransform[2][2] *= z;
 
 }
 
@@ -158,35 +144,20 @@ void MeshModel::setScaleTransfromWORLD(const float x, const float y, const float
 
 
 
-void MeshModel::setRotationTransfrom(glm::mat4x4 mat) {
-	rotationTransform = rotationTransform * mat;
-}
+
 
 
 glm::mat4x4 MeshModel::GetTransform()
 {
-
-	glm::mat4x4 temp = objectTransform * rotationTransform;
-	temp[0][0] += scaleBarValue;
-	temp[1][1] += scaleBarValue;
-	temp[2][2] += scaleBarValue;
+	GETlocal();
+	GETworld();
+	glm::mat4x4 temp = objectTransform;
+	temp[0][0] += localScaleBarValue;
+	temp[1][1] += localScaleBarValue;
+	temp[2][2] += localScaleBarValue;
 	return worldTransform * temp;
 }
 
-void MeshModel::SetLocalTransform(glm::mat4x4 mat)
-{
-	objectTransform = mat * objectTransform;
-}
-
-void MeshModel::SetLocalRotationTransform(glm::mat4x4 mat)
-{
-	objectTransform = objectTransform * mat;
-}
-
-void MeshModel::SetWorldTransform(glm::mat4x4 mat)
-{
-	worldTransform = mat * worldTransform;
-}
 
 void MeshModel::SetModelName(std::string name)
 {
@@ -195,17 +166,17 @@ void MeshModel::SetModelName(std::string name)
 
 void MeshModel::SetScaleBarValue(float value)
 {
-	scaleBarValue = value;
+	localScaleBarValue = value;
 }
 
 float& MeshModel::GetScaleBarValue()
 {
-	return scaleBarValue;
+	return localScaleBarValue;
 }
 
 void MeshModel::SetRotateBarValue(float value)
 {
-	rotateBarValue = value;
+	localRotateBarValue = value;
 }
 
 

@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
 	
 
 	
@@ -150,55 +150,19 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		// TODO: Handle keyboard events here
 		if (io.KeysDown[68])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				3, 0, 0, 1
-			);
-		
-				std::cout << "local flag" << std::endl;
-				obj.SetLocalTransform(temp);
-				
+			obj.LocalTranslateTransform(4,0,0);		
 		}
 		if (io.KeysDown[65])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				-3, 0, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(-4, 0, 0);
 		}
 		if (io.KeysDown[83])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, -3, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(0, -4, 0);
 		}
 		if (io.KeysDown[87])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 3, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(0, 4, 0);
 		}
 
 	}
@@ -328,60 +292,37 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		bool worldFlag = ImGui::Checkbox ("world", &checkedWorld);
 
 		if (translationFlag) {
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				x, y, z, 1
-			);
+			
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setTranslateTransfromLOCAL(x,y,z);
+				obj.LocalTranslateTransform(x, y, z);
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setTranslateTransfromWORLD(x,y,z);
+				obj.WorldTranslateTransform(x, y, z);
 			}
 			x = y = z = 0.0f;
 
 		}
 
 		if (scalingFlag) {
-			glm::mat4x4 temp(
-				x, 0, 0, 0,
-				0, y, 0, 0,
-				0, 0, z, 0,
-				0, 0, 0, 1
-			);
+			
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setScaleTransfromLOCAL(x,y,z);
+				obj.LocalScaleTransform(x, y, z);
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setScaleTransfromWORLD(x,y,z);
+				obj.WorldScaleTransform(x, y, z);
 			}
 			x = y = z = 0.0f;
 		}
 
 
 		if (rotateFlag) {
-			alpha = (alpha * 3.14) / 180;
-			/*alpha = (alpha * 3.14) / 180;
-			glm::mat4x4 rotateMatrix(
-				cos(alpha), sin(alpha), 0, 0,
-				-sin(alpha), cos(alpha), 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1
-			);*/
+
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setRotationTransfromLOCAL(alpha);
+				obj.LocalRotationTransform(alpha);
 				alpha = 0.0f;
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setRotationTransfromLOCAL(alpha);
+				obj.WorldRotationTransform(alpha);
 				alpha = 0.0f;
 			}
 
