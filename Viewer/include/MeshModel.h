@@ -32,13 +32,13 @@ public:
 
 	void MeshModel::GETlocal();
 	void MeshModel::GETworld();
-	void MeshModel::setRotationTransfromLOCAL(float&alfa);
+	void MeshModel::setRotationTransfromLOCAL(const float alfa);
 	glm::mat4x4 MeshModel::GETMAT();
-	void MeshModel::setRotationTransfromWORLD(float&alfa);
-	void MeshModel::setTranslateTransfromLOCAL(float& x, float& y, float& z);
-	void MeshModel::setTranslateTransfromWORLD(float& x, float& y, float& z);
-	void MeshModel::setScaleTransfromLOCAL(float& x, float& y, float& z);
-	void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z);
+	void MeshModel::setRotationTransfromWORLD(const float alfa);
+	void MeshModel::setTranslateTransfromLOCAL(const float x, const float y, const float z);
+	void MeshModel::setTranslateTransfromWORLD(const float x, const float y, const float z);
+	void MeshModel::setScaleTransfromLOCAL(const float x, const float y, const float z);
+	void MeshModel::setScaleTransfromWORLD(const float x, const float y, const float z);
 	
 
 private:
