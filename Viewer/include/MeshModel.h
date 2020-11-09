@@ -39,7 +39,7 @@ public:
 	void MeshModel::setTranslateTransfromWORLD(float& x, float& y, float& z);
 	void MeshModel::setScaleTransfromLOCAL(float& x, float& y, float& z);
 	void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z);
-
+	
 
 private:
 	glm::mat4x4 objectTransform;

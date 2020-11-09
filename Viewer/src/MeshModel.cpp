@@ -29,10 +29,10 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 			0, 0, 0, 1
 		);
 	translateTransform = glm::mat4x4(
-		1, 0, 0, translateBarValueX,
-		0, 1, 0, translateBarValueY,
-		0, 0, 1, translateBarValueZ,
-		0, 0, 0, 1
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		translateBarValueX, translateBarValueY, translateBarValueZ, 1
 	);
 	ScaleTransform = glm::mat4x4(
 		scaleValueX, 0, 0, 0,
@@ -99,50 +99,53 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-	objectTransform = ScaleTransform * translateTransform * rotationTransform;
+	objectTransform = translateTransform * ScaleTransform * rotationTransform;
 }
 
 void MeshModel::GETworld() {
-	 worldTransform= WScaleTransform * WtranslateTransform * WrotationTransform;
+	 worldTransform = WtranslateTransform * WScaleTransform * WrotationTransform;
 }
 
 glm::mat4x4 MeshModel::GETMAT() {
 	GETlocal();
 	GETworld();
-	return worldTransform * objectTransform;
+	glm::mat4x4 temp = objectTransform * rotationTransform;
+	temp[0][0] += scaleBarValue;
+	temp[1][1] += scaleBarValue;
+	temp[2][2] += scaleBarValue;
+	return worldTransform * temp;
 }
-void MeshModel::setRotationTransfromLOCAL(float&alfa) {
-	rotateBarValue = alfa;
-
+void MeshModel::setRotationTransfromLOCAL(float& alfa) {
+	rotateBarValue += alfa;
 }
 
-void MeshModel::setRotationTransfromWORLD(float&alfa) {
-	WrotateBarValue = alfa;
+void MeshModel::setRotationTransfromWORLD(float& alfa) {
+	WrotateBarValue += alfa;
 }
 
 void MeshModel::setTranslateTransfromLOCAL(float& x, float& y, float& z) {
-	translateBarValueX = x;
-	translateBarValueY = y;
-	translateBarValueZ = z;
+	translateBarValueX += x;
+	translateBarValueY += y;
+	translateBarValueZ += z;
 
 }
 
 void MeshModel::setTranslateTransfromWORLD(float& x, float& y, float& z) {
-	WtranslateBarValueX = x;
-	WtranslateBarValueY = y;
-	WtranslateBarValueZ = z;
+	WtranslateBarValueX += x;
+	WtranslateBarValueY += y;
+	WtranslateBarValueZ += z;
 
 }
-void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z) {
-	scaleValueX = x;
-	scaleValueY = y;
-	scaleValueZ = z;
-
+void MeshModel::setScaleTransfromLOCAL(float& x, float& y, float& z)
+{
+	scaleValueX += x;
+	scaleValueY += y;
+	scaleValueZ += z;
 }
 void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z) {
-	WscaleValueX = x;
-	WscaleValueY = y;
-	WscaleValueZ = z;
+	WscaleValueX += x;
+	WscaleValueY += y;
+	WscaleValueZ += z;
 
 }
 
