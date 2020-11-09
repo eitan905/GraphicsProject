@@ -25,6 +25,9 @@ public:
 
 	void SetActiveModelIndex(int index);
 	int GetActiveModelIndex() const;
+
+	void WorldTransform(glm::mat4x4 mat);
+	void LocalTransform(glm::mat4x4 mat);
 	
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;

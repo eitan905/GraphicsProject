@@ -32,15 +32,11 @@ glm::vec3 FromHomogeneous4(glm::vec4 vector)
 	glm::vec3 temp(vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]);
 	return temp;
 }
-glm::vec3 Scale3(double x, double y, double z, glm::vec3& vector)
-{
-	glm::mat3 temp(
-		x, 0, 0,
-		0, y, 0,
-		0, 0, z);
-	vector = temp * vector;
-	return vector;
-}
+
+
+
+
+
 
 void  Transform3(float x, float y, float z, glm::vec3& vector)
 {
@@ -55,6 +51,36 @@ void  Transform3(float x, float y, float z, glm::vec3& vector)
 	temp = transform * temp;
 
 	vector = FromHomogeneous4(temp);
+
+}
+
+
+void Scale3(double x, double y, double z, glm::vec3& vector)
+{
+	glm::mat3 temp(
+		x, 0, 0,
+		0, y, 0,
+		0, 0, z);
+	Transform3(-700, -300, 0, vector);
+	vector = temp * vector;
+	Transform3(700, 300, 0, vector);
+
+}
+
+
+void Rotate(double alpha, glm::vec3& vector) {
+
+	alpha = (alpha * 3.14) / 180;
+	glm::mat3x3 rotate(
+		cos(alpha), sin(alpha), 0,
+		-sin(alpha), cos(alpha), 0,
+		0, 0, 1
+	);
+
+	Transform3(-700, -300, 0, vector);
+	vector = rotate * vector;
+	Transform3(700, 300, 0, vector);
+
 
 }
 
@@ -102,12 +128,14 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 
 	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
+	
 
 	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
     while (!glfwWindowShouldClose(window))
     {
+
         glfwPollEvents();
 		StartFrame();
 		DrawImguiMenus(io, scene);
@@ -166,6 +194,7 @@ void StartFrame()
 
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
+	MeshModel& obj = scene.GetModel(0);
 	ImGui::Render();
 	int frameBufferWidth, frameBufferHeight;
 	glfwMakeContextCurrent(window);
@@ -179,16 +208,57 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	if (!io.WantCaptureKeyboard)
 	{
 		// TODO: Handle keyboard events here
+		if (io.KeysDown[68])
+		{
+			glm::mat4x4 temp(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				3, 0, 0, 1
+			);
+		
+				std::cout << "local flag" << std::endl;
+				obj.SetLocalTransform(temp);
+				
+		}
 		if (io.KeysDown[65])
 		{
-			MeshModel obj = scene.GetModel(0);
+			glm::mat4x4 temp(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				-3, 0, 0, 1
+			);
 
-			std::vector<glm::vec3> vertices = obj.getVertices();
+			std::cout << "local flag" << std::endl;
+			obj.SetLocalTransform(temp);
 
+		}
+		if (io.KeysDown[83])
+		{
+			glm::mat4x4 temp(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, -3, 0, 1
+			);
 
-			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				Transform3(200, -100, 0, scene.GetModel(0).getVerticeAtIndex(i)); \
-			}
+			std::cout << "local flag" << std::endl;
+			obj.SetLocalTransform(temp);
+
+		}
+		if (io.KeysDown[87])
+		{
+			glm::mat4x4 temp(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 3, 0, 1
+			);
+
+			std::cout << "local flag" << std::endl;
+			obj.SetLocalTransform(temp);
+
 		}
 
 	}
@@ -273,8 +343,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
-		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,a=0.0f;
-		MeshModel obj = scene.GetModel(0);
+		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
+		MeshModel& obj = scene.GetModel(0);
 		
 		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
@@ -288,36 +358,105 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
-		
-			
-		ImGui::InputFloat("alfa", &a, 0.01f, 1.0f);
+		ImGui::InputFloat("alfa", &alpha, 0.01f, 1.0f);
+
+
 		static ImGuiColorEditFlags alpha_flags = 1;
-		bool flag=ImGui::RadioButton("Translation", &alpha_flags,1) ;
+		static unsigned int beta_flags = 1;
+		static bool checkedLocal = true;
+		static bool checkedWorld = false;
+		bool translationFlag=ImGui::RadioButton("Translation", &alpha_flags,1) ;
+		bool scalingFlag = ImGui::RadioButton("scaling ", &alpha_flags, 2);
+		bool rotateFlag = ImGui::RadioButton("rotate ", &alpha_flags, 3);
+
 		ImGui::SameLine();
 		//ImGui::RadioButton("scaling ", &alpha_flags);
-		ImGui::RadioButton("local", &alpha_flags,2);
-		ImGui::RadioButton("world", &alpha_flags,3);
-		ImGui::RadioButton("scaling ", &alpha_flags,4);
+		bool localFlag = ImGui::Checkbox ("local", &checkedLocal);
+		bool worldFlag = ImGui::Checkbox ("world", &checkedWorld);
+
 		
-		if (flag) {
-			for (int i = 0; i < obj.getVerticesSize(); i++) {
-				Transform3(x, y, z, scene.GetModel(0).getVerticeAtIndex(i));
+			if (x != 0 || y != 0 || z != 0 || alpha != 0 ) {
+				if (translationFlag) {
+					std::cout << "translation flag" << std::endl;
+					glm::mat4x4 temp(
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					x, y, z, 1
+					);
+					if (checkedLocal) {
+						std::cout << "local flag" << std::endl;
+						obj.SetLocalTransform(temp);
+						x = y = z = 0.0f;
+					}
+					if (checkedWorld) {
+						std::cout << "world flag" << std::endl;
+						obj.SetWorldTransform(temp);
+						x = y = z = 0.0f;
+					}
+				}
+
+
+				if (scalingFlag) {
+					std::cout << "scaling flag" << std::endl;
+					glm::mat4x4 temp(
+						x, 0, 0, 0,
+						0, y, 0, 0,
+						0, 0, z, 0,
+						0, 0, 0, 1
+					);
+					if (checkedLocal) {
+						std::cout << "localflag" << std::endl;
+						obj.SetLocalTransform(temp);
+						x = y = z = 0.0f;
+					}
+					if (checkedWorld) {
+						std::cout << "world flag" << std::endl;
+						obj.SetWorldTransform(temp);
+						x = y = z = 0.0f;
+					}
+				}
+
+				if (rotateFlag) {
+
+					alpha = (alpha * 3.14) / 180;
+					glm::mat4x4 rotate(
+						cos(alpha), sin(alpha), 0, 0,
+						-sin(alpha), cos(alpha), 0, 0,
+						0, 0, 1 , 0,
+						0, 0, 0, 1
+					);
+					if (checkedLocal) {
+						std::cout << "local flag" << std::endl;
+						obj.SetLocalTransform(rotate);
+						x = y = z = 0.0f;
+					}
+					if (checkedWorld) {
+						std::cout << "world flag" << std::endl;
+						obj.SetWorldTransform(rotate);
+						x = y = z = 0.0f;
+					}
+
+
+
+				}
+				
+				
 			}
-			std::cout << "manor";
-		}
+
 		
-		//std::cout << flag;
-		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
-			std::cout <<obj.getVerticeAtIndex(i)[0];
-		}*/
+	
 		
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
 
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::SliderFloat("translation X", &f, -700.0f, 500.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
+			obj.getVerticeAtIndex(i)[0] = f;
+		}*/
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
+		
 
 		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 			counter++;

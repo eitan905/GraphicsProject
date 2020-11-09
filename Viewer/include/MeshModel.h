@@ -20,8 +20,13 @@ public:
 	int getVerticesSize() {
 		return vertices_.size();
 	}
+	glm::mat4x4 GetTransform();
+	void SetLocalTransform(glm::mat4x4 mat);
+	void SetWorldTransform(glm::mat4x4 mat);
+	static glm::mat4x4 worldTransform;
 
 private:
+	glm::mat4x4 objectTransform;
 	std::vector<Face> faces_;
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;

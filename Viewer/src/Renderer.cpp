@@ -251,6 +251,11 @@ void Renderer::Render(const Scene& scene)
 	int thickness = 15;
 
 	DrawModel(scene.GetModel(0));
+
+	if (scene.GetModelCount() == 2)
+	{
+		DrawModel(scene.GetModel(1));
+	}
 	
 	
 
@@ -275,6 +280,13 @@ void Renderer::UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm
 
 void Renderer::DrawModel(MeshModel obj)
 {
+	for (int j = 0; j < obj.getVerticesSize(); j++) {
+		glm::vec4 temp = obj.GetTransform() *
+			glm::vec4(obj.getVerticeAtIndex(j),1);
+		obj.getVerticeAtIndex(j)[0] = temp[0];
+		obj.getVerticeAtIndex(j)[1] = temp[1];
+		obj.getVerticeAtIndex(j)[2] = temp[2];
+	}
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
 		int point0 = face.GetVertexIndex(0) - 1;
