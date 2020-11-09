@@ -21,8 +21,30 @@
 
 
 
+static float mouse_x;
+static float mouse_y;
+static float previous_mouse_x = 0;
+static float previous_mouse_y = 0;
 
+float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+{
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
 
+bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
+{
+	float d1, d2, d3;
+	bool has_neg, has_pos;
+
+	d1 = sign(pt, v1, v2);
+	d2 = sign(pt, v2, v3);
+	d3 = sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);
+}
 
 
 /**
@@ -167,13 +189,57 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 
 	}
 
+
+
 	if (!io.WantCaptureMouse)
 	{
+
 		// TODO: Handle mouse events here
+		std::vector<MeshModel*> models;
 		if (io.MouseDown[0])
 		{
-			// Left mouse button is down
+			bool isMouseOnModel = false;
+			mouse_x = io.MousePos[0];
+			mouse_y = io.MousePos[1];
+				for (int i = 0; i < scene.GetModelCount(); i++) {
+					MeshModel temp_obj = scene.GetModel(i);
+					for (int j = 0; j < obj.getVerticesSize(); j++) {
+						glm::vec4 temp = temp_obj.GetTransform() * glm::vec4(temp_obj.getVerticeAtIndex(j), 1);
+						temp_obj.getVerticeAtIndex(j)[0] = temp[0];
+						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
+						temp_obj.getVerticeAtIndex(j)[2] = temp[2];
+					}
+					for (int j = 0; j < temp_obj.GetFacesCount(); j++) {
+						Face face = temp_obj.GetFace(j);
+						int point0 = face.GetVertexIndex(0) - 1;
+						int point1 = face.GetVertexIndex(1) - 1;
+						int point2 = face.GetVertexIndex(2) - 1;
+
+						glm::vec2 p(mouse_x, mouse_y);
+						glm::vec2 p1(temp_obj.getVerticeAtIndex(point0)[0], temp_obj.getVerticeAtIndex(point0)[1]);
+						glm::vec2 p2(temp_obj.getVerticeAtIndex(point1)[0], temp_obj.getVerticeAtIndex(point1)[1]);
+						glm::vec2 p3(temp_obj.getVerticeAtIndex(point2)[0], temp_obj.getVerticeAtIndex(point2)[1]);
+						if (PointInTriangle(p, p1, p2, p3)) {
+							isMouseOnModel = true;
+						}
+					}
+					if (isMouseOnModel) {
+						std::cout << "found model" ;
+						models.push_back(&scene.GetModel(i));
+						isMouseOnModel = false;
+					}
+				}
+				//firstRun = false;
+			
+			for (int t = 0; t < models.size(); t++) {
+				if (previous_mouse_x != 0) {
+					models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
+				}
+				previous_mouse_x = mouse_x;
+				previous_mouse_y = mouse_y;
+			}
 		}
+		models.empty();
 	}
 
 	renderer.ClearColorBuffer(clear_color);
