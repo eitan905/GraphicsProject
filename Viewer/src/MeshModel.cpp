@@ -99,22 +99,19 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-	objectTransform = translateTransform * ScaleTransform * rotationTransform;
+	objectTransform = ScaleTransform * translateTransform * rotationTransform;
 }
 
 void MeshModel::GETworld() {
-	 worldTransform = WtranslateTransform * WScaleTransform * WrotationTransform;
+	 worldTransform= WScaleTransform * WtranslateTransform * WrotationTransform;
 }
 
 glm::mat4x4 MeshModel::GETMAT() {
 	GETlocal();
 	GETworld();
-	glm::mat4x4 temp = objectTransform * rotationTransform;
-	temp[0][0] += scaleBarValue;
-	temp[1][1] += scaleBarValue;
-	temp[2][2] += scaleBarValue;
-	return worldTransform * temp;
+	return worldTransform * objectTransform;
 }
+
 void MeshModel::setRotationTransfromLOCAL(const float alfa) {
 	rotateBarValue += alfa;
 	rotationTransform[0][0] = cos((rotateBarValue * 3.14) / 180);

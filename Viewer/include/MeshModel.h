@@ -34,6 +34,7 @@ public:
 	void MeshModel::GETworld();
 	void MeshModel::setRotationTransfromLOCAL(const float alfa);
 	glm::mat4x4 MeshModel::GETMAT();
+	
 	void MeshModel::setRotationTransfromWORLD(const float alfa);
 	void MeshModel::setTranslateTransfromLOCAL(const float x, const float y, const float z);
 	void MeshModel::setTranslateTransfromWORLD(const float x, const float y, const float z);

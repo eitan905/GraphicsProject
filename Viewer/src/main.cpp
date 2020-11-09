@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
 	
 
 	
@@ -336,11 +336,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			);
 			if (checkedLocal) {
 				std::cout << "local flag" << std::endl;
-				obj.SetLocalTransform(temp);
+				obj.setTranslateTransfromLOCAL(x,y,z);
 			}
 			if (checkedWorld) {
 				std::cout << "world flag" << std::endl;
-				obj.SetWorldTransform(temp);
+				obj.setTranslateTransfromWORLD(x,y,z);
 			}
 			x = y = z = 0.0f;
 
@@ -355,11 +355,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			);
 			if (checkedLocal) {
 				std::cout << "local flag" << std::endl;
-				obj.SetLocalTransform(temp);
+				obj.setScaleTransfromLOCAL(x,y,z);
 			}
 			if (checkedWorld) {
 				std::cout << "world flag" << std::endl;
-				obj.SetWorldTransform(temp);
+				obj.setScaleTransfromWORLD(x,y,z);
 			}
 			x = y = z = 0.0f;
 		}
