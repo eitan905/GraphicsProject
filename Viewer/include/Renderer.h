@@ -29,5 +29,6 @@ private:
 	int viewport_width_;
 	int viewport_height_;
 	GLuint gl_screen_tex_;
-	GLuint gl_screen_vtc_;
+	GLuint gl_screen_vtc_;	
+
 };

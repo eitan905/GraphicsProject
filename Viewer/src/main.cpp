@@ -19,70 +19,10 @@
 #include "Scene.h"
 #include "Utils.h"
 
-// "Transformations.h"
-glm::vec4 ToHomogeneous4(glm::vec3 vector)
-{
-	return  (glm::vec4(vector[0], vector[1], vector[2], 1));
-
-}
-
-glm::vec3 FromHomogeneous4(glm::vec4 vector)
-{
-
-	glm::vec3 temp(vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]);
-	return temp;
-}
 
 
 
 
-
-
-void  Transform3(float x, float y, float z, glm::vec3& vector)
-{
-	glm::mat4 transform(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		x, y, z, 1);
-
-	glm::vec4 temp = ToHomogeneous4(vector);
-
-	temp = transform * temp;
-
-	vector = FromHomogeneous4(temp);
-
-}
-
-
-void Scale3(double x, double y, double z, glm::vec3& vector)
-{
-	glm::mat3 temp(
-		x, 0, 0,
-		0, y, 0,
-		0, 0, z);
-	Transform3(-700, -300, 0, vector);
-	vector = temp * vector;
-	Transform3(700, 300, 0, vector);
-
-}
-
-
-void Rotate(double alpha, glm::vec3& vector) {
-
-	alpha = (alpha * 3.14) / 180;
-	glm::mat3x3 rotate(
-		cos(alpha), sin(alpha), 0,
-		-sin(alpha), cos(alpha), 0,
-		0, 0, 1
-	);
-
-	Transform3(-700, -300, 0, vector);
-	vector = rotate * vector;
-	Transform3(700, 300, 0, vector);
-
-
-}
 
 
 /**
@@ -343,8 +283,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
-		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
 		MeshModel& obj = scene.GetModel(scene.GetActiveModelIndex());
+		static float rotate = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
+		static float& scaleValue = obj.GetScaleBarValue();
 		
 		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
@@ -355,99 +296,103 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
+
+		static const char* currentModels[]{ "bunny", "cow" };
+		static int selecteItem = scene.GetActiveModelIndex();
+
+		ImGui::ListBox("active model", &selecteItem, currentModels, 2, 2);
+
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
 		ImGui::InputFloat("alfa", &alpha, 0.01f, 1.0f);
+
+		bool translationFlag = ImGui::Button("Translate");
+		ImGui::SameLine();
+		bool scalingFlag = ImGui::Button("Scale");
+		ImGui::SameLine();
+		bool rotateFlag = ImGui::Button("Rotate");
+		ImGui::SameLine();
+
 		
-		static const char* currentModels[]{ "bunny", "cow" };
-		static int selecteItem = scene.GetActiveModelIndex();
 		
-		ImGui::ListBox("active model", &selecteItem, currentModels, 2, 2);
 
 
-		static ImGuiColorEditFlags alpha_flags = 1;
-		static unsigned int beta_flags = 1;
 		static bool checkedLocal = true;
 		static bool checkedWorld = false;
-		bool translationFlag=ImGui::RadioButton("Translation", &alpha_flags,1) ;
-		bool scalingFlag = ImGui::RadioButton("scaling ", &alpha_flags, 2);
-		bool rotateFlag = ImGui::RadioButton("rotate ", &alpha_flags, 3);
 
 		ImGui::SameLine();
 		//ImGui::RadioButton("scaling ", &alpha_flags);
 		bool localFlag = ImGui::Checkbox ("local", &checkedLocal);
+		ImGui::SameLine();
 		bool worldFlag = ImGui::Checkbox ("world", &checkedWorld);
 
-		
-			if (x != 0 || y != 0 || z != 0 || alpha != 0 ) {
-				if (translationFlag) {
-					std::cout << "translation flag" << std::endl;
-					glm::mat4x4 temp(
-					1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 0,
-					x, y, z, 1
-					);
-					if (checkedLocal) {
-						std::cout << "local flag" << std::endl;
-						obj.SetLocalTransform(temp);
-						x = y = z = 0.0f;
-					}
-					if (checkedWorld) {
-						std::cout << "world flag" << std::endl;
-						obj.SetWorldTransform(temp);
-						x = y = z = 0.0f;
-					}
-				}
-
-
-				if (scalingFlag) {
-					std::cout << "scaling flag" << std::endl;
-					glm::mat4x4 temp(
-						x, 0, 0, 0,
-						0, y, 0, 0,
-						0, 0, z, 0,
-						0, 0, 0, 1
-					);
-					if (checkedLocal) {
-						std::cout << "localflag" << std::endl;
-						obj.SetLocalTransform(temp);
-						x = y = z = 0.0f;
-					}
-					if (checkedWorld) {
-						std::cout << "world flag" << std::endl;
-						obj.SetWorldTransform(temp);
-						x = y = z = 0.0f;
-					}
-				}
-
-				if (rotateFlag) {
-
-					alpha = (alpha * 3.14) / 180;
-					glm::mat4x4 rotate(
-						cos(alpha), sin(alpha), 0, 0,
-						-sin(alpha), cos(alpha), 0, 0,
-						0, 0, 1 , 0,
-						0, 0, 0, 1
-					);
-					if (checkedLocal) {
-						std::cout << "local flag" << std::endl;
-						obj.SetLocalRotationTransform(rotate);
-						alpha = 0.0f;
-					}
-					if (checkedWorld) {
-						std::cout << "world flag" << std::endl;
-						obj.SetWorldTransform(rotate);
-						alpha = 0.0f;
-					}
-
-
-
-				}
-				
-				
+		if (translationFlag) {
+			glm::mat4x4 temp(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				x, y, z, 1
+			);
+			if (checkedLocal) {
+				std::cout << "local flag" << std::endl;
+				obj.SetLocalTransform(temp);
 			}
+			if (checkedWorld) {
+				std::cout << "world flag" << std::endl;
+				obj.SetWorldTransform(temp);
+			}
+			x = y = z = 0.0f;
+
+		}
+
+		if (scalingFlag) {
+			glm::mat4x4 temp(
+				x, 0, 0, 0,
+				0, y, 0, 0,
+				0, 0, z, 0,
+				0, 0, 0, 1
+			);
+			if (checkedLocal) {
+				std::cout << "local flag" << std::endl;
+				obj.SetLocalTransform(temp);
+			}
+			if (checkedWorld) {
+				std::cout << "world flag" << std::endl;
+				obj.SetWorldTransform(temp);
+			}
+			x = y = z = 0.0f;
+		}
+
+
+		if (rotateFlag) {
+
+			alpha = (alpha * 3.14) / 180;
+			glm::mat4x4 rotateMatrix(
+				cos(alpha), sin(alpha), 0, 0,
+				-sin(alpha), cos(alpha), 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1
+			);
+			if (checkedLocal) {
+				std::cout << "local flag" << std::endl;
+				obj.SetLocalRotationTransform(rotateMatrix);
+				alpha = 0.0f;
+			}
+			if (checkedWorld) {
+				std::cout << "world flag" << std::endl;
+				obj.SetWorldTransform(rotateMatrix);
+				alpha = 0.0f;
+			}
+
+
+
+		}
+
+
+	
+
+
 
 		
 	
@@ -456,17 +401,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
 
-		ImGui::SliderFloat("translation X", &f, -700.0f, 500.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		/*for (int i = 0; i < obj.getVerticesSize(); i++) {
-			obj.getVerticeAtIndex(i)[0] = f;
-		}*/
+		
+		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
+		ImGui::SliderFloat("Rotate_X", &rotate, 0.0f, 360.0f);      // Edit 1 float using a slider from 0.0f to 1.0f
+		obj.SetRotateBarValue(rotate);
+		
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 		
 
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
+	
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
