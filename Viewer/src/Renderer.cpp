@@ -249,7 +249,14 @@ void Renderer::Render(const Scene& scene)
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
-
+	const glm::ivec2 p1(half_width, 0);
+	const glm::ivec2 p2(half_width, viewport_height_);
+	const glm::vec3 color(1, 0, 1);
+	DrawLine(p1,  p2, color);
+	const glm::ivec2 p3(0, half_height);
+	const glm::ivec2 p4(viewport_width_, half_height);
+	const glm::vec3 color1(1, 0, 1);
+	DrawLine(p3, p4, color1);
 	DrawModel(scene.GetModel(0));
 
 	if (scene.GetModelCount() == 2)
