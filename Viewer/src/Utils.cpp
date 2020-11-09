@@ -69,34 +69,7 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 			std::cout << "Found unknown line Type \"" << lineType << "\"";
 		}
 	}
-	/*for (int i = 0; i < faces.size(); i++) {
-		std::cout << "faces i: "<<i<<" 0: "<<faces[i].GetVertexIndex(0) <<" 1: "<< faces[i].GetVertexIndex(1)<<" 2: " <<faces[i].GetVertexIndex(2)<<   std::endl;   // problem line
-	}
-	for (int j = 0; j < vertices.size(); j++) {
-		std::cout << "vertices j: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
-
-	}*/
-	glm::mat4x4 m = glm::mat4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		700, 300, 500, 1
-	);
-	glm::mat3x3 s = glm::mat3x3(
-		400, 0, 0, 
-		0, 400, 0, 
-		0, 0, 400 
-	);
-	glm::vec3 b;
-	for (int j = 0; j < vertices.size(); j++) {
-		b = s * vertices[j]; 
-		vertices[j] = b;
-	}
-	//-------------------------
-	/*for (int j = 0; j < vertices.size(); j++) {
-		std::cout << "vertices num: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
-	}*/
-	//------------------------------
+	
 	glm::vec4 a;
 	std::vector <glm::vec4> vertices_4;
 	std::vector <glm::vec4> ans;
@@ -106,10 +79,7 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		vertices_4.push_back(a);
 	}
 	
-	for (int j = 0; j < vertices_4.size(); j++) {
-		a = m * vertices_4[j];
-		ans.push_back(a);
-	}
+	
 
 	for (int j = 0; j < ans.size(); j++) {
 		vertices[j][0] = ans[j][0];

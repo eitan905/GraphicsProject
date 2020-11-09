@@ -3,7 +3,9 @@
 MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
 	faces_(faces),
 	vertices_(vertices),
-	normals_(normals)
+	normals_(normals),
+	model_name_(model_name)
+	
 {
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
@@ -50,7 +52,17 @@ void MeshModel::SetLocalTransform(glm::mat4x4 mat)
 	objectTransform = mat * objectTransform;
 }
 
+void MeshModel::SetLocalRotationTransform(glm::mat4x4 mat)
+{
+	objectTransform = objectTransform * mat;
+}
+
 void MeshModel::SetWorldTransform(glm::mat4x4 mat)
 {
 	worldTransform = mat * worldTransform;
+}
+
+void MeshModel::SetModelName(std::string name)
+{
+	model_name_ = name;
 }

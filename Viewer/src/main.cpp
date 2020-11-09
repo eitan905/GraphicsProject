@@ -344,7 +344,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
 		static float f = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
-		MeshModel& obj = scene.GetModel(0);
+		MeshModel& obj = scene.GetModel(scene.GetActiveModelIndex());
 		
 		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
@@ -359,6 +359,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
 		ImGui::InputFloat("alfa", &alpha, 0.01f, 1.0f);
+		
+		static const char* currentModels[]{ "bunny", "cow" };
+		static int selecteItem = scene.GetActiveModelIndex();
+		
+		ImGui::ListBox("active model", &selecteItem, currentModels, 2, 2);
 
 
 		static ImGuiColorEditFlags alpha_flags = 1;
@@ -428,13 +433,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 					);
 					if (checkedLocal) {
 						std::cout << "local flag" << std::endl;
-						obj.SetLocalTransform(rotate);
-						x = y = z = 0.0f;
+						obj.SetLocalRotationTransform(rotate);
+						alpha = 0.0f;
 					}
 					if (checkedWorld) {
 						std::cout << "world flag" << std::endl;
 						obj.SetWorldTransform(rotate);
-						x = y = z = 0.0f;
+						alpha = 0.0f;
 					}
 
 
