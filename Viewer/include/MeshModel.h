@@ -2,6 +2,10 @@
 #include <glm/glm.hpp>
 #include <string>
 #include "Face.h"
+#include <stdio.h>
+#include <iostream>
+
+
 
 class MeshModel
 {

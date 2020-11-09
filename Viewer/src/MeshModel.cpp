@@ -47,8 +47,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	 worldRotateBarValue = 0;
 	
 	 
-	 worldRotationTransform =
-			 glm::mat4x4(
+	 worldRotationTransform = glm::mat4x4(
 				 1, 0, 0, 0,
 				 0, 1, 0, 0,
 				 0, 0, 1, 0,
@@ -89,11 +88,16 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-	objectTransform = localTranslateTransform * localScaleTransform * localRotationTransform;
+
+	glm::mat4x4 temp = localScaleTransform;
+	temp[0][0] += localScaleBarValue;
+	temp[1][1] += localScaleBarValue;
+	temp[2][2] += localScaleBarValue;
+	objectTransform = localTranslateTransform * temp * localRotationTransform;
 }
 
 void MeshModel::GETworld() {
-	 worldTransform= worldTranslateTransform * worldScaleTransform * worldRotationTransform;
+	 worldTransform = worldTranslateTransform * worldScaleTransform * worldRotationTransform;
 }
 
 
@@ -176,9 +180,8 @@ float& MeshModel::GetScaleBarValue()
 
 void MeshModel::SetRotateBarValue(float value)
 {
-	localScaleTransform[0][0] += value;
-	localScaleTransform[1][1] += value;
-	localScaleTransform[2][2] += value;
+	localRotateBarValue = value;
+	
 }
 
 
