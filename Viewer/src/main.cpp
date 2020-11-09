@@ -1,7 +1,10 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <imgui/imgui.h>
- 
+
+#include <iostream>
+#include <windows.h>
+
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -22,7 +25,62 @@
 
 
 
-
+static LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	if (nCode >= 0)
+	{
+		switch (wParam)
+		{
+		case WM_LBUTTONDOWN:
+			system("CLS");
+			std::cout << "left mouse button down\n";
+			break;
+		case WM_LBUTTONUP:
+			std::cout << "left mouse button up\n";
+			break;
+		case WM_RBUTTONDOWN:
+			system("CLS");
+			std::cout << "right mouse button down\n";
+			break;
+		case WM_RBUTTONUP:
+			std::cout << "right mouse button up\n";
+			break;
+		case WM_MBUTTONDOWN:
+			system("CLS");
+			std::cout << "middle mouse button down\n";
+			break;
+		case WM_MBUTTONUP:
+			std::cout << "middle mouse button up\n";
+			break;
+		case WM_MOUSEWHEEL:
+			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+				std::cout << "mouse wheel scrolled up\n";
+			else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
+				std::cout << "mouse wheel scrolled down\n";
+			else //always goes here
+				std::cout << "unknown mouse wheel scroll direction\n";
+			break;
+		case WM_XBUTTONDOWN:
+			system("CLS");
+			if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
+				std::cout << "X1 mouse button down\n";
+			else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
+				std::cout << "X2 mouse button down\n";
+			else //always goes here
+				std::cout << "unknown X mouse button down\n";
+			break;
+		case WM_XBUTTONUP:
+			if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
+				std::cout << "X1 mouse button up\n";
+			else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
+				std::cout << "X2 mouse button up\n";
+			else //always goes here
+				std::cout << "unknown X mouse button up\n";
+			break;
+		}
+	}
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
 
 
 /**
@@ -49,11 +107,23 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+	window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	// TODO: Handle mouse scroll here
 }
 
 int main(int argc, char **argv)
 {
+	HHOOK mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProc, NULL, 0);
+	MSG msg;
+
+	while (GetMessage(&msg, NULL, 0, 0) > 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	UnhookWindowsHookEx(mouseHook);
+	return 0;
 	int windowWidth = 1280, windowHeight = 720;
 	GLFWwindow* window = SetupGlfwWindow(windowWidth, windowHeight, "Mesh Viewer");
 	if (!window)
@@ -68,9 +138,7 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 
 	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
-	
 
-	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
     while (!glfwWindowShouldClose(window))
@@ -389,14 +457,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		}
 
-
-	
-
-
-
-		
-	
-		
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 

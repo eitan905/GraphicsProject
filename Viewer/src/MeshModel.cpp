@@ -111,35 +111,35 @@ glm::mat4x4 MeshModel::GETMAT() {
 	GETworld();
 	return worldTransform * objectTransform;
 }
-void MeshModel::setRotationTransfromLOCAL(float&alfa) {
+void MeshModel::setRotationTransfromLOCAL(const float&alfa) {
 	rotateBarValue = alfa;
 
 }
 
-void MeshModel::setRotationTransfromWORLD(float&alfa) {
+void MeshModel::setRotationTransfromWORLD(const float&alfa) {
 	WrotateBarValue = alfa;
 }
 
-void MeshModel::setTranslateTransfromLOCAL(float& x, float& y, float& z) {
+void MeshModel::setTranslateTransfromLOCAL(const float& x, const float& y, const float& z) {
 	translateBarValueX = x;
 	translateBarValueY = y;
 	translateBarValueZ = z;
 
 }
 
-void MeshModel::setTranslateTransfromWORLD(float& x, float& y, float& z) {
+void MeshModel::setTranslateTransfromWORLD(const float& x, const float& y, const float& z) {
 	WtranslateBarValueX = x;
 	WtranslateBarValueY = y;
 	WtranslateBarValueZ = z;
 
 }
-void MeshModel::setScaleTransfromLOCAL(float& x, float& y, float& z) {
+void MeshModel::setScaleTransfromLOCAL(const float& x, const float& y, const float& z) {
 	scaleValueX = x;
 	scaleValueY = y;
 	scaleValueZ = z;
 
 }
-void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z) {
+void MeshModel::setScaleTransfromWORLD(const float& x, const float& y, const float& z) {
 	WscaleValueX = x;
 	WscaleValueY = y;
 	WscaleValueZ = z;
