@@ -29,10 +29,10 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 			0, 0, 0, 1
 		);
 	translateTransform = glm::mat4x4(
-		1, 0, 0, translateBarValueX,
-		0, 1, 0, translateBarValueY,
-		0, 0, 1, translateBarValueZ,
-		0, 0, 0, 1
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		translateBarValueX, translateBarValueY, translateBarValueZ, 1
 	);
 	ScaleTransform = glm::mat4x4(
 		scaleValueX, 0, 0, 0,
@@ -133,7 +133,7 @@ void MeshModel::setTranslateTransfromWORLD(float& x, float& y, float& z) {
 	WtranslateBarValueZ = z;
 
 }
-void MeshModel::setScaleTransfromWORLD(float& x, float& y, float& z) {
+void MeshModel::setScaleTransfromLOCAL(float& x, float& y, float& z) {
 	scaleValueX = x;
 	scaleValueY = y;
 	scaleValueZ = z;
