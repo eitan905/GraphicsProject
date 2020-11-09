@@ -366,22 +366,22 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 		if (rotateFlag) {
-
 			alpha = (alpha * 3.14) / 180;
+			/*alpha = (alpha * 3.14) / 180;
 			glm::mat4x4 rotateMatrix(
 				cos(alpha), sin(alpha), 0, 0,
 				-sin(alpha), cos(alpha), 0, 0,
 				0, 0, 1, 0,
 				0, 0, 0, 1
-			);
+			);*/
 			if (checkedLocal) {
 				std::cout << "local flag" << std::endl;
-				obj.SetLocalRotationTransform(rotateMatrix);
+				obj.setRotationTransfromLOCAL(alpha);
 				alpha = 0.0f;
 			}
 			if (checkedWorld) {
 				std::cout << "world flag" << std::endl;
-				obj.SetWorldTransform(rotateMatrix);
+				obj.setRotationTransfromLOCAL(alpha);
 				alpha = 0.0f;
 			}
 
