@@ -11,11 +11,11 @@ Scene::Scene() :
 
 }
 
-
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
 	active_model_index_ = mesh_models_.size();
 	mesh_models_.push_back(mesh_model);	
+	std::cout << GetActiveModel().GetModelName();
 
 }
 
@@ -72,17 +72,6 @@ void Scene::SetActiveModelIndex(int index)
 int Scene::GetActiveModelIndex() const
 {
 	return active_model_index_;
-}
-
-char* Scene::GetCurrentModelsList()
-{
-	char* array = new char[50];
-	char** temp = new (char*[10]);
-	for (int i = 0; i < GetModelCount(); i++) {
-		std::string str = GetModel(i).GetModelName();
-		temp[i] = strcpy(new char [str.length()+1],str.c_str());
-	}
-	return *temp;
 }
 
 
