@@ -66,6 +66,9 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		 0, 0, 0, 1
 	 );
 }
+
+
+
 MeshModel::~MeshModel()
 {
 }
@@ -81,7 +84,7 @@ int MeshModel::GetFacesCount() const
 }
 
 
-const std::string& MeshModel::GetModelName() const
+const std::string MeshModel::GetModelName() const
 {
 	return model_name_;
 }

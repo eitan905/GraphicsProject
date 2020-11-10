@@ -14,7 +14,7 @@ public:
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;
 	int GetFacesCount() const;
-	const std::string& GetModelName() const;
+	const std::string GetModelName() const;
 	glm::vec3& getVerticeAtIndex(int index) {
 		return vertices_[index];
 	}
@@ -43,6 +43,7 @@ public:
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);
 	void MeshModel::WorldScaleTransform(const float x, const float y, const float z);
+
 	
 
 private:

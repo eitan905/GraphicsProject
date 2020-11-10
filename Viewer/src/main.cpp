@@ -26,9 +26,9 @@ static float mouse_y;
 static float previous_mouse_x = 0;
 static float previous_mouse_y = 0;
 
-float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+float sign(glm::vec2 p, glm::vec2 p1, glm::vec2 p2)
 {
-	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+	return (p.x - p2.x) * (p1.y - p2.y) - (p1.x - p2.x) * (p.y - p2.y);
 }
 
 bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
@@ -193,7 +193,6 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 
 	if (!io.WantCaptureMouse)
 	{
-
 		// TODO: Handle mouse events here
 		std::vector<MeshModel*> models;
 		if (io.MouseDown[0])
@@ -209,6 +208,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
 						temp_obj.getVerticeAtIndex(j)[2] = temp[2];
 					}
+
 					for (int j = 0; j < temp_obj.GetFacesCount(); j++) {
 						Face face = temp_obj.GetFace(j);
 						int point0 = face.GetVertexIndex(0) - 1;
@@ -219,6 +219,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 						glm::vec2 p1(temp_obj.getVerticeAtIndex(point0)[0], temp_obj.getVerticeAtIndex(point0)[1]);
 						glm::vec2 p2(temp_obj.getVerticeAtIndex(point1)[0], temp_obj.getVerticeAtIndex(point1)[1]);
 						glm::vec2 p3(temp_obj.getVerticeAtIndex(point2)[0], temp_obj.getVerticeAtIndex(point2)[1]);
+
 						if (PointInTriangle(p, p1, p2, p3)) {
 							isMouseOnModel = true;
 						}
@@ -314,7 +315,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		MeshModel& obj = scene.GetModel(scene.GetActiveModelIndex());
 		static float rotate = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
-		static float& scaleValue = obj.GetScaleBarValue();
 		
 		static int i1 = 0,i2=0,i3=0;
 		static int counter = 0;
@@ -325,11 +325,19 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
-
-		static const char* currentModels[]{ "1" ,"2","3","4","5","6"};
-		static int selecteItem = scene.GetActiveModelIndex();
 		
-		ImGui::ListBox("active model", &selecteItem, currentModels, 6, 2);
+		static const char* currentModels[50];
+		for (int i = 0; i < scene.GetModelCount(); i++) {
+			std::string str = scene.GetModel(i).GetModelName();
+			currentModels[i] = strcpy(new char[str.length() + 1], str.c_str());
+		}
+		static int selecteItem = scene.GetActiveModelIndex();
+		static float& scaleValue = obj.GetScaleBarValue();
+
+		
+		
+		ImGui::ListBox("active model", &selecteItem, currentModels, scene.GetModelCount(), 2);
+		scene.SetActiveModelIndex(selecteItem);
 
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
@@ -408,9 +416,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 		
-		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
+		ImGui::SliderFloat("ScaleSlider", &scaleValue, obj.GetScaleBarValue(), 1000.0f);
 		ImGui::SliderFloat("Rotate_X", &rotate, 0.0f, 360.0f);      // Edit 1 float using a slider from 0.0f to 1.0f
-		obj.SetRotateBarValue(rotate);
+		scene.GetModel(scene.GetActiveModelIndex()).SetRotateBarValue(rotate);
 		
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 		
