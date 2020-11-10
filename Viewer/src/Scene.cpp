@@ -74,13 +74,4 @@ int Scene::GetActiveModelIndex() const
 	return active_model_index_;
 }
 
-void Scene::WorldTransform(glm::mat4x4 mat)
-{
-	mesh_models_[active_model_index_]->SetWorldTransform(mat);
 
-}
-
-void Scene::LocalTransform(glm::mat4x4 mat)
-{
-	mesh_models_[active_model_index_]->SetLocalTransform(mat);
-}

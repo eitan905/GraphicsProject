@@ -1,10 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <imgui/imgui.h>
-
-#include <iostream>
-#include <windows.h>
-
+ 
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -24,62 +21,29 @@
 
 
 
+static float mouse_x;
+static float mouse_y;
+static float previous_mouse_x = 0;
+static float previous_mouse_y = 0;
 
-static LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
+float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
-	if (nCode >= 0)
-	{
-		switch (wParam)
-		{
-		case WM_LBUTTONDOWN:
-			system("CLS");
-			std::cout << "left mouse button down\n";
-			break;
-		case WM_LBUTTONUP:
-			std::cout << "left mouse button up\n";
-			break;
-		case WM_RBUTTONDOWN:
-			system("CLS");
-			std::cout << "right mouse button down\n";
-			break;
-		case WM_RBUTTONUP:
-			std::cout << "right mouse button up\n";
-			break;
-		case WM_MBUTTONDOWN:
-			system("CLS");
-			std::cout << "middle mouse button down\n";
-			break;
-		case WM_MBUTTONUP:
-			std::cout << "middle mouse button up\n";
-			break;
-		case WM_MOUSEWHEEL:
-			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-				std::cout << "mouse wheel scrolled up\n";
-			else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-				std::cout << "mouse wheel scrolled down\n";
-			else //always goes here
-				std::cout << "unknown mouse wheel scroll direction\n";
-			break;
-		case WM_XBUTTONDOWN:
-			system("CLS");
-			if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-				std::cout << "X1 mouse button down\n";
-			else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-				std::cout << "X2 mouse button down\n";
-			else //always goes here
-				std::cout << "unknown X mouse button down\n";
-			break;
-		case WM_XBUTTONUP:
-			if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-				std::cout << "X1 mouse button up\n";
-			else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-				std::cout << "X2 mouse button up\n";
-			else //always goes here
-				std::cout << "unknown X mouse button up\n";
-			break;
-		}
-	}
-	return CallNextHookEx(NULL, nCode, wParam, lParam);
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
+{
+	float d1, d2, d3;
+	bool has_neg, has_pos;
+
+	d1 = sign(pt, v1, v2);
+	d2 = sign(pt, v2, v3);
+	d3 = sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);
 }
 
 
@@ -107,23 +71,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
-	window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	// TODO: Handle mouse scroll here
 }
 
 int main(int argc, char **argv)
 {
-	HHOOK mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProc, NULL, 0);
-	MSG msg;
-
-	while (GetMessage(&msg, NULL, 0, 0) > 0)
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-
-	UnhookWindowsHookEx(mouseHook);
-	return 0;
 	int windowWidth = 1280, windowHeight = 720;
 	GLFWwindow* window = SetupGlfwWindow(windowWidth, windowHeight, "Mesh Viewer");
 	if (!window)
@@ -137,8 +89,10 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\user\\Desktop\\HADAR LIMUDIM\\TextFile1.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
+	
 
+	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
     while (!glfwWindowShouldClose(window))
@@ -218,66 +172,73 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		// TODO: Handle keyboard events here
 		if (io.KeysDown[68])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				3, 0, 0, 1
-			);
-		
-				std::cout << "local flag" << std::endl;
-				obj.SetLocalTransform(temp);
-				
+			obj.LocalTranslateTransform(4,0,0);		
 		}
 		if (io.KeysDown[65])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				-3, 0, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(-4, 0, 0);
 		}
 		if (io.KeysDown[83])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, -3, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(0, -4, 0);
 		}
 		if (io.KeysDown[87])
 		{
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 3, 0, 1
-			);
-
-			std::cout << "local flag" << std::endl;
-			obj.SetLocalTransform(temp);
-
+			obj.LocalTranslateTransform(0, 4, 0);
 		}
 
 	}
 
+
+
 	if (!io.WantCaptureMouse)
 	{
+
 		// TODO: Handle mouse events here
+		std::vector<MeshModel*> models;
 		if (io.MouseDown[0])
 		{
-			// Left mouse button is down
+			bool isMouseOnModel = false;
+			mouse_x = io.MousePos[0];
+			mouse_y = io.MousePos[1];
+				for (int i = 0; i < scene.GetModelCount(); i++) {
+					MeshModel temp_obj = scene.GetModel(i);
+					for (int j = 0; j < obj.getVerticesSize(); j++) {
+						glm::vec4 temp = temp_obj.GetTransform() * glm::vec4(temp_obj.getVerticeAtIndex(j), 1);
+						temp_obj.getVerticeAtIndex(j)[0] = temp[0];
+						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
+						temp_obj.getVerticeAtIndex(j)[2] = temp[2];
+					}
+					for (int j = 0; j < temp_obj.GetFacesCount(); j++) {
+						Face face = temp_obj.GetFace(j);
+						int point0 = face.GetVertexIndex(0) - 1;
+						int point1 = face.GetVertexIndex(1) - 1;
+						int point2 = face.GetVertexIndex(2) - 1;
+
+						glm::vec2 p(mouse_x, mouse_y);
+						glm::vec2 p1(temp_obj.getVerticeAtIndex(point0)[0], temp_obj.getVerticeAtIndex(point0)[1]);
+						glm::vec2 p2(temp_obj.getVerticeAtIndex(point1)[0], temp_obj.getVerticeAtIndex(point1)[1]);
+						glm::vec2 p3(temp_obj.getVerticeAtIndex(point2)[0], temp_obj.getVerticeAtIndex(point2)[1]);
+						if (PointInTriangle(p, p1, p2, p3)) {
+							isMouseOnModel = true;
+						}
+					}
+					if (isMouseOnModel) {
+						std::cout << "found model" ;
+						models.push_back(&scene.GetModel(i));
+						isMouseOnModel = false;
+					}
+				}
+			
+			for (int t = 0; t < models.size(); t++) {
+				if (previous_mouse_x != 0) {
+					models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
+				}
+				previous_mouse_x = mouse_x;
+				previous_mouse_y = mouse_y;
+			}
 		}
+		models.empty();
 	}
 
 	renderer.ClearColorBuffer(clear_color);
@@ -365,10 +326,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Another Window", &show_another_window);
 
 
-		static const char* currentModels[]{ "bunny", "cow" };
+		static const char* currentModels[]{ "1" ,"2","3","4","5","6"};
 		static int selecteItem = scene.GetActiveModelIndex();
-
-		ImGui::ListBox("active model", &selecteItem, currentModels, 2, 2);
+		
+		ImGui::ListBox("active model", &selecteItem, currentModels, 6, 2);
 
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
@@ -396,60 +357,37 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		bool worldFlag = ImGui::Checkbox ("world", &checkedWorld);
 
 		if (translationFlag) {
-			glm::mat4x4 temp(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				x, y, z, 1
-			);
+			
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setTranslateTransfromLOCAL(x,y,z);
+				obj.LocalTranslateTransform(x, y, z);
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setTranslateTransfromWORLD(x,y,z);
+				obj.WorldTranslateTransform(x, y, z);
 			}
 			x = y = z = 0.0f;
 
 		}
 
 		if (scalingFlag) {
-			glm::mat4x4 temp(
-				x, 0, 0, 0,
-				0, y, 0, 0,
-				0, 0, z, 0,
-				0, 0, 0, 1
-			);
+			
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setScaleTransfromLOCAL(x,y,z);
+				obj.LocalScaleTransform(x, y, z);
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setScaleTransfromWORLD(x,y,z);
+				obj.WorldScaleTransform(x, y, z);
 			}
 			x = y = z = 0.0f;
 		}
 
 
 		if (rotateFlag) {
-			alpha = (alpha * 3.14) / 180;
-			/*alpha = (alpha * 3.14) / 180;
-			glm::mat4x4 rotateMatrix(
-				cos(alpha), sin(alpha), 0, 0,
-				-sin(alpha), cos(alpha), 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1
-			);*/
+
 			if (checkedLocal) {
-				std::cout << "local flag" << std::endl;
-				obj.setRotationTransfromLOCAL(alpha);
+				obj.LocalRotationTransform(alpha);
 				alpha = 0.0f;
 			}
 			if (checkedWorld) {
-				std::cout << "world flag" << std::endl;
-				obj.setRotationTransfromLOCAL(alpha);
+				obj.WorldRotationTransform(alpha);
 				alpha = 0.0f;
 			}
 
@@ -457,6 +395,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		}
 
+
+	
+
+
+
+		
+	
+		
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
