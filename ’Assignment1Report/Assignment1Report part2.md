@@ -785,5 +785,41 @@ vertices j: 270 0: 0.02077 1: 0.09 2: -0.00259
 vertices j: 271 0: 0.02152 1: 0.09 2: -0.00266
 ```
 
-![alt text]("https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/t_world_r_local.png")
-![alt text]("https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/t_local_r_world.png")
+
+
+
+
+2. we performed this transformation by having a field in each model called "objectTransformation", this field is equal to 3 different fields called
+"localRotationTransform"
+"localTranslateTransform"
+"localScaleTransform"
+after the object was loaded, we performed a scale of 300 on all its axes and then a transformation to x=500, y=350 and we clearly saw the object.
+we made sure to multiply the matrixes in the correct order i.e. translate*scale*rotate.
+
+3.![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny.png)
+
+
+4.![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/user_interface.png)
+
+*how the Ui works:
+in our UI you first choose whether you want to apply the transformation to the local object or to the world by checking the checkbox of your choice, then you choose the amount in which you want to change the values of x/y/z/alpha and finally by clicking the transformation button you want the transformation will be applied, so if you press the "Transltae" button, the values of x,y,z will be added to the local objects translatiion matrix.
+in the UI you also have a SlideFloat that controls the scale of the object, however, for easier use this bar dosenot multiply the values of the curren scale matrix, but rather adds to them so the user can easilt controll the scale of the object.
+finally we have a listBox that shows all loaded objects and allows to easily switch between them by clicking on the name of the desired object.
+
+*behind the scenes
+each object has 3 matrixes representing the 3 possible transformations, and the class itself has 3 more matrixes representing the worlds transformations, when we perform a change on the object we update the values of the correct matrix accordingly, in translation and roatation we add to the current value, while in scaling we multiply the current calue(not including the scalebar value), and the same is applied to the world transformations.
+
+when we want to get the updated transformation of the object, we return the following matrix multiplication:
+worldTranslateTransform * worldScaleTransform * worldRotationTransform * localTranslateTransform * localScaleTransform * localRotationTransform
+and apply the result to each of the objects vertices.
+
+
+5.the followin pictures show a local translate(300) --> world_rotate(15) and a world translate(300) -->local rotate(15)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/local_translate(300)_world_rotate(15).png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/world_translate(300)_local_rotate(15).png)
+
+
+6.the followin picture shows 4 objects loaded: 2 bunnys , a bannana and a cow. we can switch control of the objects by choosing the object we want to controll in the listBox.
+when an object is added to the scene it is also added to the listBox.
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/multiple_objects_load_and_control.png)
