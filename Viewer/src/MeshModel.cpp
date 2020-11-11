@@ -88,12 +88,7 @@ const std::string& MeshModel::GetModelName() const
 
 
 void MeshModel::GETlocal() {
-
-	glm::mat4x4 temp = localScaleTransform;
-	temp[0][0] += localScaleBarValue;
-	temp[1][1] += localScaleBarValue;
-	temp[2][2] += localScaleBarValue;
-	objectTransform = localTranslateTransform * temp * localRotationTransform;
+	objectTransform = localTranslateTransform * localScaleTransform * localRotationTransform;
 }
 
 void MeshModel::GETworld() {

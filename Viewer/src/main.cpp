@@ -25,11 +25,16 @@ static float mouse_x;
 static float mouse_y;
 static float previous_mouse_x = 0;
 static float previous_mouse_y = 0;
+static double previous_time = 0;
+std::vector<MeshModel*> mouse_models;
+
 
 float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
 	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 }
+
+
 
 bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
 {
@@ -45,6 +50,33 @@ bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
 
 	return !(has_neg && has_pos);
 }
+
+
+
+float area(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
+}
+
+
+bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y)
+{
+	/* Calculate area of triangle ABC */
+	float A = area(x1, y1, x2, y2, x3, y3);
+
+	/* Calculate area of triangle PBC */
+	float A1 = area(x, y, x2, y2, x3, y3);
+
+	/* Calculate area of triangle PAC */
+	float A2 = area(x1, y1, x, y, x3, y3);
+
+	/* Calculate area of triangle PAB */
+	float A3 = area(x1, y1, x2, y2, x, y);
+
+	/* Check if sum of A1, A2 and A3 is same as A */
+	return (A == A1 + A2 + A3);
+}
+
 
 
 /**
@@ -156,7 +188,7 @@ void StartFrame()
 
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
-	MeshModel& obj = scene.GetModel(0);
+	MeshModel& obj = scene.GetActiveModel();
 	ImGui::Render();
 	int frameBufferWidth, frameBufferHeight;
 	glfwMakeContextCurrent(window);
@@ -186,59 +218,67 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			obj.LocalTranslateTransform(0, 4, 0);
 		}
-
 	}
-
 
 
 	if (!io.WantCaptureMouse)
 	{
 
+		double time = ImGui::GetTime();
+
+		
 		// TODO: Handle mouse events here
-		std::vector<MeshModel*> models;
 		if (io.MouseDown[0])
 		{
 			bool isMouseOnModel = false;
 			mouse_x = io.MousePos[0];
 			mouse_y = io.MousePos[1];
+			if ((time - previous_time) > 0.3) {
+				previous_mouse_x = io.MousePos[0];
+				previous_mouse_y = io.MousePos[1];
+				mouse_models.clear();				
+			}
 				for (int i = 0; i < scene.GetModelCount(); i++) {
 					MeshModel temp_obj = scene.GetModel(i);
-					for (int j = 0; j < obj.getVerticesSize(); j++) {
+					for (int j = 0; j < temp_obj.getVerticesSize(); j++) {
 						glm::vec4 temp = temp_obj.GetTransform() * glm::vec4(temp_obj.getVerticeAtIndex(j), 1);
 						temp_obj.getVerticeAtIndex(j)[0] = temp[0];
 						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
 						temp_obj.getVerticeAtIndex(j)[2] = temp[2];
 					}
-					for (int j = 0; j < temp_obj.GetFacesCount(); j++) {
-						Face face = temp_obj.GetFace(j);
+					for (int k = 0; k < temp_obj.GetFacesCount(); k++) {
+						Face face = temp_obj.GetFace(k);
 						int point0 = face.GetVertexIndex(0) - 1;
 						int point1 = face.GetVertexIndex(1) - 1;
 						int point2 = face.GetVertexIndex(2) - 1;
 
-						glm::vec2 p(mouse_x, mouse_y);
 						glm::vec2 p1(temp_obj.getVerticeAtIndex(point0)[0], temp_obj.getVerticeAtIndex(point0)[1]);
 						glm::vec2 p2(temp_obj.getVerticeAtIndex(point1)[0], temp_obj.getVerticeAtIndex(point1)[1]);
 						glm::vec2 p3(temp_obj.getVerticeAtIndex(point2)[0], temp_obj.getVerticeAtIndex(point2)[1]);
-						if (PointInTriangle(p, p1, p2, p3)) {
+						/*if (PointInTriangle(p, p1, p2, p3)) {
+							isMouseOnModel = true;
+						}*/
+						if (isInside(p1[0],p1[1], p2[0], p2[1], p3[0], p3[1], mouse_x,720- mouse_y)) {
 							isMouseOnModel = true;
 						}
 					}
 					if (isMouseOnModel) {
 						std::cout << "found model" ;
-						models.push_back(&scene.GetModel(i));
+						mouse_models.push_back(&scene.GetModel(i));
 						isMouseOnModel = false;
 					}
 				}
 			
-			for (int t = 0; t < models.size(); t++) {
+			for (int t = 0; t < mouse_models.size(); t++) {
 				if (previous_mouse_x != 0) {
-					models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
+					mouse_models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
 				}
 				previous_mouse_x = mouse_x;
 				previous_mouse_y = mouse_y;
 			}
+			previous_time = time;
 		}
-		models.empty();
+
 	}
 
 	renderer.ClearColorBuffer(clear_color);
@@ -311,25 +351,33 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-	{
-		MeshModel& obj = scene.GetModel(scene.GetActiveModelIndex());
-		static float rotate = 0.0f,x=0.0f, y = 0.0f, z = 0.0f,alpha=0.0f;
+	
+	if (scene.GetModelCount() != 0) {
+		MeshModel& obj = scene.GetActiveModel();
 		static float& scaleValue = obj.GetScaleBarValue();
-		
-		static int i1 = 0,i2=0,i3=0;
+
+
+		static float rotate = 0.0f, x = 0.0f, y = 0.0f, z = 0.0f, alpha = 0.0f;
+
+		static int i1 = 0, i2 = 0, i3 = 0;
 		static int counter = 0;
 		//ImGuiInputTextFlags INPUT_TEXT_CHARS_DECIMAL =0;
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-	
+
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
 
-		static const char* currentModels[]{ "1" ,"2","3","4","5","6"};
+		static const char* currentModels[50];
+		for (int i = 0; i < scene.GetModelCount(); i++) {
+			std::string str = scene.GetModel(i).GetModelName();
+			currentModels[i] = strcpy(new char[str.length() + 1], str.c_str());
+		}
 		static int selecteItem = scene.GetActiveModelIndex();
-		
-		ImGui::ListBox("active model", &selecteItem, currentModels, 6, 2);
+
+		ImGui::ListBox("active model", &selecteItem, currentModels, scene.GetModelCount(), 2);
+		scene.SetActiveModelIndex(selecteItem);
 
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
@@ -343,8 +391,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		bool rotateFlag = ImGui::Button("Rotate");
 		ImGui::SameLine();
 
-		
-		
+
+
 
 
 		static bool checkedLocal = true;
@@ -352,12 +400,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::SameLine();
 		//ImGui::RadioButton("scaling ", &alpha_flags);
-		bool localFlag = ImGui::Checkbox ("local", &checkedLocal);
+		bool localFlag = ImGui::Checkbox("local", &checkedLocal);
 		ImGui::SameLine();
-		bool worldFlag = ImGui::Checkbox ("world", &checkedWorld);
+		bool worldFlag = ImGui::Checkbox("world", &checkedWorld);
 
 		if (translationFlag) {
-			
+
 			if (checkedLocal) {
 				obj.LocalTranslateTransform(x, y, z);
 			}
@@ -369,7 +417,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 		if (scalingFlag) {
-			
+
 			if (checkedLocal) {
 				obj.LocalScaleTransform(x, y, z);
 			}
@@ -396,39 +444,41 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 
-	
 
 
 
-		
-	
-		
+
+
+
+
 		//ImGui::SameLine();
 		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
 
 
-		
-		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
-		ImGui::SliderFloat("Rotate_X", &rotate, 0.0f, 360.0f);      // Edit 1 float using a slider from 0.0f to 1.0f
-		obj.SetRotateBarValue(rotate);
-		
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-		
 
-	
-		
+		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
+		obj.SetRotateBarValue(rotate);
+
+		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+
+
+
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
-	}
 
-	// 3. Show another simple window.
-	if (show_another_window)
-	{
-		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		ImGui::Text("Hello from another window!");
-		if (ImGui::Button("Close Me"))
-			show_another_window = false;
-		ImGui::End();
+
+
+		// 3. Show another simple window.
+		if (show_another_window)
+		{
+			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Text("Hello from another window!");
+			if (ImGui::Button("Close Me"))
+				show_another_window = false;
+			ImGui::End();
+		}
 	}
 }
+
 

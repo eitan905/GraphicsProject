@@ -257,11 +257,9 @@ void Renderer::Render(const Scene& scene)
 	const glm::ivec2 p4(viewport_width_, half_height);
 	const glm::vec3 color1(1, 0, 1);
 	DrawLine(p3, p4, color1);
-	DrawModel(scene.GetModel(0));
 
-	if (scene.GetModelCount() == 2)
-	{
-		DrawModel(scene.GetModel(1));
+	for (int i = 0; i < scene.GetModelCount(); i++) {
+		DrawModel(scene.GetModel(i));
 	}
 	
 	
@@ -304,7 +302,7 @@ void Renderer::DrawModel(MeshModel obj)
 		glm::vec2 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1]);
 
 
-
+		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 		DrawLine(p1, p2, glm::vec3(1, 0, 1));
 		DrawLine(p1, p3, glm::vec3(1, 0, 1));
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
