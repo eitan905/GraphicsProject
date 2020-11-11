@@ -35,7 +35,7 @@ float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 }
 
 
-
+// compute if the point pt is in the triangle v1 v2 v3
 bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
 {
 	float d1, d2, d3;
@@ -58,7 +58,7 @@ float area(float x1, float y1, float x2, float y2, float x3, float y3)
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
 }
 
-
+//compute if the point [x,y] is in the triangle [x1,y1] [x2,y2] [x3,y3]
 bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y)
 {
 	/* Calculate area of triangle ABC */
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Desktop\\bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
 	
 
 	
@@ -185,7 +185,7 @@ void StartFrame()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
-
+//RENDER FRAME func
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
 	MeshModel& obj = scene.GetActiveModel();
@@ -198,36 +198,34 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	{
 		// TODO: Set new aspect ratio
 	}
-
+	// Handle keyboard events {a-left,d-right,w-up,s-down}
 	if (!io.WantCaptureKeyboard)
 	{
-		// TODO: Handle keyboard events here
-		if (io.KeysDown[68])
+		if (io.KeysDown[68])//d
 		{
 			obj.LocalTranslateTransform(4,0,0);		
 		}
-		if (io.KeysDown[65])
+		if (io.KeysDown[65])//a
 		{
 			obj.LocalTranslateTransform(-4, 0, 0);
 		}
-		if (io.KeysDown[83])
+		if (io.KeysDown[83])//s
 		{
 			obj.LocalTranslateTransform(0, -4, 0);
 		}
-		if (io.KeysDown[87])
+		if (io.KeysDown[87])//w
 		{
 			obj.LocalTranslateTransform(0, 4, 0);
 		}
 	}
 
-
+	//Capture mouse event - drag
 	if (!io.WantCaptureMouse)
 	{
 
 		double time = ImGui::GetTime();
 
-		
-		// TODO: Handle mouse events here
+		//mouse click
 		if (io.MouseDown[0])
 		{
 			bool isMouseOnModel = false;
@@ -241,6 +239,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 				for (int i = 0; i < scene.GetModelCount(); i++) {
 					MeshModel temp_obj = scene.GetModel(i);
 					for (int j = 0; j < temp_obj.getVerticesSize(); j++) {
+						//Update obj vertices according to the transformation
 						glm::vec4 temp = temp_obj.GetTransform() * glm::vec4(temp_obj.getVerticeAtIndex(j), 1);
 						temp_obj.getVerticeAtIndex(j)[0] = temp[0];
 						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
@@ -251,24 +250,23 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 						int point0 = face.GetVertexIndex(0) - 1;
 						int point1 = face.GetVertexIndex(1) - 1;
 						int point2 = face.GetVertexIndex(2) - 1;
-
+						//Goes through all the possible triangles
 						glm::vec2 p1(temp_obj.getVerticeAtIndex(point0)[0], temp_obj.getVerticeAtIndex(point0)[1]);
 						glm::vec2 p2(temp_obj.getVerticeAtIndex(point1)[0], temp_obj.getVerticeAtIndex(point1)[1]);
 						glm::vec2 p3(temp_obj.getVerticeAtIndex(point2)[0], temp_obj.getVerticeAtIndex(point2)[1]);
-						/*if (PointInTriangle(p, p1, p2, p3)) {
-							isMouseOnModel = true;
-						}*/
+						//check if the current click is in one of the triangles's model
 						if (isInside(p1[0],p1[1], p2[0], p2[1], p3[0], p3[1], mouse_x,720- mouse_y)) {
 							isMouseOnModel = true;
 						}
 					}
+					//Takes all the models in which the click is within
 					if (isMouseOnModel) {
 						std::cout << "found model" ;
 						mouse_models.push_back(&scene.GetModel(i));
 						isMouseOnModel = false;
 					}
 				}
-			
+			//Goes through all the active models and repositions them to the mouse position accordingly
 			for (int t = 0; t < mouse_models.size(); t++) {
 				if (previous_mouse_x != 0) {
 					mouse_models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
@@ -368,7 +366,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Another Window", &show_another_window);
 
-
+		//simple GUI
+		//create the obj list
 		static const char* currentModels[50];
 		for (int i = 0; i < scene.GetModelCount(); i++) {
 			std::string str = scene.GetModel(i).GetModelName();
@@ -378,12 +377,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::ListBox("active model", &selecteItem, currentModels, scene.GetModelCount(), 2);
 		scene.SetActiveModelIndex(selecteItem);
-
+		//x y z alfa GUI- determines the transformations
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
 		ImGui::InputFloat("alfa", &alpha, 0.01f, 1.0f);
-
+		//transformations GUI
 		bool translationFlag = ImGui::Button("Translate");
 		ImGui::SameLine();
 		bool scalingFlag = ImGui::Button("Scale");
@@ -399,11 +398,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		static bool checkedWorld = false;
 
 		ImGui::SameLine();
-		//ImGui::RadioButton("scaling ", &alpha_flags);
+		//local \ world GUI
 		bool localFlag = ImGui::Checkbox("local", &checkedLocal);
 		ImGui::SameLine();
 		bool worldFlag = ImGui::Checkbox("world", &checkedWorld);
+		//Operates the transformations according to the flag operated
 
+		//translation
 		if (translationFlag) {
 
 			if (checkedLocal) {
@@ -416,6 +417,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		}
 
+		//scaling
 		if (scalingFlag) {
 
 			if (checkedLocal) {
@@ -427,7 +429,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			x = y = z = 0.0f;
 		}
 
-
+		//rotate
 		if (rotateFlag) {
 
 			if (checkedLocal) {
@@ -443,19 +445,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		}
 
-
-
-
-
-
-
-
-
-		//ImGui::SameLine();
-		//ImGui::RadioButton("Both", &alpha_flags, ImGuiColorEditFlags_AlphaPreviewHalf);
-
-
-
+		//Scale Slider
 		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
 		obj.SetRotateBarValue(rotate);
 

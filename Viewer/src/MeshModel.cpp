@@ -69,34 +69,34 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 MeshModel::~MeshModel()
 {
 }
-
+//get faces of the current model
 const Face& MeshModel::GetFace(int index) const
 {
 	return faces_[index];
 }
-
+//get faces count
 int MeshModel::GetFacesCount() const
 {
 	return faces_.size();
 }
 
-
+//get model name
 const std::string& MeshModel::GetModelName() const
 {
 	return model_name_;
 }
 
-
+//get the local transformation 
 void MeshModel::GETlocal() {
 	objectTransform = localTranslateTransform * localScaleTransform * localRotationTransform;
 }
-
+//get the world transfrmation
 void MeshModel::GETworld() {
 	 worldTransform = worldTranslateTransform * worldScaleTransform * worldRotationTransform;
 }
 
 
-
+//set Local Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::LocalRotationTransform(const float alfa) {
 	localRotateBarValue += alfa;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
@@ -104,7 +104,7 @@ void MeshModel::LocalRotationTransform(const float alfa) {
 	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
 	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
 }
-
+//set World Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::WorldRotationTransform(const float alfa) {
 	worldRotateBarValue += alfa;
 	worldRotationTransform[0][0] = cos((worldRotateBarValue * 3.14) / 180);
@@ -112,26 +112,28 @@ void MeshModel::WorldRotationTransform(const float alfa) {
 	worldRotationTransform[1][0] = -sin((worldRotateBarValue * 3.14) / 180);
 	worldRotationTransform[1][1] = cos((worldRotateBarValue * 3.14) / 180);
 }
-
+//set Local Translate Transform by getting x,y,z parameter (parameters which determine the change)
 void MeshModel::LocalTranslateTransform(const float x, const float y, const float z) {
 	localTranslateTransform[3][0] += x;
 	localTranslateTransform[3][1] += y;
 	localTranslateTransform[3][2] += z;
 
 }
-
+//set World Translate Transform by getting x,y,z parameter (parameters which determine the change)
 void MeshModel::WorldTranslateTransform(const float x, const float y, const float z) {
 	worldTranslateTransform[3][0] += x;
 	worldTranslateTransform[3][1] += y;
 	worldTranslateTransform[3][2] += z;
 
 }
+//set Local Scale Transform by getting x,y,z parameter (parameters which determine the change)
 void MeshModel::LocalScaleTransform(const float x, const float y, const float z)
 {
 	localScaleTransform[0][0] *= x;
 	localScaleTransform[1][1] *= y;
 	localScaleTransform[2][2] *= z;
 }
+//set World Scale Transform by getting x,y,z parameter (parameters which determine the change)
 void MeshModel::WorldScaleTransform(const float x, const float y, const float z) {
 	worldScaleTransform[0][0] *= x;
 	worldScaleTransform[1][1] *= y;
@@ -140,12 +142,7 @@ void MeshModel::WorldScaleTransform(const float x, const float y, const float z)
 }
 
 
-
-
-
-
-
-
+//Accepting the transformation by multiplying the global transformation by the local one
 glm::mat4x4 MeshModel::GetTransform()
 {
 	GETlocal();
@@ -157,22 +154,24 @@ glm::mat4x4 MeshModel::GetTransform()
 	return worldTransform * temp;
 }
 
-
+//set modal name
 void MeshModel::SetModelName(std::string name)
 {
 	model_name_ = name;
 }
-
+// set scale bar value
 void MeshModel::SetScaleBarValue(float value)
 {
 	localScaleBarValue = value;
 }
 
+// get scale bar value
 float& MeshModel::GetScaleBarValue()
 {
 	return localScaleBarValue;
 }
 
+// set rotate bar value
 void MeshModel::SetRotateBarValue(float value)
 {
 	localRotateBarValue = value;
