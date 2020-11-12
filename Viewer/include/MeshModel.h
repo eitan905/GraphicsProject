@@ -43,7 +43,8 @@ public:
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);
 	void MeshModel::WorldScaleTransform(const float x, const float y, const float z);
-	
+	float localRotateBarValue = 0;
+	float position = 0;
 
 private:
 	glm::mat4x4 objectTransform;
@@ -63,7 +64,6 @@ private:
 	std::string model_name_;
 
 	float localScaleBarValue;
-	float localRotateBarValue;
 	
 
 	float worldRotateBarValue;

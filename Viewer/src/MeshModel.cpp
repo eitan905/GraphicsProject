@@ -98,7 +98,7 @@ void MeshModel::GETworld() {
 
 //set Local Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::LocalRotationTransform(const float alfa) {
-	localRotateBarValue += alfa;
+	localRotateBarValue = localRotateBarValue+ alfa;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
 	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
 	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);

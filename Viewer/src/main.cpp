@@ -185,10 +185,12 @@ void StartFrame()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
+int r = 0;
 //RENDER FRAME func
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
 	MeshModel& obj = scene.GetActiveModel();
+
 	ImGui::Render();
 	int frameBufferWidth, frameBufferHeight;
 	glfwMakeContextCurrent(window);
@@ -224,6 +226,12 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		if (io.KeysDown[79])//o: set local scale transform (0.5)
 		{
 			obj.LocalScaleTransform(0.5, 0.5, 0);
+		}
+		if (io.KeysDown[73])//I: set local rotate transform (20 degree)
+		{
+			obj.position += 20;
+			obj.LocalRotationTransform(obj.position);
+			
 		}
 	}
 
@@ -439,9 +447,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		//rotate
 		if (rotateFlag) {
-
+			r = 1;
 			if (checkedLocal) {
 				obj.LocalRotationTransform(alpha);
+				obj.position = alpha;
 				alpha = 0.0f;
 			}
 			if (checkedWorld) {
@@ -450,8 +459,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 
 
-
 		}
+		else r = 0;
 
 		//Scale Slider
 		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
