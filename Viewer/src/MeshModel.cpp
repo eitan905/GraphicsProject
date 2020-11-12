@@ -47,25 +47,30 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	 worldRotateBarValue = 0;
 	
 	 
-	 worldRotationTransform = glm::mat4x4(
-				 1, 0, 0, 0,
-				 0, 1, 0, 0,
-				 0, 0, 1, 0,
-				 0, 0, 0, 1
-			 );
-	 worldTranslateTransform = glm::mat4x4(
-		 1, 0, 0, 0,
-		 0, 1, 0, 0,
-		 0, 0, 1, 0,
-		 0, 0, 0, 1
-	 );
-	 worldScaleTransform = glm::mat4x4(
-		 1, 0, 0, 0,
-		 0, 1, 0, 0,
-		 0, 0, 1, 0,
-		 0, 0, 0, 1
-	 );
+	 
 }
+
+
+glm::mat4x4 MeshModel::worldRotationTransform = glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+glm::mat4x4 MeshModel::worldTranslateTransform = glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+glm::mat4x4 MeshModel::worldScaleTransform = glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+
+
 MeshModel::~MeshModel()
 {
 }

@@ -53,9 +53,9 @@ private:
 	glm::mat4x4 localScaleTransform;
 
 	glm::mat4x4 worldTransform;
-	glm::mat4x4 worldRotationTransform;
-	glm::mat4x4 worldTranslateTransform;
-	glm::mat4x4 worldScaleTransform;
+	static glm::mat4x4 worldRotationTransform;
+	static glm::mat4x4 worldTranslateTransform;
+	static glm::mat4x4 worldScaleTransform;
 
 
 	std::vector<Face> faces_;
