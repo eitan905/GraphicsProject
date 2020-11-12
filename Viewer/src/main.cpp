@@ -201,21 +201,29 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	// Handle keyboard events {a-left,d-right,w-up,s-down}
 	if (!io.WantCaptureKeyboard)
 	{
-		if (io.KeysDown[68])//d
+		if (io.KeysDown[68])//d: move right
 		{
 			obj.LocalTranslateTransform(4,0,0);		
 		}
-		if (io.KeysDown[65])//a
+		if (io.KeysDown[65])//a: move left
 		{
 			obj.LocalTranslateTransform(-4, 0, 0);
 		}
-		if (io.KeysDown[83])//s
+		if (io.KeysDown[83])//s: move down
 		{
 			obj.LocalTranslateTransform(0, -4, 0);
 		}
-		if (io.KeysDown[87])//w
+		if (io.KeysDown[87])//w: move up
 		{
 			obj.LocalTranslateTransform(0, 4, 0);
+		}
+		if (io.KeysDown[80])//p: set local scale transform (2)
+		{
+			obj.LocalScaleTransform(2, 2, 0);
+		}
+		if (io.KeysDown[79])//o: set local scale transform (0.5)
+		{
+			obj.LocalScaleTransform(0.5, 0.5, 0);
 		}
 	}
 
