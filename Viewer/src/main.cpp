@@ -375,7 +375,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	
 	if (scene.GetModelCount() != 0) {
 		MeshModel& obj = scene.GetActiveModel();
-		static float& scaleValue = obj.GetScaleBarValue();
 
 
 		static float rotate = 0.0f, x = 0.0f, y = 0.0f, z = 0.0f, alpha = 0.0f;
@@ -396,11 +395,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			std::string str = scene.GetModel(i).GetModelName();
 			currentModels[i] = strcpy(new char[str.length() + 1], str.c_str());
 		}
-		static int selecteItem = scene.GetActiveModelIndex();
-
+		static int selecteItem;
+		static float scaleValue;
+		scaleValue = obj.GetScaleBarValue();
+		selecteItem = scene.GetActiveModelIndex();
 		ImGui::ListBox("active model", &selecteItem, currentModels, scene.GetModelCount(), 2);
 		scene.SetActiveModelIndex(selecteItem);
-		//x y z alfa GUI- determines the transformations
+
 		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
 		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
 		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
@@ -471,7 +472,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		//Scale Slider
 		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
-		obj.SetRotateBarValue(rotate);
+		obj.SetScaleBarValue(scaleValue);
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
