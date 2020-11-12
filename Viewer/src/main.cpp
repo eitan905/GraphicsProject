@@ -233,6 +233,12 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			obj.LocalRotationTransform(obj.position);
 			
 		}
+		if (io.KeysDown[85])//u: set local rotate transform (20 degree)
+		{
+			obj.position -= 20;
+			obj.LocalRotationTransform(obj.position);
+
+		}
 	}
 
 	//Capture mouse event - drag
