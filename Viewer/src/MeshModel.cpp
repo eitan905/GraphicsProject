@@ -88,7 +88,11 @@ const std::string& MeshModel::GetModelName() const
 
 //get the local transformation 
 void MeshModel::GETlocal() {
-	objectTransform = localTranslateTransform * localScaleTransform * localRotationTransform;
+	glm::mat4x4 temp = localScaleTransform;
+	temp[0][0] += localScaleBarValue;
+	temp[1][1] += localScaleBarValue;
+	temp[2][2] += localScaleBarValue;
+	objectTransform = localTranslateTransform * temp * localRotationTransform;
 }
 //get the world transfrmation
 void MeshModel::GETworld() {
@@ -147,11 +151,8 @@ glm::mat4x4 MeshModel::GetTransform()
 {
 	GETlocal();
 	GETworld();
-	glm::mat4x4 temp = objectTransform;
-	temp[0][0] += localScaleBarValue;
-	temp[1][1] += localScaleBarValue;
-	temp[2][2] += localScaleBarValue;
-	return worldTransform * temp;
+	
+	return worldTransform * objectTransform;
 }
 
 //set modal name

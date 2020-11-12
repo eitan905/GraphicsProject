@@ -121,8 +121,8 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
-	
+	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Documents\\GitHub\\computergraphics2021-eitan-and-hadar\\computergraphics2021-eitan-and-hadar\\Data\\cow.obj"));
+
 
 	
 	ImGuiIO& io = SetupDearImgui(window);
@@ -221,21 +221,21 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		}
 		if (io.KeysDown[80])//p: set local scale transform (2)
 		{
-			obj.LocalScaleTransform(2, 2, 0);
+			obj.LocalScaleTransform(1.05, 1.05, 0);
 		}
 		if (io.KeysDown[79])//o: set local scale transform (0.5)
 		{
-			obj.LocalScaleTransform(0.5, 0.5, 0);
+			obj.LocalScaleTransform(0.95, 0.95, 0);
 		}
 		if (io.KeysDown[73])//I: set local rotate transform (20 degree)
 		{
-			obj.position += 20;
+			obj.position += 5;
 			obj.LocalRotationTransform(obj.position);
 			
 		}
 		if (io.KeysDown[85])//u: set local rotate transform (20 degree)
 		{
-			obj.position -= 20;
+			obj.position -= 5;
 			obj.LocalRotationTransform(obj.position);
 
 		}
@@ -285,6 +285,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 					if (isMouseOnModel) {
 						std::cout << "found model" ;
 						mouse_models.push_back(&scene.GetModel(i));
+						scene.SetActiveModelIndex(i);
 						isMouseOnModel = false;
 					}
 				}
