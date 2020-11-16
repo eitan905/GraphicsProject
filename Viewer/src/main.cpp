@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
 
-	scene.AddModel(Utils::LoadMeshModel("C:\\Users\\Eitan\\Documents\\GitHub\\computergraphics2021-eitan-and-hadar\\computergraphics2021-eitan-and-hadar\\Data\\cow.obj"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
 
 
 	
@@ -413,7 +413,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		bool rotateFlag = ImGui::Button("Rotate");
 		ImGui::SameLine();
-
+		bool clearFlag = ImGui::Button("Clear");
 
 
 
@@ -427,7 +427,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		bool worldFlag = ImGui::Checkbox("world", &checkedWorld);
 		//Operates the transformations according to the flag operated
+		if (clearFlag) {
 
+		}
 		//translation
 		if (translationFlag) {
 
@@ -458,7 +460,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			r = 1;
 			if (checkedLocal) {
 				obj.LocalRotationTransform(alpha);
-				obj.position = alpha;
+				//obj.position = alpha;
 				alpha = 0.0f;
 			}
 			if (checkedWorld) {
