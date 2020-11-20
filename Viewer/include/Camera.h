@@ -13,7 +13,10 @@ public:
 	const glm::mat4x4& GetViewTransformation() const;
 	void LookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 	glm::vec4 normalization(const glm::vec3& v);
-	glm::vec4 crossproduct(const glm::vec3& v1, const glm::vec3& v2);
+	glm::vec4 crossproduct(const glm::vec4& v1, const glm::vec4& v2);
+	glm::mat4x4 c;
+	glm::mat4x4 cinv;
+	glm::mat4x4 localTranslateTransform;
 	/*Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;

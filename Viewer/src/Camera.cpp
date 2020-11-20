@@ -1,7 +1,6 @@
 #include "Camera.h"
 #include <math.h>       /* sqrt */
 
-
 Camera::Camera()
 {
 	
@@ -9,7 +8,13 @@ Camera::Camera()
 
 Camera::~Camera()
 {
-	
+	localTranslateTransform =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
 }
 
 const glm::mat4x4& Camera::GetProjectionTransformation() const
@@ -21,32 +26,35 @@ const glm::mat4x4& Camera::GetViewTransformation() const
 {
 	return view_transformation_;
 }
-
-void LookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up) {
-	glm::vec4 z = normalization(eye - at);
-	glm::vec4 x = normalization(cross(up,z));
-	glm::vec4 y = normalization(cross(z, x));
+glm::vec4 crossproduct(const glm::vec4& v1, const glm::vec4& v2) {
+	glm::vec3 vec1 = glm::vec3(v1[0], v1[1], v1[2]);
+	glm::vec3 vec2 = glm::vec3(v2[0], v2[1], v2[2]);
+	glm::vec3 res = cross(vec1, vec2);
+	return glm::vec4(res[0], res[1], res[2], 1);
+}
+void LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) {
+	glm::vec4 z = normalize(eye - at);
+	glm::vec4 x = normalize(crossproduct(up,z));
+	glm::vec4 y = normalize(crossproduct(z, x));
 	glm::vec4 t = glm::vec4(0, 0, 0, 1);
 	glm::mat4x4 c = glm::mat4x4(x, y, z, t);
-	return c * Translate(-eye);
+	Translate(-eye);
+	c = c * localTranslateTransform;
+	cinv =glm::inverse(localTranslateTransform) *glm::inverse(c);
+	return c;
 }
-glm::vec4 normalization( glm::vec3& v) {
-	float lengh = sqrt(pow(v[0],2)+ pow(v[1], 2)+ pow(v[2], 2));
-	v[0] = v[0] / lengh;
-	v[1] = v[1] / lengh;
-	v[2] = v[2] / lengh;
+
+void Translate(const glm::vec4& v) {
+	localTranslateTransform[3][0] = v[0];
+	localTranslateTransform[3][1] = v[1];
+	localTranslateTransform[3][2] = v[2];
 }
-glm::vec4 crossproduct(const glm::vec3& v1, const glm::vec3& v2)
-
-{
-	glm::vec3 v3;
-	v3[0] = (v1[1] * v2[2]) - (v1[2] * v2[1]);
-
-	v3[1] = -((v1[0] * v2[2]) - (v1[2] * v2[0]));
-
-	v3[2] = (v1[0] * v2[1]) - (v1[1] * v2[0]);
-	return v3; 
-
+void TranslateSpace(float x,float y, float z) {
+	localTranslateTransform[3][0] += x;
+	localTranslateTransform[3][1] +=y;
+	localTranslateTransform[3][2] +=z;
+	c = c * localTranslateTransform;
+	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c)
 }
 
 
