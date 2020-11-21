@@ -26,13 +26,13 @@ const glm::mat4x4& Camera::GetViewTransformation() const
 {
 	return view_transformation_;
 }
-glm::vec4 crossproduct(const glm::vec4& v1, const glm::vec4& v2) {
+glm::vec4 Camera::crossproduct(const glm::vec4& v1, const glm::vec4& v2) {
 	glm::vec3 vec1 = glm::vec3(v1[0], v1[1], v1[2]);
 	glm::vec3 vec2 = glm::vec3(v2[0], v2[1], v2[2]);
 	glm::vec3 res = cross(vec1, vec2);
 	return glm::vec4(res[0], res[1], res[2], 1);
 }
-void LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) {
+glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) {
 	glm::vec4 z = normalize(eye - at);
 	glm::vec4 x = normalize(crossproduct(up,z));
 	glm::vec4 y = normalize(crossproduct(z, x));
@@ -42,20 +42,21 @@ void LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) {
 	c = c * localTranslateTransform;
 	cinv =glm::inverse(localTranslateTransform) *glm::inverse(c);
 	return c;
-}
+} 
 
-void Translate(const glm::vec4& v) {
+void Camera::Translate(const glm::vec4& v) {
 	localTranslateTransform[3][0] = v[0];
 	localTranslateTransform[3][1] = v[1];
 	localTranslateTransform[3][2] = v[2];
 }
-void TranslateSpace(float x,float y, float z) {
+void Camera::TranslateSpace(float x,float y, float z) {
 	localTranslateTransform[3][0] += x;
 	localTranslateTransform[3][1] +=y;
 	localTranslateTransform[3][2] +=z;
 	c = c * localTranslateTransform;
-	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c)
+	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
 }
+
 
 
 

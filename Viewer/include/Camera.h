@@ -7,16 +7,19 @@ public:
 	Camera();
 	virtual ~Camera();
 
-	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
-
-	const glm::mat4x4& GetProjectionTransformation() const;
-	const glm::mat4x4& GetViewTransformation() const;
-	void LookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
-	glm::vec4 normalization(const glm::vec3& v);
-	glm::vec4 crossproduct(const glm::vec4& v1, const glm::vec4& v2);
+	void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
+	void Camera::Translate(const glm::vec4& v);
+	const glm::mat4x4& Camera::GetProjectionTransformation() const;
+	const glm::mat4x4& Camera::GetViewTransformation() const;
+	glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);
+	glm::vec4 Camera::normalization(const glm::vec3& v);
+	glm::vec4 Camera::crossproduct(const glm::vec4& v1, const glm::vec4& v2);
+	void Camera::TranslateSpace(float x, float y, float z);
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;
 	glm::mat4x4 localTranslateTransform;
+	glm::mat4x4 projection_transformation_;
+	glm::mat4x4 view_transformation_;
 	/*Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;
