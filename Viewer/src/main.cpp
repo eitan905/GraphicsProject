@@ -120,8 +120,10 @@ int main(int argc, char **argv)
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
+	Camera camera;
+	scene.AddCamera(std::make_shared<Camera> (camera));
 
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C://Users//Eitan//Desktop//bunny.txt"));
 
 
 	
@@ -238,6 +240,11 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			obj.position -= 5;
 			obj.LocalRotationTransform(obj.position);
 
+		}
+		if (io.KeysDown[67])//u: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().localTranslateTransform[0][0] += 5;
+			
 		}
 	}
 

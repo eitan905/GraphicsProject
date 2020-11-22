@@ -25,6 +25,10 @@ public:
 		return vertices_.size();
 	}
 	glm::mat4x4 GetTransform();
+	glm::mat4x4 GetTranslateTransform();
+	glm::mat4x4 GetScaleTransform();
+
+	std::vector<glm::vec3> GetNormals();
 
 
 

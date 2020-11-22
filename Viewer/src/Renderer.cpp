@@ -266,8 +266,6 @@ void Renderer::Render(const Scene& scene)
 
 }
 
-
-
 int Renderer::GetViewportWidth() const
 {
 	return viewport_width_;
@@ -285,12 +283,49 @@ void Renderer::UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm
 
 void Renderer::DrawModel(MeshModel obj)
 {
+	glm::vec2 T (0,0);
+	glm::vec2 R(0, 0);
+	glm::vec2 B(0, 720);
+	glm::vec2 L(1280,0);
+
+	glm::mat4x4 ro(
+		1, 0, 0, 0,
+		0, cos((-90 * 3.14) / 180), -sin((-90 * 3.14) / 180), 0,
+		0, sin((-90 * 3.14) / 180), cos((-90 * 3.14) / 180), 0,
+		0, 0, 0, 1
+	);
+
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec4 temp = obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
+		glm::vec4 temp2 = obj.GetTransform() * glm::vec4(obj.GetNormals()[j], 1);
+		//ro = glm::inverse(ro);
+		//temp = ro* temp;
 		obj.getVerticeAtIndex(j)[0] = temp[0];
 		obj.getVerticeAtIndex(j)[1] = temp[1];
 		obj.getVerticeAtIndex(j)[2] = temp[2];
+		obj.GetNormals()[j][0];
+		obj.GetNormals()[j][1];
+		double scale = obj.GetScaleTransform()[0][0] / 15;
+		if (T[1] < temp[1] + obj.GetNormals()[j][1] * scale) {
+			T = glm::vec2(temp[0] + obj.GetNormals()[j][0], temp[1] + obj.GetNormals()[j][1] * scale);
+		}
+		if (R[0] < temp[0] + obj.GetNormals()[j][0] * scale) {
+			R = glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1] * scale);
+		}
+		if (B[1] > temp[1] + obj.GetNormals()[j][1] * scale) {
+			B = glm::vec2(temp[0] + obj.GetNormals()[j][0], temp[1] + obj.GetNormals()[j][1] * scale);
+		}
+		if (L[0] > temp[0] + obj.GetNormals()[j][0] * scale) {
+			L = glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1] * scale);
+		}
+		DrawLine(glm::vec2(temp[0], temp[1]), glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1]*scale), glm::vec3(1, 0, 1));
 	}
+	
+	DrawLine(glm::vec2(L[0], T[1]),glm::vec2(L[0],B[1]), glm::vec3(1, 0, 1));
+	DrawLine(glm::vec2(L[0], T[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
+	DrawLine(glm::vec2(R[0], B[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
+	DrawLine(glm::vec2(L[0], B[1]),glm::vec2(R[0],B[1]), glm::vec3(1, 0, 1));
+	
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
 		int point0 = face.GetVertexIndex(0) - 1;

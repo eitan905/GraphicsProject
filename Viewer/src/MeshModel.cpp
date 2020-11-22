@@ -10,6 +10,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	localRotateBarValue = 0;
 	localScaleBarValue = 1;
 
+
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -158,6 +159,21 @@ glm::mat4x4 MeshModel::GetTransform()
 	GETworld();
 	
 	return worldTransform * objectTransform;
+}
+
+glm::mat4x4 MeshModel::GetTranslateTransform()
+{
+	return localTranslateTransform;
+}
+
+glm::mat4x4 MeshModel::GetScaleTransform()
+{
+	return localScaleTransform;
+}
+
+std::vector<glm::vec3> MeshModel::GetNormals()
+{
+	return normals_;
 }
 
 //set modal name

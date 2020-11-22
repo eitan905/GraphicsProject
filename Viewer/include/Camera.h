@@ -14,6 +14,10 @@ public:
 	glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);
 	glm::vec4 Camera::normalization(const glm::vec3& v);
 	glm::vec4 Camera::crossproduct(const glm::vec4& v1, const glm::vec4& v2);
+	 
+
+
+
 	void Camera::TranslateSpace(float x, float y, float z);
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;
