@@ -17,6 +17,7 @@ public:
 	void Camera::TranslateSpace(float x, float y, float z);
 	void Camera::TranslateWorld(float x, float y, float z);
 	void Camera::TranslatLocal(float x, float y, float z);
+	glm::mat4x4 GetTransform();
 
 
 	glm::mat4x4 view_transformation_;

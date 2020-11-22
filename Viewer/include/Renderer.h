@@ -14,7 +14,7 @@ public:
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
 	void UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
-	void DrawModel(MeshModel obj);
+	void DrawModel(MeshModel obj,Scene scene);
 
 	
 private:

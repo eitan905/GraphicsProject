@@ -2,7 +2,7 @@
 #include <math.h>       /* sqrt */
 
 
-Camera::~Camera()
+Camera::Camera()
 {
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
@@ -46,6 +46,28 @@ Camera::~Camera()
 			0, 0, 0, 1
 		);
 }
+glm::mat4x4 Camera::worldRotationTransform = glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+glm::mat4x4 Camera::worldScaleTransform =
+glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+glm::mat4x4 Camera::worldTranslateTransform = 
+glm::mat4x4(
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+);
+
+Camera::~Camera(){}
 
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {
@@ -142,6 +164,12 @@ void Camera::TranslatLocal(float x, float y, float z) {
 	localTranslateTransform[3][2] += z;
 	c = c * localTranslateTransform;
 	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
+}
+
+glm::mat4x4 Camera::GetTransform()
+{
+	return glm::inverse(worldTranslateTransform * worldScaleTransform * worldRotationTransform * localTranslateTransform
+		* localScaleTransform * localRotationTransform);
 }
 
 
