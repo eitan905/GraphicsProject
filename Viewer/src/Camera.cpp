@@ -1,13 +1,43 @@
 #include "Camera.h"
 #include <math.h>       /* sqrt */
 
-Camera::Camera()
-{
-	
-}
 
 Camera::~Camera()
 {
+	objectTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	localRotationTransform =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localTranslateTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	localScaleTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
+
+	worldTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
 	localTranslateTransform =
 		glm::mat4x4(
 			1, 0, 0, 0,
@@ -41,7 +71,12 @@ glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm:
 	Translate(-eye);
 	c = c * localTranslateTransform;
 	cinv =glm::inverse(localTranslateTransform) *glm::inverse(c);
-	return c;
+
+	for (int i = 0; i < 4; i++) {
+		//DrawModel(scene.GetModel(i));
+	}
+	
+	return cinv;
 } 
 
 void Camera::Translate(const glm::vec4& v) {
@@ -57,19 +92,67 @@ void Camera::TranslateSpace(float x,float y, float z) {
 	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
 }
 
+void Camera::TranslateWorld(float x, float y, float z) {
+	worldTranslateTransform[3][0] += x;
+	worldTranslateTransform[3][1] += y;
+	worldTranslateTransform[3][2] += z;
+	c = c * worldTranslateTransform;
+	cinv = glm::inverse(worldTranslateTransform) * glm::inverse(c);
+}
+
+void Camera::ScaleWorld(float x, float y, float z) {
+	localScaleTransform[0][0] *= x;
+	localScaleTransform[1][1] *= y;
+	localScaleTransform[2][2] *= z;
+	c = c * worldScaleTransform;
+	cinv = glm::inverse(worldScaleTransform) * glm::inverse(c);
+}
+void Camera::ScaleLocal(float x, float y, float z) {
+	localScaleTransform[0][0] *= x;
+	localScaleTransform[1][1] *= y;
+	localScaleTransform[2][2] *= z;
+	c = c * localScaleTransform;
+	cinv = glm::inverse(localScaleTransform) * glm::inverse(c);
+}
+
+void Camera::RotateWorld(float x) {
+	localRotateBarValue = localRotateBarValue + x;
+	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
+	c = c * worldRotationTransform;
+	cinv = glm::inverse(worldRotationTransform) * glm::inverse(c);
+}
+
+void Camera::RotateLocal(float x) {
+	localRotateBarValue = localRotateBarValue + x;
+	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
+	c = c * localRotationTransform;
+	cinv = glm::inverse(localRotationTransform) * glm::inverse(c);
+}
+
+
+void Camera::TranslatLocal(float x, float y, float z) {
+	localTranslateTransform[3][0] += x;
+	localTranslateTransform[3][1] += y;
+	localTranslateTransform[3][2] += z;
+	c = c * localTranslateTransform;
+	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
+}
 
 
 
 /*
-Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
-	faces_(faces),
-	vertices_(vertices),
-	normals_(normals),
-	model_name_(model_name)
+Camera::Camera()
+	
 
 {
-	localRotateBarValue = 0;
-	localScaleBarValue = 1;
+	//localRotateBarValue = 0;
+	//localScaleBarValue = 1;
 
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
@@ -136,21 +219,10 @@ void Camera::~Camera()
 {
 }
 //get faces of the current model
-const Face& Camera::GetFace(int index) const
-{
-	return faces_[index];
-}
+
 //get faces count
-int Camera::GetFacesCount() const
-{
-	return faces_.size();
-}
 
 //get model name
-const std::string& Camera::GetModelName() const
-{
-	return model_name_;
-}
 
 //get the local transformation 
 void Camera::GETlocal() {
@@ -166,7 +238,7 @@ void Camera::GETworld() {
 }
 
 
-//set Local Rotation Transform by getting alfa parameter (in degrees)
+
 void Camera::LocalRotationTransform(const float alfa) {
 	localRotateBarValue = localRotateBarValue + alfa;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
@@ -221,22 +293,6 @@ glm::mat4x4 Camera::GetTransform()
 	return worldTransform * objectTransform;
 }
 
-//set modal name
-void Camera::SetModelName(std::string name)
-{
-	model_name_ = name;
-}
-// set scale bar value
-void Camera::SetScaleBarValue(float value)
-{
-	localScaleBarValue = value;
-}
-
-// get scale bar value
-float& Camera::GetScaleBarValue()
-{
-	return localScaleBarValue;
-}
 
 // set rotate bar value
 void Camera::SetRotateBarValue(float value)
@@ -245,4 +301,5 @@ void Camera::SetRotateBarValue(float value)
 
 }
 */
+
 
