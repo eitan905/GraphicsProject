@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	Camera camera;
 	scene.AddCamera(std::make_shared<Camera>(camera));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
 
 
 	
