@@ -290,8 +290,8 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	Camera camera = scene.GetActiveCamera();
 	glm::mat4x4 cameraTransform = camera.GetTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
-	glm::mat4x4 perspective = camera.GetPerspectiveNormalization(0,0,viewport_height_,0,camera.distance,camera.distance+500);
-	glm::mat4x4 ortho = camera.GetOrthoNormalization(0, 0, viewport_height_, 0, 0.1, 500);
+	glm::mat4x4 perspective = camera.GetPerspectiveNormalization(0,viewport_width_,viewport_height_,0,camera.distance,camera.distance+500);
+	glm::mat4x4 ortho = camera.GetOrthoNormalization(0, viewport_width_, viewport_height_, 0, camera.distance,camera.distance+ 500);
 	
 	glm::mat4x4 ro(
 		1, 0, 0, 0,
@@ -306,16 +306,19 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	//std::cout << projection[3][0] << "," << projection[3][1] << "," << projection[3][2] << "," << projection[3][3] << std::endl;
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		
-		glm::vec4 temp = ortho * cameraTransform * obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
+		glm::vec4 temp = projection * ortho *  cameraTransform * obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
 		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
 		glm::vec4 temp2 = cameraTransform * obj.GetTransform() * glm::vec4(obj.GetNormals()[j], 1);
 
-	
+		
 
 		obj.getVerticeAtIndex(j) = HomToCartesian(temp);
-		//obj.getVerticeAtIndex(j) = camera.GetViewPortTransformation(obj.getVerticeAtIndex(j),viewport_width_,viewport_height_);
-		obj.getVerticeAtIndex(j)[0] = (obj.getVerticeAtIndex(j)[0] + 1) * (viewport_width_ / 2);
-		obj.getVerticeAtIndex(j)[1] = (obj.getVerticeAtIndex(j)[1] + 1) * (viewport_height_ / 2);
+
+		obj.getVerticeAtIndex(j) = camera.GetViewPortTransformation(obj.getVerticeAtIndex(j),viewport_width_,viewport_height_);
+		//obj.getVerticeAtIndex(j)[0] = (obj.getVerticeAtIndex(j)[0] + 1) * (viewport_width_ / 2);
+		//obj.getVerticeAtIndex(j)[1] = (obj.getVerticeAtIndex(j)[1] + 1) * (viewport_height_ / 2);
+
+		
 
 
 
@@ -370,6 +373,7 @@ glm::vec3 Renderer::HomToCartesian(glm::vec4 vec)
 {
 	if (vec[3] == 0) {
 		return glm::vec3(vec[0], vec[1], vec[2]);
+		
 	}
 	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
 }

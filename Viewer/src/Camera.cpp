@@ -28,8 +28,8 @@ Camera::Camera()
 		);
 	localTranslateTransform = glm::mat4x4(
 		1, 0, 0, 0,
-		0, -200, 0, 0,
-		0, 0, -500, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
 	localScaleTransform = glm::mat4x4(
@@ -189,22 +189,25 @@ void Camera::SetDistance(double value)
 
 glm::mat4x4 Camera::GetOrthoNormalization(double left, double right, double top, double bottom,double near,double far) {
 
-	return glm::mat4x4(
+	glm::mat4x4 temp(
 		2 / (right - left), 0, 0, 0,
 		0, 2 / (top - bottom), 0, 0,
 		0, 0, 2 / (near - far), 0,
 		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
 	);
+	return glm::transpose(temp);
 }
 
 glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far) {
 
-	return glm::mat4x4(
+	glm::mat4x4 temp(
 		2*near / (right - left), 0, 0, 0,
 		0, 2*near/ (top - bottom), 0, 0,
 		(right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1,
 		0,0, -2 * near*far / (far-near),0
 	);
+
+	return glm::transpose(temp);
 
 }
 
