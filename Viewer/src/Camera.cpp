@@ -19,6 +19,18 @@ Camera::Camera()
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
+	c = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	cinv = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
 	localRotationTransform =
 		glm::mat4x4(
 			1, 0, 0, 0,
@@ -75,6 +87,7 @@ Camera::~Camera(){}
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {
 	glm::mat4x4 temp = projection_transformation_;
+	return (projection_transformation_);
 	if (distance != 0) {
 		temp[2][3] /= distance;
 	}
@@ -182,12 +195,10 @@ glm::mat4x4 Camera::GetTransform()
 void Camera::SetDistance(double value)
 {
 	distance += value;
-	if (distance < 1) {
-		distance = 1;
-	}
+	
 }
 
-glm::mat4x4 Camera::GetOrthoNormalization(double left, double right, double top, double bottom,double near,double far) {
+glm::mat4x4 Camera::GetOrthoNormalization(float left, float right, float top, float bottom, float near, float far) {
 
 	glm::mat4x4 temp(
 		2 / (right - left), 0, 0, 0,
@@ -195,7 +206,7 @@ glm::mat4x4 Camera::GetOrthoNormalization(double left, double right, double top,
 		0, 0, 2 / (near - far), 0,
 		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
 	);
-	return glm::transpose(temp);
+	return (temp);
 }
 
 glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far) {

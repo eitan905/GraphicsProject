@@ -20,7 +20,7 @@ public:
 	glm::mat4x4 GetTransform();
 	void SetDistance(double value);
 	glm::mat4x4 GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far);
-	glm::mat4x4 GetOrthoNormalization(double left, double right, double top, double bottom, double near, double far);
+	glm::mat4x4 GetOrthoNormalization(float left, float right, float top, float bottom, float near, float far);
 	glm::vec3 GetViewPortTransformation(glm::vec3 vec, float width, float height);
 
 
@@ -36,7 +36,7 @@ public:
 
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;
-	glm::mat4x4 projection_transformation__;
+
 	glm::mat4x4 view_transformation__;
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;
