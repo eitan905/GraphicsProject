@@ -8,7 +8,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 
 {
 	localRotateBarValue = 0;
-	localScaleBarValue = 1;
+	localScaleBarValue = 0;
 
 
 	objectTransform = glm::mat4x4(

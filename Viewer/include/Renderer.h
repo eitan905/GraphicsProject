@@ -15,6 +15,7 @@ public:
 	int GetViewportHeight() const;
 	void UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 	void DrawModel(MeshModel obj,Scene scene);
+	glm::vec3 HomToCartesian(glm::vec4 vec);
 
 	
 private:

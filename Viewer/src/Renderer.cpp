@@ -289,21 +289,42 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	glm::vec2 L(1280,0);
 	Camera camera = scene.GetActiveCamera();
 	glm::mat4x4 cameraTransform = camera.GetTransform();
+	glm::mat4x4 projection = camera.GetProjectionTransformation();
+	glm::mat4x4 perspective = camera.GetPerspectiveNormalization(0,0,viewport_height_,0,camera.distance,camera.distance+500);
+	glm::mat4x4 ortho = camera.GetOrthoNormalization(0, 0, viewport_height_, 0, 0.1, 500);
+	
 	glm::mat4x4 ro(
 		1, 0, 0, 0,
-		0, cos((-90 * 3.14) / 180), -sin((-90 * 3.14) / 180), 0,
-		0, sin((-90 * 3.14) / 180), cos((-90 * 3.14) / 180), 0,
-		0, 0, 0, 1
+		0, 1,0,0,
+		0,0,1,0,
+		0,0,0,1
 	);
-
+	
+	//std::cout << projection[0][0] << "," << projection[0][1] << "," << projection[0][2] << "," << projection[0][3] << std::endl;
+	//std::cout << projection[1][0] << "," << projection[1][1] << "," << projection[1][2] << "," << projection[1][3] << std::endl;
+	//std::cout << projection[2][0] << "," << projection[2][1] << "," << projection[2][2] << "," << projection[2][3] << std::endl;
+	//std::cout << projection[3][0] << "," << projection[3][1] << "," << projection[3][2] << "," << projection[3][3] << std::endl;
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
-		glm::vec4 temp = cameraTransform * obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
+		
+		glm::vec4 temp = ortho * cameraTransform * obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
+		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(obj.getVerticeAtIndex(j),1);
 		glm::vec4 temp2 = cameraTransform * obj.GetTransform() * glm::vec4(obj.GetNormals()[j], 1);
-		//ro = glm::inverse(ro);
-		//temp = ro* temp;
-		obj.getVerticeAtIndex(j)[0] = temp[0];
-		obj.getVerticeAtIndex(j)[1] = temp[1];
-		obj.getVerticeAtIndex(j)[2] = temp[2];
+
+	
+
+		obj.getVerticeAtIndex(j) = HomToCartesian(temp);
+		//obj.getVerticeAtIndex(j) = camera.GetViewPortTransformation(obj.getVerticeAtIndex(j),viewport_width_,viewport_height_);
+		obj.getVerticeAtIndex(j)[0] = (obj.getVerticeAtIndex(j)[0] + 1) * (viewport_width_ / 2);
+		obj.getVerticeAtIndex(j)[1] = (obj.getVerticeAtIndex(j)[1] + 1) * (viewport_height_ / 2);
+
+
+
+
+
+
+
+
+
 		obj.GetNormals()[j][0];
 		obj.GetNormals()[j][1];
 		double scale = obj.GetScaleTransform()[0][0] / 15;
@@ -322,10 +343,10 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		//DrawLine(glm::vec2(temp[0], temp[1]), glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1]*scale), glm::vec3(1, 0, 1));
 	}
 	
-	DrawLine(glm::vec2(L[0], T[1]),glm::vec2(L[0],B[1]), glm::vec3(1, 0, 1));
-	DrawLine(glm::vec2(L[0], T[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
-	DrawLine(glm::vec2(R[0], B[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
-	DrawLine(glm::vec2(L[0], B[1]),glm::vec2(R[0],B[1]), glm::vec3(1, 0, 1));
+	//DrawLine(glm::vec2(L[0], T[1]),glm::vec2(L[0],B[1]), glm::vec3(1, 0, 1));
+	//DrawLine(glm::vec2(L[0], T[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
+	//DrawLine(glm::vec2(R[0], B[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
+	//DrawLine(glm::vec2(L[0], B[1]),glm::vec2(R[0],B[1]), glm::vec3(1, 0, 1));
 	
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
@@ -343,5 +364,13 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		DrawLine(p1, p3, glm::vec3(1, 0, 1));
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
 	}
+}
+
+glm::vec3 Renderer::HomToCartesian(glm::vec4 vec)
+{
+	if (vec[3] == 0) {
+		return glm::vec3(vec[0], vec[1], vec[2]);
+	}
+	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
 }
 

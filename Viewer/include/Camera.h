@@ -18,19 +18,13 @@ public:
 	void Camera::TranslateWorld(float x, float y, float z);
 	void Camera::TranslatLocal(float x, float y, float z);
 	glm::mat4x4 GetTransform();
+	void SetDistance(double value);
+	glm::mat4x4 GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far);
+	glm::mat4x4 GetOrthoNormalization(double left, double right, double top, double bottom, double near, double far);
+	glm::vec3 GetViewPortTransformation(glm::vec3 vec, float width, float height);
 
 
-	glm::mat4x4 view_transformation_;
-	glm::mat4x4 projection_transformation_;
-	glm::mat4x4 objectTransform;
-	glm::mat4x4 localRotationTransform;
-	glm::mat4x4 localTranslateTransform;
-	glm::mat4x4 localScaleTransform;
-
-	glm::mat4x4 worldTransform;
-	static glm::mat4x4 worldRotationTransform;
-	static glm::mat4x4 worldTranslateTransform;
-	static glm::mat4x4 worldScaleTransform;
+	
 	void Camera::RotateLocal(float x);
 	void Camera::ScaleLocal(float x, float y, float z);
 
@@ -44,4 +38,16 @@ public:
 	glm::mat4x4 cinv;
 	glm::mat4x4 projection_transformation__;
 	glm::mat4x4 view_transformation__;
+	glm::mat4x4 view_transformation_;
+	glm::mat4x4 projection_transformation_;
+	glm::mat4x4 objectTransform;
+	glm::mat4x4 localRotationTransform;
+	glm::mat4x4 localTranslateTransform;
+	glm::mat4x4 localScaleTransform;
+	double distance;
+
+	glm::mat4x4 worldTransform;
+	static glm::mat4x4 worldRotationTransform;
+	static glm::mat4x4 worldTranslateTransform;
+	static glm::mat4x4 worldScaleTransform;
 };

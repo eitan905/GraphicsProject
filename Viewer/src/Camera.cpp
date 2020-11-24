@@ -1,9 +1,18 @@
 #include "Camera.h"
 #include <math.h>       /* sqrt */
+#include <iostream>
 
 
 Camera::Camera()
 {
+	distance = 30;
+	projection_transformation_ =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 0, 1,
+			0, 0, 0, 0
+		);
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -19,8 +28,8 @@ Camera::Camera()
 		);
 	localTranslateTransform = glm::mat4x4(
 		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
+		0, -200, 0, 0,
+		0, 0, -500, 0,
 		0, 0, 0, 1
 	);
 	localScaleTransform = glm::mat4x4(
@@ -38,13 +47,7 @@ Camera::Camera()
 		0, 0, 0, 1
 	);
 
-	localTranslateTransform =
-		glm::mat4x4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1
-		);
+	
 }
 glm::mat4x4 Camera::worldRotationTransform = glm::mat4x4(
 	1, 0, 0, 0,
@@ -71,7 +74,11 @@ Camera::~Camera(){}
 
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {
-	return projection_transformation_;
+	glm::mat4x4 temp = projection_transformation_;
+	if (distance != 0) {
+		temp[2][3] /= distance;
+	}
+	return (temp);
 }
 
 const glm::mat4x4& Camera::GetViewTransformation() const
@@ -168,10 +175,42 @@ void Camera::TranslatLocal(float x, float y, float z) {
 
 glm::mat4x4 Camera::GetTransform()
 {
-	return glm::inverse(worldTranslateTransform * worldScaleTransform * worldRotationTransform * localTranslateTransform
+	return glm::inverse( localTranslateTransform
 		* localScaleTransform * localRotationTransform);
 }
 
+void Camera::SetDistance(double value)
+{
+	distance += value;
+	if (distance < 1) {
+		distance = 1;
+	}
+}
+
+glm::mat4x4 Camera::GetOrthoNormalization(double left, double right, double top, double bottom,double near,double far) {
+
+	return glm::mat4x4(
+		2 / (right - left), 0, 0, 0,
+		0, 2 / (top - bottom), 0, 0,
+		0, 0, 2 / (near - far), 0,
+		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+	);
+}
+
+glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far) {
+
+	return glm::mat4x4(
+		2*near / (right - left), 0, 0, 0,
+		0, 2*near/ (top - bottom), 0, 0,
+		(right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1,
+		0,0, -2 * near*far / (far-near),0
+	);
+
+}
+
+glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float height) {
+	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), vec[3]);
+}
 
 
 /*

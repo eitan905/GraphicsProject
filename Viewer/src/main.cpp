@@ -222,11 +222,11 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		}
 		if (io.KeysDown[80])//p: set local scale transform (2)
 		{
-			obj.LocalScaleTransform(1.05, 1.05, 0);
+			obj.LocalScaleTransform(1.05, 1.05, 1.05);
 		}
 		if (io.KeysDown[79])//o: set local scale transform (0.5)
 		{
-			obj.LocalScaleTransform(0.95, 0.95, 0);
+			obj.LocalScaleTransform(0.95, 0.95, 0.95);
 		}
 		if (io.KeysDown[73])//I: set local rotate transform (20 degree)
 		{
@@ -243,6 +243,18 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		if (io.KeysDown[67])//u: set local rotate transform (20 degree)
 		{
 			scene.GetActiveCamera().TranslateSpace(5, 0, 0);
+		}
+		if (io.KeysDown[90])//u: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().TranslateSpace(-5, 0, 0);
+		}
+		if (io.KeysDown[71])//u: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().SetDistance(1);
+		}
+		if (io.KeysDown[70])//u: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().SetDistance(-1);
 		}
 	}
 
