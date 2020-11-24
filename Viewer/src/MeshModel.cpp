@@ -192,7 +192,7 @@ float& MeshModel::GetScaleBarValue()
 {
 	return localScaleBarValue;
 }
-
+//
 // set rotate bar value
 void MeshModel::SetRotateBarValue(float value)
 {

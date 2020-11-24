@@ -320,7 +320,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		//obj.getVerticeAtIndex(j)[1] = (obj.getVerticeAtIndex(j)[1] + 1) * (viewport_height_ / 2);
 
 		
-
+		//
 
 
 

@@ -36,4 +36,4 @@ private:
 
 	int active_camera_index_;
 	int active_model_index_;
-};
+};//

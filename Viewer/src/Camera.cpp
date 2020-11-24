@@ -226,7 +226,7 @@ glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float heig
 	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), vec[3]);
 }
 
-
+//s
 /*
 Camera::Camera()
 	
