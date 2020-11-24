@@ -60,7 +60,7 @@ private:
 	static glm::mat4x4 worldRotationTransform;
 	static glm::mat4x4 worldTranslateTransform;
 	static glm::mat4x4 worldScaleTransform;
-
+	//
 
 	std::vector<Face> faces_;
 	std::vector<glm::vec3> vertices_;

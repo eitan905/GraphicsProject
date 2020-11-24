@@ -17,7 +17,7 @@ public:
 	void DrawModel(MeshModel obj,Scene scene);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 
-	
+	//
 private:
 	void PutPixel(const int i, const int j, const glm::vec3& color);
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);

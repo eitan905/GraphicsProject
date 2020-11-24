@@ -50,4 +50,5 @@ public:
 	static glm::mat4x4 worldRotationTransform;
 	static glm::mat4x4 worldTranslateTransform;
 	static glm::mat4x4 worldScaleTransform;
+	//s
 };
