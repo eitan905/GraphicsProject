@@ -28,7 +28,7 @@ static float previous_mouse_y = 0;
 static double previous_time = 0;
 std::vector<MeshModel*> mouse_models;
 
-
+//sigh func- help for the PointInTriangle 
 float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
 	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
@@ -52,7 +52,7 @@ bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
 }
 
 
-
+//copute the area of Triangle
 float area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	Camera camera;
 	scene.AddCamera(std::make_shared<Camera>(camera));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
 
 
 	

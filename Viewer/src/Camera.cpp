@@ -6,6 +6,8 @@
 Camera::Camera()
 {
 	distance = 30;
+	//camera mat help
+	// camera projection_transformation_
 	projection_transformation_ =
 		glm::mat4x4(
 			1, 0, 0, 0,
@@ -25,12 +27,14 @@ Camera::Camera()
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
+	//cinv mat
 	cinv = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	);
+	//local transformation
 	localRotationTransform =
 		glm::mat4x4(
 			1, 0, 0, 0,
@@ -61,6 +65,7 @@ Camera::Camera()
 
 	
 }
+//world mat
 glm::mat4x4 Camera::worldRotationTransform = glm::mat4x4(
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -83,7 +88,7 @@ glm::mat4x4(
 );
 
 Camera::~Camera(){}
-
+// get camera projection
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {
 	glm::mat4x4 temp = projection_transformation_;
@@ -93,17 +98,21 @@ const glm::mat4x4& Camera::GetProjectionTransformation() const
 	}
 	return (temp);
 }
-
+//get camera view pransform
 const glm::mat4x4& Camera::GetViewTransformation() const
 {
 	return view_transformation_;
 }
+
+//cross product of two 4-vec
 glm::vec4 Camera::crossproduct(const glm::vec4& v1, const glm::vec4& v2) {
 	glm::vec3 vec1 = glm::vec3(v1[0], v1[1], v1[2]);
 	glm::vec3 vec2 = glm::vec3(v2[0], v2[1], v2[2]);
 	glm::vec3 res = cross(vec1, vec2);
 	return glm::vec4(res[0], res[1], res[2], 1);
 }
+
+//camera lookat func - the begining just in case
 glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) {
 	glm::vec4 z = normalize(eye - at);
 	glm::vec4 x = normalize(crossproduct(up,z));
@@ -116,16 +125,20 @@ glm::mat4x4 Camera::LookAt(const glm::vec4& eye, const glm::vec4& at, const glm:
 
 	for (int i = 0; i < 4; i++) {
 		//DrawModel(scene.GetModel(i));
+		//////////////////////////////////
 	}
 	
 	return cinv;
 } 
 
+//camera translate, giving 4-vec
 void Camera::Translate(const glm::vec4& v) {
 	localTranslateTransform[3][0] = v[0];
 	localTranslateTransform[3][1] = v[1];
 	localTranslateTransform[3][2] = v[2];
 }
+
+//camera translate giving 3 number , changing c-invers
 void Camera::TranslateSpace(float x,float y, float z) {
 	localTranslateTransform[3][0] += x;
 	localTranslateTransform[3][1] +=y;
@@ -134,6 +147,7 @@ void Camera::TranslateSpace(float x,float y, float z) {
 	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
 }
 
+//camera world translate giving 3 number , changing c-invers
 void Camera::TranslateWorld(float x, float y, float z) {
 	worldTranslateTransform[3][0] += x;
 	worldTranslateTransform[3][1] += y;
@@ -142,6 +156,7 @@ void Camera::TranslateWorld(float x, float y, float z) {
 	cinv = glm::inverse(worldTranslateTransform) * glm::inverse(c);
 }
 
+//camera world scale giving 3 number , changing c-invers
 void Camera::ScaleWorld(float x, float y, float z) {
 	localScaleTransform[0][0] *= x;
 	localScaleTransform[1][1] *= y;
@@ -149,6 +164,8 @@ void Camera::ScaleWorld(float x, float y, float z) {
 	c = c * worldScaleTransform;
 	cinv = glm::inverse(worldScaleTransform) * glm::inverse(c);
 }
+
+//camera local scale giving 3 number , changing c-invers
 void Camera::ScaleLocal(float x, float y, float z) {
 	localScaleTransform[0][0] *= x;
 	localScaleTransform[1][1] *= y;
@@ -157,6 +174,7 @@ void Camera::ScaleLocal(float x, float y, float z) {
 	cinv = glm::inverse(localScaleTransform) * glm::inverse(c);
 }
 
+//camera rotate world giving one number , changing c-invers
 void Camera::RotateWorld(float x) {
 	localRotateBarValue = localRotateBarValue + x;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
@@ -167,6 +185,7 @@ void Camera::RotateWorld(float x) {
 	cinv = glm::inverse(worldRotationTransform) * glm::inverse(c);
 }
 
+//camera local rotate giving one number , changing c-invers
 void Camera::RotateLocal(float x) {
 	localRotateBarValue = localRotateBarValue + x;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
@@ -177,7 +196,7 @@ void Camera::RotateLocal(float x) {
 	cinv = glm::inverse(localRotationTransform) * glm::inverse(c);
 }
 
-
+//camera TranslatLocal giving 3 number , changing c-invers
 void Camera::TranslatLocal(float x, float y, float z) {
 	localTranslateTransform[3][0] += x;
 	localTranslateTransform[3][1] += y;
@@ -186,18 +205,21 @@ void Camera::TranslatLocal(float x, float y, float z) {
 	cinv = glm::inverse(localTranslateTransform) * glm::inverse(c);
 }
 
+//camera get transform
 glm::mat4x4 Camera::GetTransform()
 {
 	return glm::inverse( localTranslateTransform
 		* localScaleTransform * localRotationTransform);
 }
 
+//camera set distance
 void Camera::SetDistance(double value)
 {
 	distance += value;
 	
 }
 
+//camera get OrthoNormalization matrix
 glm::mat4x4 Camera::GetOrthoNormalization(float left, float right, float top, float bottom, float near, float far) {
 
 	glm::mat4x4 temp(
@@ -209,6 +231,7 @@ glm::mat4x4 Camera::GetOrthoNormalization(float left, float right, float top, fl
 	return (temp);
 }
 
+//camera get PerspectiveNormalization matrix
 glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far) {
 
 	glm::mat4x4 temp(
@@ -222,6 +245,7 @@ glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, doubl
 
 }
 
+//Get View PortTransformation camera vec3
 glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float height) {
 	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), vec[3]);
 }

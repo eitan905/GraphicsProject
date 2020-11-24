@@ -304,8 +304,10 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	//std::cout << projection[1][0] << "," << projection[1][1] << "," << projection[1][2] << "," << projection[1][3] << std::endl;
 	//std::cout << projection[2][0] << "," << projection[2][1] << "," << projection[2][2] << "," << projection[2][3] << std::endl;
 	//std::cout << projection[3][0] << "," << projection[3][1] << "," << projection[3][2] << "," << projection[3][3] << std::endl;
+	
+	std::cout << "hadar Manor\n";
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
-		
+		std::cout << "hadar1\n";
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
 		glm::vec4 temp =    projection * ortho	* cameraTransform * obj.GetTransform()*glm::vec4(currentVer,1);
 		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(currentVer,1);
@@ -316,12 +318,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		currentVer = HomToCartesian(temp);
 
 		currentVer = camera.GetViewPortTransformation(currentVer,viewport_width_,viewport_height_);
-		//obj.getVerticeAtIndex(j)[0] = (obj.getVerticeAtIndex(j)[0] + 1) * (viewport_width_ / 2);
-		//obj.getVerticeAtIndex(j)[1] = (obj.getVerticeAtIndex(j)[1] + 1) * (viewport_height_ / 2);
-
-		
-		//
-
+		std::cout << "hadar12\n";
 
 
 
