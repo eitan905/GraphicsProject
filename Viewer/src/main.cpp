@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 	Cleanup(window);
     return 0;
 }
-
+//check
 static void GlfwErrorCallback(int error, const char* description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
