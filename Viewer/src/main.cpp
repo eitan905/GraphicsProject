@@ -28,13 +28,8 @@ static float previous_mouse_y = 0;
 static double previous_time = 0;
 std::vector<MeshModel*> mouse_models;
 
-glm::vec3 normal(glm::vec3 x1,glm::vec3 x2, glm::vec3 x3)
-{
-	glm::vec3 temp1 = x1 - x2;
-	glm::vec3 temp2 = x2 - x3;
-	glm::vec3 ans = glm::cross(temp1, temp2);
-	return ans;
-}
+
+
 
 //sigh func- help for the PointInTriangle 
 float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)

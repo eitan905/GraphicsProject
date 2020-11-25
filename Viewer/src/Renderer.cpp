@@ -286,7 +286,14 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	glm::vec2 T (0,0);
 	glm::vec2 R(0, 0);
 	glm::vec2 B(0, 720);
-	glm::vec2 L(1280,0);
+	glm::vec2 L(1280, 0);
+
+	float T=0;
+	float R=0;
+	float B=720;
+	float L=1280; 
+	float N = 0;
+	float F = 0;
 	Camera camera = scene.GetActiveCamera();
 	glm::mat4x4 perspective = scene.GetPerspectiveTransform();
 	glm::mat4x4 ortho = scene.GetOrthographicTransform();
@@ -299,12 +306,6 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(currentVer,1);
 		currentVer = HomToCartesian(temp);
 		currentVer = camera.GetViewPortTransformation(currentVer,viewport_width_,viewport_height_);
-
-
-
-
-
-
 
 		obj.GetNormals()[j][0];
 		obj.GetNormals()[j][1];
@@ -347,12 +348,101 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	}
 }
 
+
+//compute nurmal faces
+glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
+{
+	glm::vec3 temp1 = x1 - x2;
+	glm::vec3 temp2 = x2 - x3;
+	glm::vec3 ans = glm::cross(temp1, temp2);
+	return ans;
+}
+
+void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
+{
+	float T = 0;
+	float R = 0;
+	float B = 720;
+	float L = 1280;
+	float N = 0;
+	float F = 0;
+
+	for (int i = 0; i < obj.GetFacesCount(), i++) {
+		glm::vec3 temp = normal(obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(0)), obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(1)), obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(2)));
+
+		glm::vec3 temp_new = mat * glm::vec4(temp[0],temp[1],temp[2],1);
+		if (temp_new[0] >= T)
+			T = temp_new[0];
+		if (temp_new[0] <= B)
+			B = temp_new[0];
+
+		if (temp_new[1] <= L)
+			L = temp_new[1];
+		if (temp_new[1] >= R)
+			R = temp_new[1];
+
+		if (temp_new[2] <= N)
+			N = temp_new[2];
+		if (temp_new[2] >= F)
+			F = temp_new[2];
+	}
+	glm::vec3 x1 = glm::vec3(T, R, N);
+	glm::vec3 x2 = glm::vec3(T, R, F);
+	glm::vec3 x3 = glm::vec3(T, L, N);
+	glm::vec3 x4 = glm::vec3(T, L, F);
+
+	glm::vec3 x5 = glm::vec3(B, R, N);
+	glm::vec3 x6 = glm::vec3(B, R, F);
+	glm::vec3 x7 = glm::vec3(B, L, N);
+	glm::vec3 x8 = glm::vec3(B, L, F);
+
+		int x11 = (x1[0] - camera_position[0]) * (F / (x1[2] - camera_position[2])) + camera_position[0];
+		int y11= (x1[1] - camera_position[1]) * (F / x1[2]) + camera_position[1];
+
+		int x22 = (x2[0] - camera_position[0]) * (F / (x2[2] - camera_position[2])) + camera_position[0];
+		int y22 = (x2[1] - camera_position[1]) * (F / x2[2]) + camera_position[1];
+
+		int x33 = (x3[0] - camera_position[0]) * (F / (x3[2] - camera_position[2])) + camera_position[0];
+		int y33 = (x3[1] - camera_position[1]) * (F / x3[2]) + camera_position[1];
+
+		int x44 = (x4[0] - camera_position[0]) * (F / (x4[2] - camera_position[2])) + camera_position[0];
+		int y44 = (x4[1] - camera_position[1]) * (F / x4[2]) + camera_position[1];
+
+		int x55 = (x5[0] - camera_position[0]) * (F / (x5[2] - camera_position[2])) + camera_position[0];
+		int y55 = (x5[1] - camera_position[1]) * (F / x5[2]) + camera_position[1];
+
+		int x66 = (x6[0] - camera_position[0]) * (F / (x6[2] - camera_position[2])) + camera_position[0];
+		int y66 = (x6[1] - camera_position[1]) * (F / x6[2]) + camera_position[1];
+
+		int x77 = (x7[0] - camera_position[0]) * (F / (x7[2] - camera_position[2])) + camera_position[0];
+		int y77 = (x7[1] - camera_position[1]) * (F / x7[2]) + camera_position[1];
+
+		int x88 = (x8[0] - camera_position[0]) * (F / (x8[2] - camera_position[2])) + camera_position[0];
+		int y88 = (x8[1] - camera_position[1]) * (F / x8[2]) + camera_position[1];
+
+		DrawLine(glm::vec2(x11, y11), glm::vec2(x22, y22), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x22, y22), glm::vec2(x33, y33), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x33,y33), glm::vec2(x44, y44), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x44, y44), glm::vec2(x11, y11), glm::vec3(1, 0, 1));
+
+		DrawLine(glm::vec2(x44, y44), glm::vec2(x55, y55), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x55, y55), glm::vec2(x66, y66), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x66, y66), glm::vec2(x77, y77), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x77, y77), glm::vec2(x88, y88), glm::vec3(1, 0, 1));
+
+		DrawLine(glm::vec2(x11, y11), glm::vec2(x55, y55), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x22, y22), glm::vec2(x66, y66), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x33, y33), glm::vec2(x77, y77), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x44, y44), glm::vec2(x88, y88), glm::vec3(1, 0, 1));
+}
+
+
+
 glm::vec3 Renderer::HomToCartesian(glm::vec4 vec)
 {
 	if (vec[3] == 0) {
 		return glm::vec3(vec[0], vec[1], vec[2]);
-		
+
 	}
 	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
 }
-

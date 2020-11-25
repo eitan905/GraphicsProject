@@ -6,6 +6,7 @@
 class Renderer
 {
 public:
+	void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position);
 	Renderer(int viewportWidth, int viewportHeight);
 	virtual ~Renderer();
 	void Render(const Scene& scene);
