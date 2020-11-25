@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	Camera camera;
 	scene.AddCamera(std::make_shared<Camera>(camera));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/HADAR LIMUDIM/TextFile1.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
 
 
 	
@@ -403,7 +403,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
+		ImGui::Checkbox("Cameras", &show_another_window);
 
 		//simple GUI
 		//create the obj list
@@ -507,7 +507,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (show_another_window)
 		{
 			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			ImGui::Text("Hello from another window!");
+			
+			static float scaleValue1;
+			Camera& camera = scene.GetActiveCamera();
+			scaleValue1 = camera.GetScaleBarValue();
+			ImGui::Begin("Cameras", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+
+			camera.SetActiveProjection(ImGui::Button("change Projection"));
+			ImGui::SliderFloat("ScaleSlider1", &scaleValue1, 0.0f, 1000.0f);
+			camera.SetScaleBarValue(scaleValue1);
+
+
+			//scene.GetActiveCamera().SetActiveProjection(ImGui::Button("change Projection"));
 			if (ImGui::Button("Close Me"))
 				show_another_window = false;
 			ImGui::End();

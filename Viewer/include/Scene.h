@@ -25,15 +25,20 @@ public:
 
 	void SetActiveModelIndex(int index);
 	int GetActiveModelIndex() const;
+	
+	glm::mat4x4 GetPerspectiveTransform();
+	glm::mat4x4 GetOrthographicTransform();
+	glm::mat4x4 GetProjection();
 
-	void WorldTransform(glm::mat4x4 mat);
-	void LocalTransform(glm::mat4x4 mat);
 	
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
 
-
+	float viewport_width_;
+	float viewport_height_;
+	
 	int active_camera_index_;
 	int active_model_index_;
-};//
+	
+};

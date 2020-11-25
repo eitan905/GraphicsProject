@@ -288,37 +288,17 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	glm::vec2 B(0, 720);
 	glm::vec2 L(1280,0);
 	Camera camera = scene.GetActiveCamera();
-	glm::mat4x4 cameraTransform = camera.GetTransform();
-	glm::mat4x4 projection = camera.GetProjectionTransformation();
-	glm::mat4x4 perspective = camera.GetPerspectiveNormalization(0,viewport_width_,viewport_height_,0,camera.distance,camera.distance+500);
-	glm::mat4x4 ortho = camera.GetOrthoNormalization(0, viewport_width_, viewport_height_, 0, camera.distance + 500,camera.distance);
+	glm::mat4x4 perspective = scene.GetPerspectiveTransform();
+	glm::mat4x4 ortho = scene.GetOrthographicTransform();
+	glm::mat4x4 projection = scene.GetProjection();
+
 	
-	glm::mat4x4 ro(
-		1, 0, 0, 0,
-		0, 1,0,0,
-		0,0,1,0,
-		0,0,0,1
-	);
-	
-	//std::cout << projection[0][0] << "," << projection[0][1] << "," << projection[0][2] << "," << projection[0][3] << std::endl;
-	//std::cout << projection[1][0] << "," << projection[1][1] << "," << projection[1][2] << "," << projection[1][3] << std::endl;
-	//std::cout << projection[2][0] << "," << projection[2][1] << "," << projection[2][2] << "," << projection[2][3] << std::endl;
-	//std::cout << projection[3][0] << "," << projection[3][1] << "," << projection[3][2] << "," << projection[3][3] << std::endl;
-	
-	std::cout << "hadar Manor\n";
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
-		std::cout << "hadar1\n";
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
-		glm::vec4 temp =    projection * ortho	* cameraTransform * obj.GetTransform()*glm::vec4(currentVer,1);
+		glm::vec4 temp =   projection * glm::vec4(currentVer,1);
 		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(currentVer,1);
-		glm::vec4 temp2 = cameraTransform * obj.GetTransform() * glm::vec4(obj.GetNormals()[j], 1);
-
-		
-
 		currentVer = HomToCartesian(temp);
-
 		currentVer = camera.GetViewPortTransformation(currentVer,viewport_width_,viewport_height_);
-		std::cout << "hadar12\n";
 
 
 

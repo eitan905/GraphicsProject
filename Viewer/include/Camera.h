@@ -19,9 +19,14 @@ public:
 	void Camera::TranslatLocal(float x, float y, float z);
 	glm::mat4x4 GetTransform();
 	void SetDistance(double value);
-	glm::mat4x4 GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far);
-	glm::mat4x4 GetOrthoNormalization(float left, float right, float top, float bottom, float near, float far);
+	glm::mat4x4 GetPerspectiveNormalization();
+	glm::mat4x4 GetOrthoNormalization();
 	glm::vec3 GetViewPortTransformation(glm::vec3 vec, float width, float height);
+	glm::vec4 GetFrustum();
+	int GetActiveProjection();
+	void SetActiveProjection(bool value);
+	float& GetScaleBarValue();
+	void SetScaleBarValue(float value);
 
 
 	
@@ -44,7 +49,20 @@ public:
 	glm::mat4x4 localRotationTransform;
 	glm::mat4x4 localTranslateTransform;
 	glm::mat4x4 localScaleTransform;
+	float scaleBarTransform;
 	double distance;
+
+	float viewport_width_;
+	float viewport_height_;
+	float fovy;
+	float aspect;
+	float zNear;
+	float zFar;
+	float right;
+	float left;
+	float bottom;
+	float top;
+	int activeProjection;
 
 	glm::mat4x4 worldTransform;
 	static glm::mat4x4 worldRotationTransform;

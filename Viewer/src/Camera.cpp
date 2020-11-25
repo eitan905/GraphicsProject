@@ -1,13 +1,25 @@
 #include "Camera.h"
 #include <math.h>       /* sqrt */
 #include <iostream>
-
-
+#include <glm/gtc/matrix_transform.hpp>
 Camera::Camera()
 {
 	distance = 30;
 	//camera mat help
 	// camera projection_transformation_
+	viewport_width_ = float(1280);
+	viewport_height_ =float (720);
+	fovy = -55.0f;
+	aspect = float(1280 / 720);
+	zNear = 30.0f;
+	zFar = 530.0f;
+	right = (viewport_width_);
+	left = 0.0f;
+	bottom = 0.0f;
+	top = (viewport_height_);
+	activeProjection = 0;
+	scaleBarTransform = 0;
+	
 	projection_transformation_ =
 		glm::mat4x4(
 			1, 0, 0, 0,
@@ -208,7 +220,9 @@ void Camera::TranslatLocal(float x, float y, float z) {
 //camera get transform
 glm::mat4x4 Camera::GetTransform()
 {
-	return glm::inverse( localTranslateTransform
+	glm::mat4x4 temp = localTranslateTransform;
+	temp[2][2] += scaleBarTransform;
+	return glm::inverse( temp
 		* localScaleTransform * localRotationTransform);
 }
 
@@ -216,32 +230,51 @@ glm::mat4x4 Camera::GetTransform()
 void Camera::SetDistance(double value)
 {
 	distance += value;
+	zNear = distance;
+	zFar = distance + 500;
 	
 }
 
 //camera get OrthoNormalization matrix
-glm::mat4x4 Camera::GetOrthoNormalization(float left, float right, float top, float bottom, float near, float far) {
+glm::mat4x4 Camera::GetOrthoNormalization() {
 
 	glm::mat4x4 temp(
 		2 / (right - left), 0, 0, 0,
 		0, 2 / (top - bottom), 0, 0,
-		0, 0, 2 / (near - far), 0,
-		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+		0, 0, 2 / (zNear - zFar), 0,
+		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(zFar + zNear) / (zFar - zNear), 1
 	);
 	return (temp);
 }
 
 //camera get PerspectiveNormalization matrix
-glm::mat4x4 Camera::GetPerspectiveNormalization(double left, double right, double top, double bottom, double near, double far) {
+glm::mat4x4 Camera::GetPerspectiveNormalization() {
+
+	//return (glm::frustum(left, right, bottom, top, near, far));
+	//float const rad = fovy;
+
+    float tanHalfFovy = tan(float((3.14*fovy)/180) / 2.0f);
 
 	glm::mat4x4 temp(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+    temp[0][0] = 1 / (aspect * tanHalfFovy);
+	temp[1][1] = 1 / (tanHalfFovy);
+	temp[2][2] = - (zFar + zNear) / (zFar - zNear);
+	temp[2][3] = - 1;
+	temp[3][2] = - (2.0f * zFar * zNear) / (zFar - zNear);
+
+	/*glm::mat4x4 temp1(
 		2*near / (right - left), 0, 0, 0,
 		0, 2*near/ (top - bottom), 0, 0,
 		(right+left)/(right-left), (top+bottom)/(top-bottom), -(far+near)/(far-near), -1,
 		0,0, -2 * near*far / (far-near),0
-	);
+	);*/
 
-	return glm::transpose(temp);
+	return (temp);
 
 }
 
@@ -250,161 +283,30 @@ glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float heig
 	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), vec[3]);
 }
 
-//s
-/*
-Camera::Camera()
-	
-
+glm::vec4 Camera::GetFrustum()
 {
-	//localRotateBarValue = 0;
-	//localScaleBarValue = 1;
-
-	objectTransform = glm::mat4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	);
-	localRotationTransform =
-		glm::mat4x4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1
-		);
-	localTranslateTransform = glm::mat4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	);
-	localScaleTransform = glm::mat4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	);
-
-
-	worldTransform = glm::mat4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	);
-
-	worldRotateBarValue = 0;
-
-
-
+	return glm::vec4(fovy, aspect, distance, distance + 500);
 }
 
-
-glm::mat4x4 Camera::worldRotationTransform = glm::mat4x4(
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-);
-glm::mat4x4 Camera::worldTranslateTransform = glm::mat4x4(
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-);
-glm::mat4x4 Camera::worldScaleTransform = glm::mat4x4(
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-);
-
-
-void Camera::~Camera()
+int Camera::GetActiveProjection()
 {
+	return activeProjection;
 }
-//get faces of the current model
-
-//get faces count
-
-//get model name
-
-//get the local transformation 
-void Camera::GETlocal() {
-	glm::mat4x4 temp = localScaleTransform;
-	temp[0][0] += localScaleBarValue;
-	temp[1][1] += localScaleBarValue;
-	temp[2][2] += localScaleBarValue;
-	objectTransform = localTranslateTransform * temp * localRotationTransform;
-}
-//get the world transfrmation
-void Camera::GETworld() {
-	worldTransform = worldTranslateTransform * worldScaleTransform * worldRotationTransform;
-}
-
-
-
-void Camera::LocalRotationTransform(const float alfa) {
-	localRotateBarValue = localRotateBarValue + alfa;
-	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
-}
-//set World Rotation Transform by getting alfa parameter (in degrees)
-void Camera::WorldRotationTransform(const float alfa) {
-	worldRotateBarValue += alfa;
-	worldRotationTransform[0][0] = cos((worldRotateBarValue * 3.14) / 180);
-	worldRotationTransform[0][1] = sin((worldRotateBarValue * 3.14) / 180);
-	worldRotationTransform[1][0] = -sin((worldRotateBarValue * 3.14) / 180);
-	worldRotationTransform[1][1] = cos((worldRotateBarValue * 3.14) / 180);
-}
-//set Local Translate Transform by getting x,y,z parameter (parameters which determine the change)
-void Camera::LocalTranslateTransform(const float x, const float y, const float z) {
-	localTranslateTransform[3][0] += x;
-	localTranslateTransform[3][1] += y;
-	localTranslateTransform[3][2] += z;
-
-}
-//set World Translate Transform by getting x,y,z parameter (parameters which determine the change)
-void Camera::WorldTranslateTransform(const float x, const float y, const float z) {
-	worldTranslateTransform[3][0] += x;
-	worldTranslateTransform[3][1] += y;
-	worldTranslateTransform[3][2] += z;
-
-}
-//set Local Scale Transform by getting x,y,z parameter (parameters which determine the change)
-void Camera::LocalScaleTransform(const float x, const float y, const float z)
+void Camera::SetActiveProjection(bool value)
 {
-	localScaleTransform[0][0] *= x;
-	localScaleTransform[1][1] *= y;
-	localScaleTransform[2][2] *= z;
-}
-//set World Scale Transform by getting x,y,z parameter (parameters which determine the change)
-void Camera::WorldScaleTransform(const float x, const float y, const float z) {
-	worldScaleTransform[0][0] *= x;
-	worldScaleTransform[1][1] *= y;
-	worldScaleTransform[2][2] *= z;
-
+	if (value == true) {
+		activeProjection = (activeProjection + 1) % 2;
+	}
 }
 
-
-//Accepting the transformation by multiplying the global transformation by the local one
-glm::mat4x4 Camera::GetTransform()
+float& Camera::GetScaleBarValue()
 {
-	GETlocal();
-	GETworld();
-
-	return worldTransform * objectTransform;
+	return scaleBarTransform;
 }
 
 
-// set rotate bar value
-void Camera::SetRotateBarValue(float value)
+void Camera::SetScaleBarValue(float value)
 {
-	localRotateBarValue = value;
-
+	scaleBarTransform  = value;
 }
-*/
-
 
