@@ -19,3 +19,7 @@ Part 1:
 
 360: ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_360.png)
 
+Part 2:
+
+
+
