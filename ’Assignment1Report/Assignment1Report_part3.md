@@ -19,7 +19,19 @@ Part 1:
 
 360: ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_360.png)
 
-Part 2:
+Part 2: 
+T1= 50x 50y Translate, T2= -10 Rotate .
+
+1. 50x 50y Translate_Local, -10 Rotate_World :
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_t1_t2.png)
+
+2. 50x 50y Translate_World, -10 Rotate_Local :
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_t2_t1.png)
+
+
+
+
+
 
 
 
