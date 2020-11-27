@@ -257,9 +257,11 @@ void Renderer::Render(const Scene& scene)
 	const glm::ivec2 p4(viewport_width_, half_height);
 	const glm::vec3 color1(1, 0, 1);
 	DrawLine(p3, p4, color1);
+	
 
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		DrawModel(scene.GetModel(i),scene);
+	
 	}
 	
 	
@@ -283,10 +285,10 @@ void Renderer::UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm
 
 void Renderer::DrawModel(MeshModel obj,Scene scene)
 {
-	glm::vec2 T (0,0);
+	/*glm::vec2 T (0,0);
 	glm::vec2 R(0, 0);
 	glm::vec2 B(0, 720);
-	glm::vec2 L(1280, 0);
+	glm::vec2 L(1280, 0);*/
 
 	float T=0;
 	float R=0;
@@ -302,34 +304,22 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
-		glm::vec4 temp =   projection * glm::vec4(currentVer,1);
-		glm::vec4 temp3 = obj.GetTransform()*glm::vec4(currentVer,1);
+		glm::vec4 temp = projection * glm::vec4(currentVer, 1);
+		glm::vec4 temp3 = obj.GetTransform() * glm::vec4(currentVer, 1);
 		currentVer = HomToCartesian(temp);
-		currentVer = camera.GetViewPortTransformation(currentVer,viewport_width_,viewport_height_);
+		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
 
 		obj.GetNormals()[j][0];
 		obj.GetNormals()[j][1];
 		double scale = obj.GetScaleTransform()[0][0] / 15;
-		if (T[1] < temp[1] + obj.GetNormals()[j][1] * scale) {
-			T = glm::vec2(temp[0] + obj.GetNormals()[j][0], temp[1] + obj.GetNormals()[j][1] * scale);
-		}
-		if (R[0] < temp[0] + obj.GetNormals()[j][0] * scale) {
-			R = glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1] * scale);
-		}
-		if (B[1] > temp[1] + obj.GetNormals()[j][1] * scale) {
-			B = glm::vec2(temp[0] + obj.GetNormals()[j][0], temp[1] + obj.GetNormals()[j][1] * scale);
-		}
-		if (L[0] > temp[0] + obj.GetNormals()[j][0] * scale) {
-			L = glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1] * scale);
-		}
-		//DrawLine(glm::vec2(temp[0], temp[1]), glm::vec2(temp[0] + obj.GetNormals()[j][0]*scale, temp[1] + obj.GetNormals()[j][1]*scale), glm::vec3(1, 0, 1));
 	}
-	
-	//DrawLine(glm::vec2(L[0], T[1]),glm::vec2(L[0],B[1]), glm::vec3(1, 0, 1));
-	//DrawLine(glm::vec2(L[0], T[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
-	//DrawLine(glm::vec2(R[0], B[1]),glm::vec2(R[0],T[1]), glm::vec3(1, 0, 1));
-	//DrawLine(glm::vec2(L[0], B[1]),glm::vec2(R[0],B[1]), glm::vec3(1, 0, 1));
-	
+	glm::mat4x4 temp(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 0, 1,
+		0, 0, 0, 0
+	);
+	Draw_Square(obj, camera);	
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
 		int point0 = face.GetVertexIndex(0) - 1;
@@ -342,6 +332,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 
 
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
+		
 		DrawLine(p1, p2, glm::vec3(1, 0, 1));
 		DrawLine(p1, p3, glm::vec3(1, 0, 1));
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
@@ -358,7 +349,7 @@ glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
 	return ans;
 }
 
-void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
+void Renderer::Draw_Square(MeshModel obj, Camera camera)
 {
 	float T = 0;
 	float R = 0;
@@ -366,11 +357,18 @@ void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
 	float L = 1280;
 	float N = 0;
 	float F = 0;
-
-	for (int i = 0; i < obj.GetFacesCount(), i++) {
+	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		glm::vec3 temp = normal(obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(0)), obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(1)), obj.getVerticeAtIndex(obj.GetFace(i).GetVertexIndex(2)));
+		Face face = obj.GetFace(i);
+		float x = (obj.getVerticeAtIndex(face.GetVertexIndex(0))[0]+
+			obj.getVerticeAtIndex(face.GetVertexIndex(1))[0] +
+			obj.getVerticeAtIndex(face.GetVertexIndex(2))[0]) / 3;
+		float y = (obj.getVerticeAtIndex(face.GetVertexIndex(0))[1] +
+			obj.getVerticeAtIndex(face.GetVertexIndex(1))[1] +
+			obj.getVerticeAtIndex(face.GetVertexIndex(2))[1]) / 3;
 
-		glm::vec3 temp_new = mat * glm::vec4(temp[0],temp[1],temp[2],1);
+		//DrawLine(glm::vec2(x, y), glm::vec2(x + temp[0] * 100, y + temp[1] * 100), glm::vec3(1, 0, 1));
+		glm::vec3 temp_new = camera.cinv *obj.GetTransform() * glm::vec4(temp[0],temp[1],temp[2],1);
 		if (temp_new[0] >= T)
 			T = temp_new[0];
 		if (temp_new[0] <= B)
@@ -396,7 +394,8 @@ void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
 	glm::vec3 x7 = glm::vec3(B, L, N);
 	glm::vec3 x8 = glm::vec3(B, L, F);
 
-		int x11 = (x1[0] - camera_position[0]) * (F / (x1[2] - camera_position[2])) + camera_position[0];
+
+		/*int x11 = (x1[0] - camera_position[0]) * (F / (x1[2] - camera_position[2])) + camera_position[0];
 		int y11= (x1[1] - camera_position[1]) * (F / x1[2]) + camera_position[1];
 
 		int x22 = (x2[0] - camera_position[0]) * (F / (x2[2] - camera_position[2])) + camera_position[0];
@@ -418,9 +417,10 @@ void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
 		int y77 = (x7[1] - camera_position[1]) * (F / x7[2]) + camera_position[1];
 
 		int x88 = (x8[0] - camera_position[0]) * (F / (x8[2] - camera_position[2])) + camera_position[0];
-		int y88 = (x8[1] - camera_position[1]) * (F / x8[2]) + camera_position[1];
+		int y88 = (x8[1] - camera_position[1]) * (F / x8[2]) + camera_position[1];*/
 
-		DrawLine(glm::vec2(x11, y11), glm::vec2(x22, y22), glm::vec3(1, 0, 1));
+
+		/*DrawLine(glm::vec2(x11, y11), glm::vec2(x22, y22), glm::vec3(1, 0, 1));
 		DrawLine(glm::vec2(x22, y22), glm::vec2(x33, y33), glm::vec3(1, 0, 1));
 		DrawLine(glm::vec2(x33,y33), glm::vec2(x44, y44), glm::vec3(1, 0, 1));
 		DrawLine(glm::vec2(x44, y44), glm::vec2(x11, y11), glm::vec3(1, 0, 1));
@@ -433,7 +433,21 @@ void Draw_Square(MeshModel obj, glm::mat4x4 mat, glm::vec3 camera_position)
 		DrawLine(glm::vec2(x11, y11), glm::vec2(x55, y55), glm::vec3(1, 0, 1));
 		DrawLine(glm::vec2(x22, y22), glm::vec2(x66, y66), glm::vec3(1, 0, 1));
 		DrawLine(glm::vec2(x33, y33), glm::vec2(x77, y77), glm::vec3(1, 0, 1));
-		DrawLine(glm::vec2(x44, y44), glm::vec2(x88, y88), glm::vec3(1, 0, 1));
+		DrawLine(glm::vec2(x44, y44), glm::vec2(x88, y88), glm::vec3(1, 0, 1));*/
+	DrawLine(x1,x2, glm::vec3(1, 0, 1));
+	DrawLine(x1,x5, glm::vec3(1, 0, 1));
+	DrawLine(x1,x3, glm::vec3(1, 0, 1));
+	DrawLine(x2,x4, glm::vec3(1, 0, 1));
+
+	DrawLine(x2,x6, glm::vec3(1, 0, 1));
+	DrawLine(x7,x3, glm::vec3(1, 0, 1));
+	DrawLine(x7,x5, glm::vec3(1, 0, 1));
+	DrawLine(x7,x8, glm::vec3(1, 0, 1));
+
+	DrawLine(x8,x4, glm::vec3(1, 0, 1));
+	DrawLine(x8,x6, glm::vec3(1, 0, 1));
+	DrawLine(x3,x4, glm::vec3(1, 0, 1));
+	DrawLine(x5,x6, glm::vec3(1, 0, 1));
 }
 
 

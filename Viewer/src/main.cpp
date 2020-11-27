@@ -234,13 +234,13 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		if (io.KeysDown[73])//I: set local rotate transform (20 degree)
 		{
 			obj.position += 5;
-			obj.LocalRotationTransform(obj.position);
+			obj.LocalRotationTransform_Z(obj.position);
 			
 		}
 		if (io.KeysDown[85])//u: set local rotate transform (20 degree)
 		{
 			obj.position -= 5;
-			obj.LocalRotationTransform(obj.position);
+			obj.LocalRotationTransform_Z(obj.position);
 
 		}
 		if (io.KeysDown[67])//u: set local rotate transform (20 degree)
@@ -479,7 +479,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (rotateFlag) {
 			r = 1;
 			if (checkedLocal) {
-				obj.LocalRotationTransform(alpha);
+				obj.LocalRotationTransform_Z(alpha);
 				//obj.position = alpha;
 				alpha = 0.0f;
 			}
@@ -487,17 +487,41 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				obj.WorldRotationTransform(alpha);
 				alpha = 0.0f;
 			}
-
-
 		}
-		else r = 0;
 
+
+		else r = 0;
+		if (ImGui::TreeNode("Collapsing Headers"))
+		{
+			static bool closable_group = true;
+			ImGui::Checkbox("Show 2nd header", &closable_group);
+			if (ImGui::CollapsingHeader("Header", ImGuiTreeNodeFlags_None))
+			{
+				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+				for (int i = 0; i < 5; i++)
+					ImGui::Text("Some content %d", i);
+			}
+			if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
+			{
+				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+				for (int i = 0; i < 5; i++)
+					ImGui::Text("More content %d", i);
+			}
+			/*
+			if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
+				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+			*/
+			ImGui::TreePop();
+		}
 		//Scale Slider
 		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
 		obj.SetScaleBarValue(scaleValue);
 
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		ImGui::SliderFloat("Rotate_Z", &obj.localRotateBarValue_Z , 0, 360.0f);
+		ImGui::SliderFloat("Rotate_X", &obj.localRotateBarValue_X , 0, 360.0f);
+		ImGui::SliderFloat("Rotate_Y", &obj.localRotateBarValue_Y , 0, 360.0f);
 
+		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
 
 
@@ -519,6 +543,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			camera.SetActiveProjection(ImGui::Button("change Projection"));
 			ImGui::SliderFloat("ScaleSlider1", &scaleValue1, 0.0f, 1000.0f);
 			camera.SetScaleBarValue(scaleValue1);
+			ImGui::SliderFloat("Rotate_Z", &camera.localRotateBarValue_Z, 0, 360.0f);
+			ImGui::SliderFloat("Rotate_X", &camera.localRotateBarValue_X, 0, 360.0f);
+			ImGui::SliderFloat("Rotate_Y", &camera.localRotateBarValue_Y, 0, 360.0f);
 
 
 			//scene.GetActiveCamera().SetActiveProjection(ImGui::Button("change Projection"));

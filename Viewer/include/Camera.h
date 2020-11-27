@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-class Camera
+class Camera 
 {
 public:
 	Camera();
@@ -27,6 +27,11 @@ public:
 	void SetActiveProjection(bool value);
 	float& GetScaleBarValue();
 	void SetScaleBarValue(float value);
+	void LocalRotationTransform_X(const float alfa);
+	void LocalRotationTransform_Y(const float alfa);
+	void LocalRotationTransform_Z(const float alfa);
+
+	void SetFrustum(glm::vec4 tempFrus);
 
 
 	
@@ -37,7 +42,6 @@ public:
 	void Camera::ScaleWorld(float x, float y, float z);
 
 	void Camera::RotateWorld(float x);
-	int localRotateBarValue;
 
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;
@@ -46,7 +50,6 @@ public:
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;
 	glm::mat4x4 objectTransform;
-	glm::mat4x4 localRotationTransform;
 	glm::mat4x4 localTranslateTransform;
 	glm::mat4x4 localScaleTransform;
 	float scaleBarTransform;
@@ -69,4 +72,10 @@ public:
 	static glm::mat4x4 worldTranslateTransform;
 	static glm::mat4x4 worldScaleTransform;
 	//s
+	float localRotateBarValue_X = 0;
+	float localRotateBarValue_Y = 0;
+	float localRotateBarValue_Z = 0;
+	glm::mat4x4 localRotationTransform_Z;
+	glm::mat4x4 localRotationTransform_Y;
+	glm::mat4x4 localRotationTransform_X;
 };

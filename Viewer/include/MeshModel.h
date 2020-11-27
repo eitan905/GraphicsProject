@@ -41,18 +41,25 @@ public:
 	void MeshModel::GETlocal();
 	void MeshModel::GETworld();
 
-	void MeshModel::LocalRotationTransform(const float alfa);
+	void MeshModel::LocalRotationTransform_X(const float alfa);
+	void MeshModel::LocalRotationTransform_Y(const float alfa);
+	void MeshModel::LocalRotationTransform_Z(const float alfa);
 	void MeshModel::WorldRotationTransform(const float alfa);
 	void MeshModel::LocalTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);
 	void MeshModel::WorldScaleTransform(const float x, const float y, const float z);
-	float localRotateBarValue = 0;
+	
 	float position = 0;
+	float localRotateBarValue_X = 0;
+	float localRotateBarValue_Y = 0;
+	float localRotateBarValue_Z = 0;
 
 private:
 	glm::mat4x4 objectTransform;
-	glm::mat4x4 localRotationTransform;
+	glm::mat4x4 localRotationTransform_Z;
+	glm::mat4x4 localRotationTransform_Y;
+	glm::mat4x4 localRotationTransform_X;
 	glm::mat4x4 localTranslateTransform;
 	glm::mat4x4 localScaleTransform;
 

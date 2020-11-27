@@ -4,21 +4,42 @@
 #include <glm/gtc/matrix_transform.hpp>
 Camera::Camera()
 {
-	distance = 30;
+	distance = 300;
 	//camera mat help
 	// camera projection_transformation_
 	viewport_width_ = float(1280);
 	viewport_height_ =float (720);
 	fovy = -55.0f;
 	aspect = float(1280 / 720);
-	zNear = 30.0f;
-	zFar = 530.0f;
+	zNear = 300.0f;
+	zFar = 800.0f;
 	right = (viewport_width_);
 	left = 0.0f;
 	bottom = 0.0f;
 	top = (viewport_height_);
 	activeProjection = 0;
 	scaleBarTransform = 0;
+	localRotationTransform_X =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localRotationTransform_Y =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localRotationTransform_Z =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
 	
 	projection_transformation_ =
 		glm::mat4x4(
@@ -47,13 +68,7 @@ Camera::Camera()
 		0, 0, 0, 1
 	);
 	//local transformation
-	localRotationTransform =
-		glm::mat4x4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1
-		);
+
 	localTranslateTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -188,24 +203,24 @@ void Camera::ScaleLocal(float x, float y, float z) {
 
 //camera rotate world giving one number , changing c-invers
 void Camera::RotateWorld(float x) {
-	localRotateBarValue = localRotateBarValue + x;
+	/*localRotateBarValue = localRotateBarValue + x;
 	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
 	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
 	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
+	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);*/
 	c = c * worldRotationTransform;
 	cinv = glm::inverse(worldRotationTransform) * glm::inverse(c);
 }
 
 //camera local rotate giving one number , changing c-invers
 void Camera::RotateLocal(float x) {
-	localRotateBarValue = localRotateBarValue + x;
-	localRotationTransform[0][0] = cos((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[0][1] = sin((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[1][0] = -sin((localRotateBarValue * 3.14) / 180);
-	localRotationTransform[1][1] = cos((localRotateBarValue * 3.14) / 180);
-	c = c * localRotationTransform;
-	cinv = glm::inverse(localRotationTransform) * glm::inverse(c);
+	LocalRotationTransform_Z(localRotateBarValue_Z);
+	LocalRotationTransform_Y(localRotateBarValue_Y);
+	LocalRotationTransform_X(localRotateBarValue_X);
+	c = c * localRotationTransform_X *
+		localRotationTransform_Y * localRotationTransform_Z;
+	cinv = glm::inverse(localRotationTransform_X *
+		localRotationTransform_Y * localRotationTransform_Z) * glm::inverse(c);
 }
 
 //camera TranslatLocal giving 3 number , changing c-invers
@@ -220,19 +235,23 @@ void Camera::TranslatLocal(float x, float y, float z) {
 //camera get transform
 glm::mat4x4 Camera::GetTransform()
 {
+	LocalRotationTransform_Z(localRotateBarValue_Z);
+	LocalRotationTransform_Y(localRotateBarValue_Y);
+	LocalRotationTransform_X(localRotateBarValue_X);
 	glm::mat4x4 temp = localTranslateTransform;
 	temp[2][2] += scaleBarTransform;
 	return glm::inverse( temp
-		* localScaleTransform * localRotationTransform);
+		* localScaleTransform * localRotationTransform_X * 
+	localRotationTransform_Y * localRotationTransform_Z);
 }
 
 //camera set distance
 void Camera::SetDistance(double value)
 {
 	distance += value;
-	zNear = distance;
-	zFar = distance + 500;
-	
+	zNear = localTranslateTransform[3][2] + distance;
+
+
 }
 
 //camera get OrthoNormalization matrix
@@ -250,8 +269,7 @@ glm::mat4x4 Camera::GetOrthoNormalization() {
 //camera get PerspectiveNormalization matrix
 glm::mat4x4 Camera::GetPerspectiveNormalization() {
 
-	//return (glm::frustum(left, right, bottom, top, near, far));
-	//float const rad = fovy;
+
 
     float tanHalfFovy = tan(float((3.14*fovy)/180) / 2.0f);
 
@@ -274,6 +292,7 @@ glm::mat4x4 Camera::GetPerspectiveNormalization() {
 		0,0, -2 * near*far / (far-near),0
 	);*/
 
+
 	return (temp);
 
 }
@@ -285,7 +304,7 @@ glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float heig
 
 glm::vec4 Camera::GetFrustum()
 {
-	return glm::vec4(fovy, aspect, distance, distance + 500);
+	return glm::vec4(fovy, aspect, zNear, zFar);
 }
 
 int Camera::GetActiveProjection()
@@ -310,3 +329,40 @@ void Camera::SetScaleBarValue(float value)
 	scaleBarTransform  = value;
 }
 
+void Camera::SetFrustum(glm::vec4 tempFrus)
+{
+	fovy = tempFrus[0];
+	aspect = tempFrus[1];
+	zNear = tempFrus[2];
+	zFar = tempFrus[3];
+}
+
+
+
+
+
+
+
+
+
+void Camera::LocalRotationTransform_Z(const float alfa) {
+	localRotateBarValue_Z = localRotateBarValue_Z + alfa;
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180);
+	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / 180);
+	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / 180);
+	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / 180);
+}
+void Camera::LocalRotationTransform_Y(const float alfa) {
+	localRotateBarValue_Y = localRotateBarValue_Y + alfa;
+	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / 180);
+	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / 180);
+	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / 180);
+	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / 180);
+}
+void Camera::LocalRotationTransform_X(const float alfa) {
+	localRotateBarValue_X = localRotateBarValue_X + alfa;
+	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / 180);
+	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / 180);
+	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / 180);
+	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / 180);
+}
