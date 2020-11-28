@@ -6,7 +6,7 @@
 class Renderer
 {
 public:
-	void Draw_Square(MeshModel obj, Camera camera);
+	void Draw_Square(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection);
 	Renderer(int viewportWidth, int viewportHeight);
 	virtual ~Renderer();
 	void Render(const Scene& scene);
@@ -17,6 +17,7 @@ public:
 	void UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 	void DrawModel(MeshModel obj,Scene scene);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
+	void DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera camera);
 	
 private:
 	void PutPixel(const int i, const int j, const glm::vec3& color);

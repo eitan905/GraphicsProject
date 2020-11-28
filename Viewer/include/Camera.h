@@ -6,7 +6,8 @@ class Camera
 public:
 	Camera();
 	virtual ~Camera();
-
+	
+	
 	void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 	void Camera::Translate(const glm::vec4& v);
 	const glm::mat4x4& Camera::GetProjectionTransformation() const;

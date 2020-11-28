@@ -91,6 +91,7 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		std::cout << "vertices numnum: " << j << " 0: " << vertices[j][0] << " 1: " << vertices[j][1] << " 2: " << vertices[j][2] << std::endl;   // problem line
 	}*/
 
+
 	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));
 }//
 

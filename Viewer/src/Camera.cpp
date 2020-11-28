@@ -4,14 +4,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 Camera::Camera()
 {
-	distance = 300;
+	distance = 30;
 	//camera mat help
 	// camera projection_transformation_
 	viewport_width_ = float(1280);
 	viewport_height_ =float (720);
-	fovy = -55.0f;
-	aspect = float(1280 / 720);
-	zNear = 300.0f;
+	fovy = 55.0f;
+	aspect = viewport_width_/viewport_height_;
+	zNear = 30.0f;
 	zFar = 800.0f;
 	right = (viewport_width_);
 	left = 0.0f;
@@ -239,7 +239,9 @@ glm::mat4x4 Camera::GetTransform()
 	LocalRotationTransform_Y(localRotateBarValue_Y);
 	LocalRotationTransform_X(localRotateBarValue_X);
 	glm::mat4x4 temp = localTranslateTransform;
-	temp[2][2] += scaleBarTransform;
+	//temp[1][1] += scaleBarTransform;
+	//temp[0][0] += scaleBarTransform;
+	//temp[2][2] += scaleBarTransform;
 	return glm::inverse( temp
 		* localScaleTransform * localRotationTransform_X * 
 	localRotationTransform_Y * localRotationTransform_Z);
@@ -269,8 +271,7 @@ glm::mat4x4 Camera::GetOrthoNormalization() {
 //camera get PerspectiveNormalization matrix
 glm::mat4x4 Camera::GetPerspectiveNormalization() {
 
-
-
+	return glm::perspective(fovy, aspect, zNear, zFar);
     float tanHalfFovy = tan(float((3.14*fovy)/180) / 2.0f);
 
 	glm::mat4x4 temp(
@@ -299,7 +300,7 @@ glm::mat4x4 Camera::GetPerspectiveNormalization() {
 
 //Get View PortTransformation camera vec3
 glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float height) {
-	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), vec[3]);
+	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), (vec[3] + 1.0f)*(abs(zNear-zFar)));
 }
 
 glm::vec4 Camera::GetFrustum()
@@ -347,22 +348,22 @@ void Camera::SetFrustum(glm::vec4 tempFrus)
 
 void Camera::LocalRotationTransform_Z(const float alfa) {
 	localRotateBarValue_Z = localRotateBarValue_Z + alfa;
-	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / 180);
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / (2*180));
+	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / (2 * 180));
 }
 void Camera::LocalRotationTransform_Y(const float alfa) {
 	localRotateBarValue_Y = localRotateBarValue_Y + alfa;
-	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / 180);
+	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
 }
 void Camera::LocalRotationTransform_X(const float alfa) {
 	localRotateBarValue_X = localRotateBarValue_X + alfa;
-	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / 180);
+	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
 }

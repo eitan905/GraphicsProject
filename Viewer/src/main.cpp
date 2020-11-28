@@ -127,7 +127,6 @@ int main(int argc, char **argv)
 	scene.AddCamera(std::make_shared<Camera>(camera));
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
 
-
 	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
@@ -251,13 +250,21 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			scene.GetActiveCamera().TranslateSpace(-5, 0, 0);
 		}
-		if (io.KeysDown[71])//u: set local rotate transform (20 degree)
+		if (io.KeysDown[71])//g: set local rotate transform (20 degree)
 		{
 			scene.GetActiveCamera().SetDistance(1);
 		}
-		if (io.KeysDown[70])//u: set local rotate transform (20 degree)
+		if (io.KeysDown[70])//f: set local rotate transform (20 degree)
 		{
 			scene.GetActiveCamera().SetDistance(-1);
+		}
+		if (io.KeysDown[72])//h: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().localTranslateTransform[3][2] += 1;
+		}
+		if (io.KeysDown[74])//j: set local rotate transform (20 degree)
+		{
+			scene.GetActiveCamera().localTranslateTransform[3][2] -= 1;
 		}
 	}
 
@@ -491,28 +498,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 		else r = 0;
-		if (ImGui::TreeNode("Collapsing Headers"))
-		{
-			static bool closable_group = true;
-			ImGui::Checkbox("Show 2nd header", &closable_group);
-			if (ImGui::CollapsingHeader("Header", ImGuiTreeNodeFlags_None))
-			{
-				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-				for (int i = 0; i < 5; i++)
-					ImGui::Text("Some content %d", i);
-			}
-			if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
-			{
-				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-				for (int i = 0; i < 5; i++)
-					ImGui::Text("More content %d", i);
-			}
-			/*
-			if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
-				ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-			*/
-			ImGui::TreePop();
-		}
+		
 		//Scale Slider
 		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
 		obj.SetScaleBarValue(scaleValue);
@@ -546,7 +532,34 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ImGui::SliderFloat("Rotate_Z", &camera.localRotateBarValue_Z, 0, 360.0f);
 			ImGui::SliderFloat("Rotate_X", &camera.localRotateBarValue_X, 0, 360.0f);
 			ImGui::SliderFloat("Rotate_Y", &camera.localRotateBarValue_Y, 0, 360.0f);
+			if (ImGui::TreeNode("Perspeective"))
+			{
 
+
+				ImGui::SliderFloat("fovy", &camera.fovy, -90.0f, 90.0f);
+				ImGui::SliderFloat("aspect", &camera.aspect, 0.5f, 2.0f);
+				ImGui::SliderFloat("near", &camera.zNear, 0, 500.0f);
+				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 1000.0f);
+				static bool closable_group = true;
+				ImGui::Checkbox("Show 2nd header", &closable_group);
+				if (ImGui::CollapsingHeader("Header", ImGuiTreeNodeFlags_None))
+				{
+					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+					for (int i = 0; i < 5; i++)
+						ImGui::Text("Some content %d", i);
+				}
+				if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
+				{
+					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+					for (int i = 0; i < 5; i++)
+						ImGui::Text("More content %d", i);
+				}
+				/*
+				if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
+					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
+				*/
+				ImGui::TreePop();
+			}
 
 			//scene.GetActiveCamera().SetActiveProjection(ImGui::Button("change Projection"));
 			if (ImGui::Button("Close Me"))

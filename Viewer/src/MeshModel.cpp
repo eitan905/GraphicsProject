@@ -68,6 +68,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 }
 
 
+
+
 glm::mat4x4 MeshModel::worldRotationTransform = glm::mat4x4(
 	1, 0, 0, 0,
 	0, 1, 0, 0,
@@ -117,6 +119,13 @@ void MeshModel::GETlocal() {
 	temp[0][0] += localScaleBarValue;
 	temp[1][1] += localScaleBarValue;
 	temp[2][2] += localScaleBarValue;
+
+	std::cout << localTranslateTransform[0][0] << "," << localTranslateTransform[0][1] << "," << localTranslateTransform[0][2] << "," << localTranslateTransform[0][3] << std::endl;
+	std::cout << localTranslateTransform[1][0] << "," << localTranslateTransform[1][1] << "," << localTranslateTransform[1][2] << "," << localTranslateTransform[1][3] << std::endl;
+	std::cout << localTranslateTransform[2][0] << "," << localTranslateTransform[2][1] << "," << localTranslateTransform[2][2] << "," << localTranslateTransform[2][3] << std::endl;
+	std::cout << localTranslateTransform[3][0] << "," << localTranslateTransform[3][1] << "," << localTranslateTransform[3][2] << "," << localTranslateTransform[3][3] << std::endl;
+
+
 	objectTransform = localTranslateTransform * temp * localRotationTransform_X * 
 		localRotationTransform_Y * localRotationTransform_Z;
 }
@@ -129,24 +138,24 @@ void MeshModel::GETworld() {
 //set Local Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::LocalRotationTransform_Z(const float alfa) {
 	localRotateBarValue_Z = localRotateBarValue_Z + alfa;
-	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / 180);
-	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / 180);
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) /  (2 * 180));
+	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / (2 * 180));
 }
 void MeshModel::LocalRotationTransform_Y(const float alfa) {
 	localRotateBarValue_Y = localRotateBarValue_Y + alfa;
-	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / 180);
-	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / 180);
+	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
 }
 void MeshModel::LocalRotationTransform_X(const float alfa) {
 	localRotateBarValue_X = localRotateBarValue_X + alfa;
-	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / 180);
-	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / 180);
+	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
 }
 //set World Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::WorldRotationTransform(const float alfa) {
@@ -161,7 +170,10 @@ void MeshModel::LocalTranslateTransform(const float x, const float y, const floa
 	localTranslateTransform[3][0] += x;
 	localTranslateTransform[3][1] += y;
 	localTranslateTransform[3][2] += z;
-
+	/*std::cout << localTranslateTransform[0][0] << "," << localTranslateTransform[0][1] << "," << localTranslateTransform[0][2] << "," << localTranslateTransform[0][3] << std::endl;
+	std::cout << localTranslateTransform[1][0] << "," << localTranslateTransform[1][1] << "," << localTranslateTransform[1][2] << "," << localTranslateTransform[1][3] << std::endl;
+	std::cout << localTranslateTransform[2][0] << "," << localTranslateTransform[2][1] << "," << localTranslateTransform[2][2] << "," << localTranslateTransform[2][3] << std::endl;
+	std::cout << localTranslateTransform[3][0] << "," << localTranslateTransform[3][1] << "," << localTranslateTransform[3][2] << "," << localTranslateTransform[3][3] << std::endl;*/
 }
 //set World Translate Transform by getting x,y,z parameter (parameters which determine the change)
 void MeshModel::WorldTranslateTransform(const float x, const float y, const float z) {
@@ -208,6 +220,11 @@ glm::mat4x4 MeshModel::GetScaleTransform()
 std::vector<glm::vec3> MeshModel::GetNormals()
 {
 	return normals_;
+}
+
+std::vector<Face> MeshModel::GetFaces()
+{
+	return faces_;
 }
 
 //set modal name

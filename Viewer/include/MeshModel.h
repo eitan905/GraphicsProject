@@ -29,6 +29,7 @@ public:
 	glm::mat4x4 GetScaleTransform();
 
 	std::vector<glm::vec3> GetNormals();
+	std::vector<Face> GetFaces();
 
 
 
@@ -55,7 +56,7 @@ public:
 	float localRotateBarValue_Y = 0;
 	float localRotateBarValue_Z = 0;
 
-private:
+protected:
 	glm::mat4x4 objectTransform;
 	glm::mat4x4 localRotationTransform_Z;
 	glm::mat4x4 localRotationTransform_Y;
