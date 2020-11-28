@@ -123,9 +123,8 @@ int main(int argc, char **argv)
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
-	Camera camera;
-	scene.AddCamera(std::make_shared<Camera>(camera));
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	
 	ImGuiIO& io = SetupDearImgui(window);

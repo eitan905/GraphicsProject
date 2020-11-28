@@ -16,6 +16,11 @@ Scene::Scene() :
 
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
+	if (mesh_model->GetModelName() == "camera.txt") {
+		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(),mesh_model->getVertices(),mesh_model->GetNormals()
+			,mesh_model->GetModelName()));
+		return;
+	}
 	active_model_index_ = mesh_models_.size();
 	mesh_models_.push_back(mesh_model);	
 
@@ -40,6 +45,7 @@ void Scene::AddCamera(const std::shared_ptr<Camera>& camera)
 {
 	active_camera_index_ = cameras_.size();
 	cameras_.push_back(camera);
+	
 }
 
 int Scene::GetCameraCount() const

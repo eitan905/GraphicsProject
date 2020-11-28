@@ -359,10 +359,11 @@ void Renderer::DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera cam
 void Renderer::DrawModel(MeshModel obj,Scene scene)
 {
 	
-	
+	//std::cout << scene.GetModelCount() << std::endl;
+	//std::cout << "1" << std::endl;
 
 	Camera camera = scene.GetActiveCamera();
-	
+	//std::cout << "2" << std::endl;
 	glm::mat4x4 perspective = scene.GetPerspectiveTransform();
 	glm::mat4x4 ortho = scene.GetOrthographicTransform();
 	glm::mat4x4 projection = scene.GetProjection();

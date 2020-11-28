@@ -120,10 +120,10 @@ void MeshModel::GETlocal() {
 	temp[1][1] += localScaleBarValue;
 	temp[2][2] += localScaleBarValue;
 
-	std::cout << localTranslateTransform[0][0] << "," << localTranslateTransform[0][1] << "," << localTranslateTransform[0][2] << "," << localTranslateTransform[0][3] << std::endl;
+	/*std::cout << localTranslateTransform[0][0] << "," << localTranslateTransform[0][1] << "," << localTranslateTransform[0][2] << "," << localTranslateTransform[0][3] << std::endl;
 	std::cout << localTranslateTransform[1][0] << "," << localTranslateTransform[1][1] << "," << localTranslateTransform[1][2] << "," << localTranslateTransform[1][3] << std::endl;
-	std::cout << localTranslateTransform[2][0] << "," << localTranslateTransform[2][1] << "," << localTranslateTransform[2][2] << "," << localTranslateTransform[2][3] << std::endl;
-	std::cout << localTranslateTransform[3][0] << "," << localTranslateTransform[3][1] << "," << localTranslateTransform[3][2] << "," << localTranslateTransform[3][3] << std::endl;
+	std::cout << localTranslateTransform[2][0] << "," << localTranslateTransform[2][1] << "," << localTranslateTransform[2][2] << "," << localTranslateTransform[2][3] << std::endl;*/
+	//std::cout << localTranslateTransform[3][0] << "," << localTranslateTransform[3][1] << "," << localTranslateTransform[3][2] << "," << localTranslateTransform[3][3] << std::endl;
 
 
 	objectTransform = localTranslateTransform * temp * localRotationTransform_X * 

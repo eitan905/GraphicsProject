@@ -2,7 +2,8 @@
 #include <math.h>       /* sqrt */
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-Camera::Camera()
+Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
+	MeshModel(faces, vertices, normals, model_name)
 {
 	distance = 30;
 	//camera mat help
