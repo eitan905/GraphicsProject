@@ -123,8 +123,9 @@ int main(int argc, char **argv)
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
+	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	
 	ImGuiIO& io = SetupDearImgui(window);
@@ -265,6 +266,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			scene.GetActiveCamera().localTranslateTransform[3][2] -= 1;
 		}
+
 	}
 
 	//Capture mouse event - drag

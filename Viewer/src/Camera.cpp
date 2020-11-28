@@ -301,7 +301,7 @@ glm::mat4x4 Camera::GetPerspectiveNormalization() {
 
 //Get View PortTransformation camera vec3
 glm::vec3 Camera::GetViewPortTransformation(glm::vec3 vec,float width,float height) {
-	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), (vec[3] + 1.0f)*(abs(zNear-zFar)));
+	return glm::vec3((vec[0] + 1.0f) * (width / 2), (vec[1] + 1.0f) * (height / 2), (vec[2] + 1.0f)*(abs(zNear-zFar)));
 }
 
 glm::vec4 Camera::GetFrustum()

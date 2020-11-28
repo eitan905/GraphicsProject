@@ -1,9 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\out",
     "\\Viewer",
+    "\\Viewer\\include",
+    "\\Viewer\\shaders",
     "\\Viewer\\src"
   ],
-  "SelectedNode": "\\Viewer\\src\\imgui_impl_opengl3.cpp",
+  "SelectedNode": "\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }
