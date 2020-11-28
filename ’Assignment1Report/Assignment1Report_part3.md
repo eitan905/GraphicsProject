@@ -28,6 +28,9 @@ T1= 50x 50y Translate, T2= -10 Rotate .
 2. 50x 50y Translate_World, -10 Rotate_Local :
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_t2_t1.png)
 
+Part 3:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_box.png)
+
 Part 4:
 1. Perspective:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_pres.png)
