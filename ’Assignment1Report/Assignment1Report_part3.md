@@ -29,7 +29,11 @@ T1= 50x 50y Translate, T2= -10 Rotate .
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_t2_t1.png)
 
 Part 3:
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_box.png)
+Model before Translate:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_box1.png)
+
+Model after Translate:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_box2.png)
 
 Part 4:
 1. Perspective:
