@@ -15,14 +15,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	worldRotateBarValue_Z = 0;
 	localScaleBarValue = 0;
 
-	localTranslateBarValue_Y =
-		localTranslateBarValue_X =
-		localTranslateBarValue_Z = 0;
-	worldTranslateBarValue_Y =
-		worldTranslateBarValue_X =
-		worldTranslateBarValue_Z = 0;
-	localScaleBarValue =
-		worldScaleBarValue = 1;
+
+	
 	objectTransform = glm::mat4x4(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -86,7 +80,6 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		 0, 0, 1, 0,
 		 0, 0, 0, 1
 	 );
-	 //s
 	 worldTranslateTransform = glm::mat4x4(
 		 1, 0, 0, 0,
 		 0, 1, 0, 0,
