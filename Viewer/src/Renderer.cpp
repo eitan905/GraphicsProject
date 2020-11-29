@@ -372,7 +372,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	
 	glm::mat4 temp2 = glm::mat4(1);
 	temp2[2][2] = -1;
-	
+	//
 	//DrawBoundingBox(obj, projection, camera);
 	//Draw_Square(obj, camera, projection , normal_projection);
 	
