@@ -29,7 +29,7 @@ public:
 	glm::mat4x4 GetPerspectiveTransform();
 	glm::mat4x4 GetOrthographicTransform();
 	glm::mat4x4 GetProjection();
-
+	
 	
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;

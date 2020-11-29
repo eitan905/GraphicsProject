@@ -306,7 +306,7 @@ glm::vec4 Camera::GetFrustum()
 {
 	return glm::vec4(fovy, aspect, zNear, zFar);
 }
-
+//
 int Camera::GetActiveProjection()
 {
 	return activeProjection;

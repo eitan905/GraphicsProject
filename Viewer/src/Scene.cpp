@@ -73,7 +73,7 @@ int Scene::GetActiveCameraIndex() const
 {
 	return active_camera_index_;
 }
-
+//
 void Scene::SetActiveModelIndex(int index)
 {
 	active_model_index_ = index;
