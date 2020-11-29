@@ -85,7 +85,7 @@ protected:
 	glm::mat4x4 worldTranslateTransform;
 	glm::mat4x4 worldScaleTransform;
 	//
-	//
+
 	std::vector<Face> faces_;
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;
