@@ -123,8 +123,8 @@ int main(int argc, char **argv)
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	
@@ -402,9 +402,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	
 	if (scene.GetModelCount() != 0) {
+
 		MeshModel& obj = scene.GetActiveModel();
-
-
 		static float rotate = 0.0f, x = 0.0f, y = 0.0f, z = 0.0f, alpha = 0.0f;
 
 		static int i1 = 0, i2 = 0, i3 = 0;
@@ -424,89 +423,61 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			currentModels[i] = strcpy(new char[str.length() + 1], str.c_str());
 		}
 		static int selecteItem;
-		static float scaleValue;
-		scaleValue = obj.GetScaleBarValue();
 		selecteItem = scene.GetActiveModelIndex();
 		ImGui::ListBox("active model", &selecteItem, currentModels, scene.GetModelCount(), 2);
 		scene.SetActiveModelIndex(selecteItem);
 
-		ImGui::InputFloat("x", &x, 0.01f, 1.0f);
-		ImGui::InputFloat("y", &y, 0.01f, 1.0f);
-		ImGui::InputFloat("z", &z, 0.01f, 1.0f);
-		ImGui::InputFloat("alfa", &alpha, 0.01f, 1.0f);
-		//transformations GUI
-		bool translationFlag = ImGui::Button("Translate");
-		ImGui::SameLine();
-		bool scalingFlag = ImGui::Button("Scale");
-		ImGui::SameLine();
-		bool rotateFlag = ImGui::Button("Rotate");
-		ImGui::SameLine();
-		bool clearFlag = ImGui::Button("Clear");
-
-
-
-
-		static bool checkedLocal = true;
-		static bool checkedWorld = false;
-
-		ImGui::SameLine();
-		//local \ world GUI
-		bool localFlag = ImGui::Checkbox("local", &checkedLocal);
-		ImGui::SameLine();
-		bool worldFlag = ImGui::Checkbox("world", &checkedWorld);
-		//Operates the transformations according to the flag operated
-		if (clearFlag) {
-
-		}
 		//translation
-		if (translationFlag) {
-
-			if (checkedLocal) {
-				obj.LocalTranslateTransform(x, y, z);
-			}
-			if (checkedWorld) {
-				obj.WorldTranslateTransform(x, y, z);
-			}
-			x = y = z = 0.0f;
-
-		}
+	
 
 		//scaling
-		if (scalingFlag) {
+		
 
-			if (checkedLocal) {
-				obj.LocalScaleTransform(x, y, z);
-			}
-			if (checkedWorld) {
-				obj.WorldScaleTransform(x, y, z);
-			}
-			x = y = z = 0.0f;
-		}
-
-		//rotate
-		if (rotateFlag) {
-			r = 1;
-			if (checkedLocal) {
-				obj.LocalRotationTransform_Z(alpha);
-				//obj.position = alpha;
-				alpha = 0.0f;
-			}
-			if (checkedWorld) {
-				obj.WorldRotationTransform(alpha);
-				alpha = 0.0f;
-			}
-		}
+		
 
 
-		else r = 0;
 		
 		//Scale Slider
-		ImGui::SliderFloat("ScaleSlider", &scaleValue, 1.0f, 1000.0f);
-		obj.SetScaleBarValue(scaleValue);
+		
 
-		ImGui::SliderFloat("Rotate_Z", &obj.localRotateBarValue_Z , 0, 360.0f);
-		ImGui::SliderFloat("Rotate_X", &obj.localRotateBarValue_X , 0, 360.0f);
-		ImGui::SliderFloat("Rotate_Y", &obj.localRotateBarValue_Y , 0, 360.0f);
+			static float scaleValue1;
+			Camera& camera = scene.GetActiveCamera();
+			scaleValue1 = camera.GetScaleBarValue();
+
+		
+			if (ImGui::TreeNode("Object Transforms"))
+			{
+				ImGui::SliderFloat("Object_Rotate_Z", &obj.localRotateBarValue_Z, 0, 360.0f);
+				ImGui::SliderFloat("Object_Rotate_X", &obj.localRotateBarValue_X, 0, 360.0f);
+				ImGui::SliderFloat("Object_Rotate_Y", &obj.localRotateBarValue_Y, 0, 360.0f);
+				ImGui::SliderFloat("Object_Trnaslate_X", &obj.localTranslateBarValue_X, -1000, 1000);
+				ImGui::SliderFloat("Object_Trnaslate_Y", &obj.localTranslateBarValue_Y, -1000, 1000);
+				ImGui::SliderFloat("Object_Trnaslate_Z", &obj.localTranslateBarValue_Z, -1000, 1000);
+				ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0, 1000);
+
+
+				
+				ImGui::TreePop();
+			}
+
+			
+			if (ImGui::TreeNode("World Transforms"))
+			{
+				ImGui::SliderFloat("World_Rotate_Z", &obj.worldRotateBarValue_Z, 0, 360.0f);
+				ImGui::SliderFloat("World_Rotate_X", &obj.worldRotateBarValue_X, 0, 360.0f);
+				ImGui::SliderFloat("World_Rotate_Y", &obj.worldRotateBarValue_Y, 0, 360.0f);
+				ImGui::SliderFloat("World_Trnaslate_X", &obj.worldTranslateBarValue_X, -1000, 1000);
+				ImGui::SliderFloat("World_Trnaslate_Y", &obj.worldTranslateBarValue_Y, -1000, 1000);
+				ImGui::SliderFloat("World_Trnaslate_Z", &obj.worldTranslateBarValue_Z, -1000, 1000);
+				ImGui::SliderFloat("World_Scale", &obj.worldScaleBarValue, 0, 1000);
+
+
+
+				ImGui::TreePop();
+			}
+	
+
+	
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
@@ -536,8 +507,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::TreeNode("Perspeective"))
 			{
 
-
-				ImGui::SliderFloat("fovy", &camera.fovy, -90.0f, 90.0f);
+	
+				ImGui::SliderFloat("fovy", &camera.fovy, -90.0f, 0);
 				ImGui::SliderFloat("aspect", &camera.aspect, 0.5f, 2.0f);
 				ImGui::SliderFloat("near", &camera.zNear, 0, 500.0f);
 				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 1000.0f);

@@ -42,32 +42,48 @@ public:
 	void MeshModel::GETlocal();
 	void MeshModel::GETworld();
 
-	void MeshModel::LocalRotationTransform_X(const float alfa);
-	void MeshModel::LocalRotationTransform_Y(const float alfa);
-	void MeshModel::LocalRotationTransform_Z(const float alfa);
-	void MeshModel::WorldRotationTransform(const float alfa);
+	void LocalRotationTransform_X(const float alfa);
+	void LocalRotationTransform_Y(const float alfa);
+	void LocalRotationTransform_Z(const float alfa);
+	void WorldRotationTransform_Z(const float alfa);
+	void WorldRotationTransform_Y(const float alfa);
+	void WorldRotationTransform_X(const float alfa);
 	void MeshModel::LocalTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);
 	void MeshModel::WorldScaleTransform(const float x, const float y, const float z);
 	
 	float position = 0;
-	float localRotateBarValue_X = 0;
-	float localRotateBarValue_Y = 0;
-	float localRotateBarValue_Z = 0;
+	float localRotateBarValue_X;
+	float localRotateBarValue_Y;
+	float localRotateBarValue_Z;
+	float worldRotateBarValue_X;
+	float worldRotateBarValue_Y;
+	float worldRotateBarValue_Z;
+	float localScaleBarValue;
+	float localTranslateBarValue_Z;
+	float localTranslateBarValue_X;
+	float localTranslateBarValue_Y;
+	float worldScaleBarValue;
+	float worldTranslateBarValue_Z;
+	float worldTranslateBarValue_Y;
+	float worldTranslateBarValue_X;
 
 protected:
 	glm::mat4x4 objectTransform;
 	glm::mat4x4 localRotationTransform_Z;
 	glm::mat4x4 localRotationTransform_Y;
 	glm::mat4x4 localRotationTransform_X;
+	glm::mat4x4 worldRotationTransform_Z;
+	glm::mat4x4 worldRotationTransform_Y;
+	glm::mat4x4 worldRotationTransform_X;
 	glm::mat4x4 localTranslateTransform;
 	glm::mat4x4 localScaleTransform;
 
 	glm::mat4x4 worldTransform;
-	static glm::mat4x4 worldRotationTransform;
-	static glm::mat4x4 worldTranslateTransform;
-	static glm::mat4x4 worldScaleTransform;
+	glm::mat4x4 worldRotationTransform;
+	glm::mat4x4 worldTranslateTransform;
+	glm::mat4x4 worldScaleTransform;
 	//
 
 	std::vector<Face> faces_;
@@ -75,7 +91,6 @@ protected:
 	std::vector<glm::vec3> normals_;
 	std::string model_name_;
 
-	float localScaleBarValue;
 	
 
 	float worldRotateBarValue;

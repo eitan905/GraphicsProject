@@ -261,6 +261,7 @@ void Renderer::Render(const Scene& scene)
 	
 
 	for (int i = 0; i < scene.GetModelCount(); i++) {
+		
 		DrawModel(scene.GetModel(i),scene);
 	
 	}
@@ -367,17 +368,19 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	glm::mat4x4 perspective = scene.GetPerspectiveTransform();
 	glm::mat4x4 ortho = scene.GetOrthographicTransform();
 	glm::mat4x4 projection = scene.GetProjection();
-	glm::mat4x4 normal_projection = camera.GetTransform() * obj.GetTransform();
+	glm::mat4x4 normal_projection = camera.GetCameraTransform() * obj.GetTransform();
 	
-
-
-	DrawBoundingBox(obj, projection, camera);
-	Draw_Square(obj, camera, projection , normal_projection);
+	glm::mat4 temp2 = glm::mat4(1);
+	temp2[2][2] = -1;
+	
+	//DrawBoundingBox(obj, projection, camera);
+	//Draw_Square(obj, camera, projection , normal_projection);
 	
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
-		glm::vec4 temp = projection * glm::vec4(currentVer, 1);
+		glm::vec4 temp =  projection * glm::vec4(currentVer, 1);
 		//glm::vec4 temp3 = obj.GetTransform() * glm::vec4(currentVer, 1);
+		
 		currentVer = HomToCartesian(temp);
 		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
 	}
@@ -450,7 +453,9 @@ void To2(glm::vec3& vec) {
 void Renderer::Draw_Square(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection)
 {
 	
+	
 	double scale;
+	
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
 
@@ -465,7 +470,7 @@ void Renderer::Draw_Square(MeshModel obj, Camera camera,glm::mat4x4 projection,g
 			To3(normal_projection * glm::vec4(obj.getVerticeAtIndex(point1), 1)),
 			To3(normal_projection * glm::vec4(obj.getVerticeAtIndex(point2), 1)));
 
-
+		
 		//glm::vec3 temp = normal(obj.getVerticeAtIndex(point0), obj.getVerticeAtIndex(point1), obj.getVerticeAtIndex(point2));
 		glm::vec3 ver1 = HomToCartesian(projection * glm::vec4(obj.getVerticeAtIndex(point0), 1));
 		glm::vec3 ver2 = HomToCartesian(projection * glm::vec4(obj.getVerticeAtIndex(point1), 1));
