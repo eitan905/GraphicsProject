@@ -21,7 +21,6 @@ void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 			,mesh_model->GetModelName()));
 		return;
 	}
-	
 	active_model_index_ = mesh_models_.size();
 	mesh_models_.push_back(mesh_model);	
 
@@ -89,7 +88,7 @@ glm::mat4x4 Scene::GetPerspectiveTransform()
 	Camera camera = GetActiveCamera();
 	MeshModel obj = GetActiveModel();
 	glm::vec4 frustum = camera.GetFrustum();
-	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
+	glm::mat4x4 cameraTransform = camera.GetTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
 	glm::mat4x4 perspective = camera.GetPerspectiveNormalization();
 	return projection * perspective * cameraTransform * obj.GetTransform();
@@ -99,7 +98,7 @@ glm::mat4x4 Scene::GetOrthographicTransform()
 {
 	Camera camera = GetActiveCamera();
 	MeshModel obj = GetActiveModel();
-	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
+	glm::mat4x4 cameraTransform = camera.GetTransform();
 	glm::mat4x4 ortho = camera.GetOrthoNormalization();
 	return ortho * cameraTransform * obj.GetTransform();
 }
