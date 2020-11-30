@@ -59,3 +59,18 @@ after zoom (changing distance)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part5_change_distance.png)
 
 
+part 6:
+
+starting position
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_start.png)
+
+after rorate camera y
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_camera_y.png)
+
+after rotate camera world y
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_world_y.png)
+
+
+
+
+
