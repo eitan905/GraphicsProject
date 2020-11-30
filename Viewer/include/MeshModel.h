@@ -52,8 +52,12 @@ public:
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);
 	void MeshModel::WorldScaleTransform(const float x, const float y, const float z);
+	void Reset();
+	glm::vec3 GetcCenter();
+	glm::vec3& getPosition();
 	
-	float position = 0;
+	float position;
+	glm::vec3 objPosition;
 	float localRotateBarValue_X;
 	float localRotateBarValue_Y;
 	float localRotateBarValue_Z;

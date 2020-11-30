@@ -14,6 +14,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	worldRotateBarValue_Y = 0;
 	worldRotateBarValue_Z = 0;
 	localScaleBarValue = 0;
+	position = 0;
+		objPosition = glm::vec3(0, 0, 0);
 
 	localTranslateBarValue_Y =
 		localTranslateBarValue_X =
@@ -235,6 +237,140 @@ void MeshModel::WorldScaleTransform(const float x, const float y, const float z)
 	worldScaleTransform[1][1] *= y;
 	worldScaleTransform[2][2] *= z;
 
+}
+
+void MeshModel::Reset()
+{
+	localRotateBarValue_X = 0;
+	localRotateBarValue_Y = 0;
+	localRotateBarValue_Z = 0;
+	worldRotateBarValue_X = 0;
+	worldRotateBarValue_Y = 0;
+	worldRotateBarValue_Z = 0;
+	localScaleBarValue = 0;
+
+	localTranslateBarValue_Y =
+		localTranslateBarValue_X =
+		localTranslateBarValue_Z = 0;
+	worldTranslateBarValue_Y =
+		worldTranslateBarValue_X =
+		worldTranslateBarValue_Z = 0;
+	localScaleBarValue =
+		worldScaleBarValue = 1;
+	objectTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	localRotationTransform_X =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localRotationTransform_Y =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localRotationTransform_Z =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	worldRotationTransform_X = worldRotationTransform_Y = worldRotationTransform_Z =
+		glm::mat4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	localTranslateTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	localScaleTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
+
+	worldTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
+	worldRotateBarValue = 0;
+
+	worldRotationTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	//s
+	worldTranslateTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+	worldScaleTransform = glm::mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
+
+}
+
+glm::vec3 MeshModel::GetcCenter()
+{
+	double T = vertices_[0][1];
+	double L = vertices_[0][0];
+	double B = vertices_[0][1];
+	double R = vertices_[0][0];
+	double F = vertices_[0][2];
+	double N = vertices_[0][2];
+
+	for (int i = 0; i < vertices_.size(); i++) {
+
+		glm::vec3 temp_new = vertices_[i];
+		if (temp_new[1] >= T)
+			T = temp_new[1];
+		if (temp_new[1] <= B)
+			B = temp_new[1];
+
+		if (temp_new[0] >= L)
+			L = temp_new[0];
+		if (temp_new[0] <= R)
+			R = temp_new[0];
+
+		if (temp_new[2] >= N)
+			N = temp_new[2];
+		if (temp_new[2] <= F)
+			F = temp_new[2];
+	}
+	glm::vec3 center = glm::vec3((R + L) / 2, (T + B) / 2, (F + N) / 2);
+	return center;
+}
+
+glm::vec3& MeshModel::getPosition()
+{
+	return objPosition;
 }
 
 

@@ -443,8 +443,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			static float scaleValue1;
 			Camera& camera = scene.GetActiveCamera();
 			scaleValue1 = camera.GetScaleBarValue();
-
-		
+			
+			if (ImGui::Button("Reset object")) {
+				obj.Reset();
+			}
 			if (ImGui::TreeNode("Object Transforms"))
 			{
 				ImGui::SliderFloat("Object_Rotate_Z", &obj.localRotateBarValue_Z, 0, 360.0f);
@@ -501,9 +503,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			camera.SetActiveProjection(ImGui::Button("change Projection"));
 			ImGui::SliderFloat("ScaleSlider1", &scaleValue1, 0.0f, 1000.0f);
 			camera.SetScaleBarValue(scaleValue1);
-			ImGui::SliderFloat("Rotate_Z", &camera.localRotateBarValue_Z, 0, 360.0f);
-			ImGui::SliderFloat("Rotate_X", &camera.localRotateBarValue_X, 0, 360.0f);
-			ImGui::SliderFloat("Rotate_Y", &camera.localRotateBarValue_Y, 0, 360.0f);
+			
+			if (ImGui::Button("LookAt")) {
+
+				camera.SetLookAt(obj);
+			}
 			if (ImGui::TreeNode("Perspeective"))
 			{
 
@@ -512,27 +516,43 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				ImGui::SliderFloat("aspect", &camera.aspect, 0.5f, 2.0f);
 				ImGui::SliderFloat("near", &camera.zNear, 0, 500.0f);
 				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 1000.0f);
-				static bool closable_group = true;
-				ImGui::Checkbox("Show 2nd header", &closable_group);
-				if (ImGui::CollapsingHeader("Header", ImGuiTreeNodeFlags_None))
-				{
-					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-					for (int i = 0; i < 5; i++)
-						ImGui::Text("Some content %d", i);
-				}
-				if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
-				{
-					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-					for (int i = 0; i < 5; i++)
-						ImGui::Text("More content %d", i);
-				}
+			
 				/*
 				if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
 					ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
 				*/
 				ImGui::TreePop();
 			}
+			if (ImGui::TreeNode("Object Transforms"))
+			{
+				ImGui::SliderFloat("Camera_Rotate_Z", &camera.localRotateBarValue_Z, 0, 360.0f);
+				ImGui::SliderFloat("Camera_Rotate_X", &camera.localRotateBarValue_X, 0, 360.0f);
+				ImGui::SliderFloat("Camera_Rotate_Y", &camera.localRotateBarValue_Y, 0, 360.0f);
+				ImGui::SliderFloat("Camera_Trnaslate_X", &camera.localTranslateBarValue_X, -1000, 1000);
+				ImGui::SliderFloat("Camera_Trnaslate_Y", &camera.localTranslateBarValue_Y, -1000, 1000);
+				ImGui::SliderFloat("Camera_Trnaslate_Z", &camera.localTranslateBarValue_Z, -1000, 1000);
+				ImGui::SliderFloat("Camera_Scale", &camera.localScaleBarValue, 0, 1000);
 
+
+
+				ImGui::TreePop();
+			}
+
+			//
+			if (ImGui::TreeNode("World Transforms"))
+			{
+				ImGui::SliderFloat("World_Rotate_Z", &camera.worldRotateBarValue_Z, 0, 360.0f);
+				ImGui::SliderFloat("World_Rotate_X", &camera.worldRotateBarValue_X, 0, 360.0f);
+				ImGui::SliderFloat("World_Rotate_Y", &camera.worldRotateBarValue_Y, 0, 360.0f);
+				ImGui::SliderFloat("World_Trnaslate_X", &camera.worldTranslateBarValue_X, -1000, 1000);
+				ImGui::SliderFloat("World_Trnaslate_Y", &camera.worldTranslateBarValue_Y, -1000, 1000);
+				ImGui::SliderFloat("World_Trnaslate_Z", &camera.worldTranslateBarValue_Z, -1000, 1000);
+				ImGui::SliderFloat("World_Scale", &camera.worldScaleBarValue, 0, 1000);
+
+
+
+				ImGui::TreePop();
+			}
 			//scene.GetActiveCamera().SetActiveProjection(ImGui::Button("change Projection"));
 			if (ImGui::Button("Close Me"))
 				show_another_window = false;

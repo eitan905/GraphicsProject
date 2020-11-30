@@ -26,9 +26,10 @@ public:
 	void SetActiveModelIndex(int index);
 	int GetActiveModelIndex() const;
 	
-	glm::mat4x4 GetPerspectiveTransform();
-	glm::mat4x4 GetOrthographicTransform();
-	glm::mat4x4 GetProjection();
+	glm::mat4x4 GetPerspectiveTransform(MeshModel& obj);
+	glm::mat4x4 GetOrthographicTransform(MeshModel& obj);
+	glm::mat4x4 GetProjection(MeshModel& obj);
+	glm::vec3 HomToCartesian(glm::vec4 vec);
 	
 	
 private:

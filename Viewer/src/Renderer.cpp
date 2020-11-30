@@ -313,6 +313,7 @@ void Renderer::DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera cam
 			F = temp_new[2];
 	}
 	glm::vec3 center = glm::vec3((R + L) / 2, (T + B) / 2, (F + N) / 2);
+	obj.getPosition() = center;
 	double scale = obj.GetScaleTransform()[0][0] / 1000;
 	double range_Y = abs((T - B) / 2)+scale;
 	double range_X = abs((R - L) / 2)+scale;
@@ -365,15 +366,15 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 
 	Camera camera = scene.GetActiveCamera();
 	//std::cout << "2" << std::endl;
-	glm::mat4x4 perspective = scene.GetPerspectiveTransform();
-	glm::mat4x4 ortho = scene.GetOrthographicTransform();
-	glm::mat4x4 projection = scene.GetProjection();
+	glm::mat4x4 perspective = scene.GetPerspectiveTransform(obj);
+	glm::mat4x4 ortho = scene.GetOrthographicTransform(obj);
+	glm::mat4x4 projection = scene.GetProjection(obj);
 	glm::mat4x4 normal_projection = camera.GetCameraTransform() * obj.GetTransform();
 	
 	glm::mat4 temp2 = glm::mat4(1);
 	temp2[2][2] = -1;
 	//
-	//DrawBoundingBox(obj, projection, camera);
+	DrawBoundingBox(obj, projection, camera);
 	//Draw_Square(obj, camera, projection , normal_projection);
 	
 	for (int j = 0; j < obj.getVerticesSize(); j++) {

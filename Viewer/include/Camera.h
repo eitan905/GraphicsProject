@@ -32,8 +32,11 @@ public:
 	void LocalRotationTransform_X(const float alfa);
 	void LocalRotationTransform_Y(const float alfa);
 	void LocalRotationTransform_Z(const float alfa);
-
+	void Reset();
+	void UpdateObjcetTransform();
 	void SetFrustum(glm::vec4 tempFrus);
+
+	void SetLookAt(MeshModel& obj);
 
 
 	
@@ -80,4 +83,7 @@ public:
 	glm::mat4x4 localRotationTransform_Z;
 	glm::mat4x4 localRotationTransform_Y;
 	glm::mat4x4 localRotationTransform_X;
+	glm::vec3 eye;
+	glm::vec3 up;
+	
 };

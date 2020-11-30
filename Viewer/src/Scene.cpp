@@ -84,10 +84,9 @@ int Scene::GetActiveModelIndex() const
 	return active_model_index_;
 }
 
-glm::mat4x4 Scene::GetPerspectiveTransform()
+glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj)
 {
 	Camera camera = GetActiveCamera();
-	MeshModel obj = GetActiveModel();
 	glm::vec4 frustum = camera.GetFrustum();
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
@@ -95,26 +94,33 @@ glm::mat4x4 Scene::GetPerspectiveTransform()
 	return projection * perspective * cameraTransform * obj.GetTransform();
 }
 
-glm::mat4x4 Scene::GetOrthographicTransform()
+glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj)
 {
 	Camera camera = GetActiveCamera();
-	MeshModel obj = GetActiveModel();
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 ortho = camera.GetOrthoNormalization();
 	return ortho * cameraTransform * obj.GetTransform();
 }
 
-glm::mat4x4 Scene::GetProjection()
+glm::mat4x4 Scene::GetProjection(MeshModel& obj)
 {
 	Camera camera = GetActiveCamera();
 	if (camera.GetActiveProjection() == 1) {
-		return GetOrthographicTransform();
+		return GetOrthographicTransform(obj);
 	}
 	else {
-		return GetPerspectiveTransform();
+		return GetPerspectiveTransform(obj);
 	}
 }
 
+glm::vec3 Scene::HomToCartesian(glm::vec4 vec)
+{
 
+	if (vec[3] == 0) {
+		return glm::vec3(vec[0], vec[1], vec[2]);
+
+	}
+	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
+}
 
 
