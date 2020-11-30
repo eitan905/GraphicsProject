@@ -123,6 +123,8 @@ int main(int argc, char **argv)
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
 	Scene scene = Scene();
+	scene.SetWidth(windowWidth);
+	scene.SetHeight(windowHeight);
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
@@ -208,19 +210,19 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	{
 		if (io.KeysDown[68])//d: move right
 		{
-			obj.LocalTranslateTransform(4,0,0);		
+			obj.LocalTranslateTransform(1,0,0);		
 		}
 		if (io.KeysDown[65])//a: move left
 		{
-			obj.LocalTranslateTransform(-4, 0, 0);
+			obj.LocalTranslateTransform(-1, 0, 0);
 		}
 		if (io.KeysDown[83])//s: move down
 		{
-			obj.LocalTranslateTransform(0, -4, 0);
+			obj.LocalTranslateTransform(0, -1, 0);
 		}
 		if (io.KeysDown[87])//w: move up
 		{
-			obj.LocalTranslateTransform(0, 4, 0);
+			obj.LocalTranslateTransform(0, 1, 0);
 		}
 		if (io.KeysDown[80])//p: set local scale transform (2)
 		{
@@ -230,25 +232,14 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			obj.LocalScaleTransform(0.95, 0.95, 0.95);
 		}
-		if (io.KeysDown[73])//I: set local rotate transform (20 degree)
-		{
-			obj.position += 5;
-			obj.LocalRotationTransform_Z(obj.position);
-			
-		}
-		if (io.KeysDown[85])//u: set local rotate transform (20 degree)
-		{
-			obj.position -= 5;
-			obj.LocalRotationTransform_Z(obj.position);
-
-		}
+		
 		if (io.KeysDown[67])//u: set local rotate transform (20 degree)
 		{
-			scene.GetActiveCamera().TranslateSpace(5, 0, 0);
+			scene.GetActiveCamera().TranslateSpace(1, 0, 0);
 		}
 		if (io.KeysDown[90])//u: set local rotate transform (20 degree)
 		{
-			scene.GetActiveCamera().TranslateSpace(-5, 0, 0);
+			scene.GetActiveCamera().TranslateSpace(-1, 0, 0);
 		}
 		if (io.KeysDown[71])//g: set local rotate transform (20 degree)
 		{
@@ -274,6 +265,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	{
 
 		double time = ImGui::GetTime();
+		double scale = 10;
 
 		//mouse click
 		if (io.MouseDown[0])
@@ -288,9 +280,15 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			}
 				for (int i = 0; i < scene.GetModelCount(); i++) {
 					MeshModel temp_obj = scene.GetModel(i);
+					Camera camera = scene.GetActiveCamera();
+					if (camera.GetActiveProjection()) {
+						scale = 1;
+					}
+					glm::mat4x4 projection = scene.GetProjection(obj);
 					for (int j = 0; j < temp_obj.getVerticesSize(); j++) {
 						//Update obj vertices according to the transformation
-						glm::vec4 temp = temp_obj.GetTransform() * glm::vec4(temp_obj.getVerticeAtIndex(j), 1);
+						glm::vec3 temp = (camera.GetViewPortTransformation(scene.HomToCartesian(projection * glm::vec4(temp_obj.getVerticeAtIndex(j), 1)),
+							scene.GetWidth(),scene.GetHeight()));
 						temp_obj.getVerticeAtIndex(j)[0] = temp[0];
 						temp_obj.getVerticeAtIndex(j)[1] = temp[1];
 						temp_obj.getVerticeAtIndex(j)[2] = temp[2];
@@ -320,7 +318,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			//Goes through all the active models and repositions them to the mouse position accordingly
 			for (int t = 0; t < mouse_models.size(); t++) {
 				if (previous_mouse_x != 0) {
-					mouse_models[t]->LocalTranslateTransform(mouse_x - previous_mouse_x, previous_mouse_y - mouse_y , 0);
+					mouse_models[t]->LocalTranslateTransform((previous_mouse_x - mouse_x)/scale, (previous_mouse_y - mouse_y)/scale , 0);
 				}
 				previous_mouse_x = mouse_x;
 				previous_mouse_y = mouse_y;
@@ -409,11 +407,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		static int i1 = 0, i2 = 0, i3 = 0;
 		static int counter = 0;
 		//ImGuiInputTextFlags INPUT_TEXT_CHARS_DECIMAL =0;
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Begin("GUI");                          // Create a window called "Hello, world!" and append into it.
 
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 		ImGui::Checkbox("Cameras", &show_another_window);
+		ImGui::Checkbox("Bounding Box", &scene.displayBox);
+		ImGui::Checkbox("Normals", &scene.displayNormals);
+
 
 		//simple GUI
 		//create the obj list
@@ -449,12 +448,23 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			if (ImGui::TreeNode("Object Transforms"))
 			{
-				ImGui::SliderFloat("Object_Rotate_Z", &obj.localRotateBarValue_Z, 0, 360.0f);
-				ImGui::SliderFloat("Object_Rotate_X", &obj.localRotateBarValue_X, 0, 360.0f);
-				ImGui::SliderFloat("Object_Rotate_Y", &obj.localRotateBarValue_Y, 0, 360.0f);
-				ImGui::SliderFloat("Object_Trnaslate_X", &obj.localTranslateBarValue_X, -1000, 1000);
-				ImGui::SliderFloat("Object_Trnaslate_Y", &obj.localTranslateBarValue_Y, -1000, 1000);
-				ImGui::SliderFloat("Object_Trnaslate_Z", &obj.localTranslateBarValue_Z, -1000, 1000);
+				ImGui::PushItemWidth(100);
+				ImGui::Text("< or.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("or.y", &obj.localRotateBarValue_X, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("or.z", &obj.localRotateBarValue_Y, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> object rotate", &obj.localRotateBarValue_Z, 0, 360.0f);
+				ImGui::Text("< ot.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("ot.y", &obj.localTranslateBarValue_X, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -100, 100);
+
+				ImGui::SetNextItemWidth(400);
 				ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0, 1000);
 
 
@@ -465,15 +475,26 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			//
 			if (ImGui::TreeNode("World Transforms"))
 			{
-				ImGui::SliderFloat("World_Rotate_Z", &obj.worldRotateBarValue_Z, 0, 360.0f);
-				ImGui::SliderFloat("World_Rotate_X", &obj.worldRotateBarValue_X, 0, 360.0f);
-				ImGui::SliderFloat("World_Rotate_Y", &obj.worldRotateBarValue_Y, 0, 360.0f);
-				ImGui::SliderFloat("World_Trnaslate_X", &obj.worldTranslateBarValue_X, -1000, 1000);
-				ImGui::SliderFloat("World_Trnaslate_Y", &obj.worldTranslateBarValue_Y, -1000, 1000);
-				ImGui::SliderFloat("World_Trnaslate_Z", &obj.worldTranslateBarValue_Z, -1000, 1000);
+				ImGui::PushItemWidth(100);
+				ImGui::Text("< wr.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("wr.y", &obj.worldRotateBarValue_X, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("wr.z", &obj.worldRotateBarValue_Y, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> world rotate", &obj.worldRotateBarValue_Z, 0, 360.0f);
+				ImGui::Text("< wt.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("wt.y", &obj.worldTranslateBarValue_X, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("wt.z", &obj.worldTranslateBarValue_Y, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> world translate", &obj.worldTranslateBarValue_Z, -100, 100);
+
+				ImGui::SetNextItemWidth(400);
 				ImGui::SliderFloat("World_Scale", &obj.worldScaleBarValue, 0, 1000);
 
-
+				ImGui::PushItemWidth(100);
 
 				ImGui::TreePop();
 			}
@@ -493,28 +514,67 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		// 3. Show another simple window.
 		if (show_another_window)
 		{
-			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			
+		
 			static float scaleValue1;
 			Camera& camera = scene.GetActiveCamera();
-			scaleValue1 = camera.GetScaleBarValue();
+
+			
 			ImGui::Begin("Cameras", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 
 			camera.SetActiveProjection(ImGui::Button("change Projection"));
-			ImGui::SliderFloat("ScaleSlider1", &scaleValue1, 0.0f, 1000.0f);
-			camera.SetScaleBarValue(scaleValue1);
-			
-			if (ImGui::Button("LookAt")) {
+			//ImGui::ShowDemoWindow();
+			//ImGui::Combo();
 
-				camera.SetLookAt(obj);
+			ImGui::SetNextItemWidth(80);
+			static const char* currentCameras[50];
+			for (int i = 0; i < scene.GetCameraCount(); i++) {
+				std::string str = scene.GetCamera(i).GetModelName();
+				currentCameras[i] = strcpy(new char[str.length() + 1], str.c_str());
 			}
+			static int selectedCamera;
+			selectedCamera = scene.GetActiveCameraIndex();
+			ImGui::ListBox("active model", &selectedCamera, currentCameras, scene.GetCameraCount(), 2);
+			scene.SetActiveCameraIndex(selectedCamera);
+
+			if (ImGui::TreeNode("LookAt")) {
+				ImGui::PushItemWidth(100);
+				ImGui::Text("< e.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("e.y", &camera.eye[0], -50.0f, 50.0f);
+
+				ImGui::SameLine();
+				ImGui::SliderFloat("e.z", &camera.eye[1], -50.0f, 50.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> eye", &camera.eye[2], -50.0f, 50.0f);
+
+				ImGui::Text("< a.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("a.y", &camera.at[0], -50.0f, 50.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("a.z", &camera.at[1], -50.0f, 50.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> at", &camera.at[2], -50.0f, 50.0f);
+
+				ImGui::Text("< u.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("u.y", &camera.up[0], -50.0f, 50.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("u.z", &camera.up[1], -50.0f, 50.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> up", &camera.up[2], -50.0f, 50.0f);
+				ImGui::TreePop();
+			}
+			ImGui::PushItemWidth(100);
 			if (ImGui::TreeNode("Perspeective"))
 			{
-
+				ImGui::PushItemWidth(100);
+				
 	
-				ImGui::SliderFloat("fovy", &camera.fovy, -90.0f, 0);
+				ImGui::SliderFloat("fovy", &camera.fovy, 0, 90.f);
+				ImGui::SameLine();
 				ImGui::SliderFloat("aspect", &camera.aspect, 0.5f, 2.0f);
 				ImGui::SliderFloat("near", &camera.zNear, 0, 500.0f);
+				ImGui::SameLine();
 				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 1000.0f);
 			
 				/*
@@ -525,13 +585,21 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			if (ImGui::TreeNode("Object Transforms"))
 			{
-				ImGui::SliderFloat("Camera_Rotate_Z", &camera.localRotateBarValue_Z, 0, 360.0f);
-				ImGui::SliderFloat("Camera_Rotate_X", &camera.localRotateBarValue_X, 0, 360.0f);
-				ImGui::SliderFloat("Camera_Rotate_Y", &camera.localRotateBarValue_Y, 0, 360.0f);
-				ImGui::SliderFloat("Camera_Trnaslate_X", &camera.localTranslateBarValue_X, -1000, 1000);
-				ImGui::SliderFloat("Camera_Trnaslate_Y", &camera.localTranslateBarValue_Y, -1000, 1000);
-				ImGui::SliderFloat("Camera_Trnaslate_Z", &camera.localTranslateBarValue_Z, -1000, 1000);
-				ImGui::SliderFloat("Camera_Scale", &camera.localScaleBarValue, 0, 1000);
+				ImGui::Text("< cr.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("cr.y", &camera.localRotateBarValue_X, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("cr.z", &camera.localRotateBarValue_Y, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> camera rotate", &camera.localRotateBarValue_Z, 0, 360.0f);
+				ImGui::Text("< ct.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("ct.y", &camera.localTranslateBarValue_X, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("ct.z", &camera.localTranslateBarValue_Y, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> camera translate", &camera.localTranslateBarValue_Z, -100, 100);
+				ImGui::SliderFloat("Camera_Scale", &camera.localScaleBarValue, 1, 10);
 
 
 
@@ -541,13 +609,22 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			//
 			if (ImGui::TreeNode("World Transforms"))
 			{
-				ImGui::SliderFloat("World_Rotate_Z", &camera.worldRotateBarValue_Z, 0, 360.0f);
-				ImGui::SliderFloat("World_Rotate_X", &camera.worldRotateBarValue_X, 0, 360.0f);
-				ImGui::SliderFloat("World_Rotate_Y", &camera.worldRotateBarValue_Y, 0, 360.0f);
-				ImGui::SliderFloat("World_Trnaslate_X", &camera.worldTranslateBarValue_X, -1000, 1000);
-				ImGui::SliderFloat("World_Trnaslate_Y", &camera.worldTranslateBarValue_Y, -1000, 1000);
-				ImGui::SliderFloat("World_Trnaslate_Z", &camera.worldTranslateBarValue_Z, -1000, 1000);
-				ImGui::SliderFloat("World_Scale", &camera.worldScaleBarValue, 0, 1000);
+				
+				ImGui::Text("< wr.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("wr.y", &camera.worldRotateBarValue_X, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("wr.z", &camera.worldRotateBarValue_Y, 0, 360.0f);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> world rotate", &camera.worldRotateBarValue_Z, 0, 360.0f);
+				ImGui::Text("< wt.x");
+				ImGui::SameLine();
+				ImGui::SliderFloat("wt.y", &camera.worldTranslateBarValue_X, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("wt.z", &camera.worldTranslateBarValue_Y, -100, 100);
+				ImGui::SameLine();
+				ImGui::SliderFloat("> world translate", &camera.worldTranslateBarValue_Z, -100, 100);
+				ImGui::SliderFloat("Camera_Scale", &camera.worldScaleBarValue, 0, 100);
 
 
 

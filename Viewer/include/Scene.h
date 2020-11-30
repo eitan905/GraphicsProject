@@ -17,7 +17,7 @@ public:
 	
 	void AddCamera(const std::shared_ptr<Camera>& camera);
 	int GetCameraCount() const;
-	Camera& GetCamera(int index);
+	MeshModel& GetCamera(int index) const;
 	Camera& GetActiveCamera();
 
 	void SetActiveCameraIndex(int index);
@@ -25,11 +25,19 @@ public:
 
 	void SetActiveModelIndex(int index);
 	int GetActiveModelIndex() const;
+	Camera& GetCameraAtIndex(int index) const;
 	
 	glm::mat4x4 GetPerspectiveTransform(MeshModel& obj);
 	glm::mat4x4 GetOrthographicTransform(MeshModel& obj);
 	glm::mat4x4 GetProjection(MeshModel& obj);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
+	void SetWidth(double w);
+	void SetHeight(double h);
+	float GetWidth();
+	float GetHeight();
+	bool displayBox;
+	bool displayNormals;
+
 	
 	
 private:

@@ -24,7 +24,7 @@ public:
 	int getVerticesSize() {
 		return vertices_.size();
 	}
-	glm::mat4x4 GetTransform();
+	virtual glm::mat4x4 GetTransform();
 	glm::mat4x4 GetTranslateTransform();
 	glm::mat4x4 GetScaleTransform();
 
@@ -42,12 +42,12 @@ public:
 	void MeshModel::GETlocal();
 	void MeshModel::GETworld();
 
-	void LocalRotationTransform_X(const float alfa);
-	void LocalRotationTransform_Y(const float alfa);
-	void LocalRotationTransform_Z(const float alfa);
-	void WorldRotationTransform_Z(const float alfa);
-	void WorldRotationTransform_Y(const float alfa);
-	void WorldRotationTransform_X(const float alfa);
+	void LocalRotationTransform_X();
+	void LocalRotationTransform_Y();
+	void LocalRotationTransform_Z();
+	void WorldRotationTransform_Z();
+	void WorldRotationTransform_Y();
+	void WorldRotationTransform_X();
 	void MeshModel::LocalTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::WorldTranslateTransform(const float x, const float y, const float z);
 	void MeshModel::LocalScaleTransform(const float x, const float y, const float z);

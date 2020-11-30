@@ -16,7 +16,7 @@ Scene::Scene() :
 
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
-	if (mesh_model->GetModelName() == "camera.txt") {
+	if (mesh_model->GetModelName() == "camera.txt" || mesh_model->GetModelName() == "camera.obj") {
 		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(),mesh_model->getVertices(),mesh_model->GetNormals()
 			,mesh_model->GetModelName()));
 		return;
@@ -45,6 +45,9 @@ MeshModel& Scene::GetActiveModel() const
 void Scene::AddCamera(const std::shared_ptr<Camera>& camera)
 {
 	active_camera_index_ = cameras_.size();
+	camera->SetModelName("camera " + std::to_string(active_camera_index_ + 1));
+	camera->viewport_height_ = viewport_height_;
+	camera->viewport_width_ = viewport_width_;
 	cameras_.push_back(camera);
 	
 }
@@ -54,7 +57,7 @@ int Scene::GetCameraCount() const
 	return cameras_.size();
 }
 
-Camera& Scene::GetCamera(int index)
+MeshModel& Scene::GetCamera(int index) const
 {
 	return *cameras_[index];
 }
@@ -82,6 +85,11 @@ void Scene::SetActiveModelIndex(int index)
 int Scene::GetActiveModelIndex() const
 {
 	return active_model_index_;
+}
+
+Camera& Scene::GetCameraAtIndex(int index) const
+{
+	return *cameras_[index];
 }
 
 glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj)
@@ -121,6 +129,26 @@ glm::vec3 Scene::HomToCartesian(glm::vec4 vec)
 
 	}
 	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
+}
+
+void Scene::SetWidth(double w)
+{
+	viewport_width_ = w;
+}
+
+void Scene::SetHeight(double h)
+{
+	viewport_height_ = h;
+}
+
+float Scene::GetWidth()
+{
+	return viewport_width_;
+}
+
+float Scene::GetHeight()
+{
+	return viewport_height_;
 }
 
 

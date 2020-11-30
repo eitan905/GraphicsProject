@@ -29,16 +29,19 @@ public:
 	void SetActiveProjection(bool value);
 	float& GetScaleBarValue();
 	void SetScaleBarValue(float value);
-	void LocalRotationTransform_X(const float alfa);
-	void LocalRotationTransform_Y(const float alfa);
-	void LocalRotationTransform_Z(const float alfa);
+	void LocalRotationTransform_X();
+	void LocalRotationTransform_Y();
+	void LocalRotationTransform_Z();
 	void Reset();
 	void UpdateObjcetTransform();
 	void SetFrustum(glm::vec4 tempFrus);
+	void SetTranslationTransform();
 
 	void SetLookAt(MeshModel& obj);
 
-
+	void WorldRotationTransform_Z();
+	void WorldRotationTransform_Y();
+	void WorldRotationTransform_X();
 	
 	void Camera::RotateLocal(float x);
 	void Camera::ScaleLocal(float x, float y, float z);
@@ -47,6 +50,7 @@ public:
 	void Camera::ScaleWorld(float x, float y, float z);
 
 	void Camera::RotateWorld(float x);
+	glm::mat4x4 GetTransform();
 
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;
@@ -73,9 +77,9 @@ public:
 	int activeProjection;
 
 	glm::mat4x4 worldTransform;
-	static glm::mat4x4 worldRotationTransform;
-	static glm::mat4x4 worldTranslateTransform;
-	static glm::mat4x4 worldScaleTransform;
+	glm::mat4x4 worldRotationTransform;
+	glm::mat4x4 worldTranslateTransform;
+	glm::mat4x4 worldScaleTransform;
 	//s
 	float localRotateBarValue_X = 0;
 	float localRotateBarValue_Y = 0;
@@ -85,5 +89,6 @@ public:
 	glm::mat4x4 localRotationTransform_X;
 	glm::vec3 eye;
 	glm::vec3 up;
+	glm::vec3 at;
 	
 };
