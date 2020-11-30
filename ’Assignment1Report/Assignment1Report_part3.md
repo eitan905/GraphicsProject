@@ -42,8 +42,66 @@ Part 4:
 2. Orthographic:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/bunny_orth.png)
 
+part 5:
+ 
+ 
+ starting position
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part5_start.png)
+
+after fovy
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part5_change_fovy.png)
+
+after zoom (changing z of camera)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part5_change_z.png)
+
+after zoom (changing distance)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part5_change_distance.png)
+
+
+part 6:
+
+starting position
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_start.png)
+
+after rorate camera y
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_camera_y.png)
+
+after rotate camera world y
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part6_world_y.png)
 
 
 
+part 7:
 
+starting position
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part7_srart_209.png)
+
+after lookat
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part7_lookat.png)
+
+
+
+part 8:
+
+ camera 1 view
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_camera1.png)
+
+camera2 view
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_camera2.png)
+
+another example with 3 cameras (we are looking from one so we see 2)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_another_example.png)
+
+
+part 9:
+
+ 1920x700
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part9_1920x700.png)
+
+500x900
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part9_500x900.png)
+
+part 10:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part10_ui.png)
 
