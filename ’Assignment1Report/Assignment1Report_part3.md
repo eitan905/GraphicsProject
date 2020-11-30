@@ -72,5 +72,11 @@ after rotate camera world y
 
 
 
+part 7:
 
+starting position
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part7_srart_209.png)
+
+after lookat
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part7_lookat.png)
 
