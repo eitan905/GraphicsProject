@@ -92,3 +92,14 @@ camera2 view
 
 another example with 3 cameras (we are looking from one so we see 2)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_another_example.png)
+
+
+part 9:
+
+ 1920x700
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part9_1920x700.png)
+
+500x900
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part9_500x900.png)
+
+
