@@ -80,3 +80,15 @@ starting position
 after lookat
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part7_lookat.png)
 
+
+
+part 8:
+
+ camera 1 view
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_camera1.png)
+
+camera2 view
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_camera2.png)
+
+another example with 3 cameras (we are looking from one so we see 2)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part8_another_example.png)
