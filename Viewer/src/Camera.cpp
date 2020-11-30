@@ -9,15 +9,15 @@ Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::ve
 	up = glm::vec3(0, 1, 0);
 	at = glm::vec3(0, 0, 0);
 	
-	distance = 300;
+	distance = 10;
 	//camera mat help
 	// camera projection_transformation_
 	viewport_width_ = float(1280);
 	viewport_height_ =float (720);
-	fovy = 55.0f;
+	fovy = -55.0f;
 	aspect = viewport_width_/viewport_height_;
-	zFar = 30.0f;
-	zNear = 800.0f;
+	zNear = 30.0f;
+	zFar = 400.0f;
 	right = (viewport_width_);
 	left = 0.0f;
 	bottom = 0.0f;
@@ -319,12 +319,13 @@ void Camera::UpdateObjcetTransform() {
 void Camera::SetDistance(double value)
 {
 	distance += value;
-
+	zNear = distance + localTranslateBarValue_Z;
+	
+	
 }
 
 //camera get OrthoNormalization matrix
 glm::mat4x4 Camera::GetOrthoNormalization() {
-	zNear += localTranslateTransform[3][2] + distance;
 	glm::mat4x4 temp(
 		2 / (right - left), 0, 0, 0,
 		0, 2 / (top - bottom), 0, 0,
@@ -336,7 +337,6 @@ glm::mat4x4 Camera::GetOrthoNormalization() {
 
 //camera get PerspectiveNormalization matrix
 glm::mat4x4 Camera::GetPerspectiveNormalization() {
-	zNear += localTranslateTransform[3][2] + distance;
 	//return glm::perspective(fovy, aspect, zNear, zFar);
     float tanHalfFovy = tan(float((3.14*fovy)/180) / 2.0f);
 

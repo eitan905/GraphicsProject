@@ -411,6 +411,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Checkbox("Cameras", &show_another_window);
 		ImGui::Checkbox("Bounding Box", &scene.displayBox);
+		ImGui::SameLine();
 		ImGui::Checkbox("Normals", &scene.displayNormals);
 
 
@@ -570,12 +571,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				ImGui::PushItemWidth(100);
 				
 	
-				ImGui::SliderFloat("fovy", &camera.fovy, 0, 90.f);
+				ImGui::SliderFloat("fovy", &camera.fovy, -90.0f, 0);
 				ImGui::SameLine();
 				ImGui::SliderFloat("aspect", &camera.aspect, 0.5f, 2.0f);
-				ImGui::SliderFloat("near", &camera.zNear, 0, 500.0f);
+				ImGui::SliderFloat("near", &camera.zNear, 0, 300.0f);
 				ImGui::SameLine();
-				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 1000.0f);
+				ImGui::SliderFloat("far", &camera.zFar, camera.zNear, 800.0f);
 			
 				/*
 				if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
