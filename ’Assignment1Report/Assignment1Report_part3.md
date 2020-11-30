@@ -105,3 +105,21 @@ part 9:
 part 10:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/%E2%80%99Assignment1Report/part10_ui.png)
 
+
+part 11:
+
+as for features you can controll the active model with the keybored, standard WASD controlls, P - scale up, O - scale down,
+F- zoom out, G- zoom in, Z-move camera left, C- move camera right.
+additionally you can click on a model and drag it (this will also make that model the active model)
+
+as for bonuses doring this assignment, we implemented the circle algorithm and we submitted all parts of this assignemnt
+by their early submission date.
+
+
+
+
+
+
+
+
+
