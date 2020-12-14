@@ -6,6 +6,9 @@
 class Renderer
 {
 public:
+	bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y);
+	float area(float x1, float y1, float x2, float y2, float x3, float y3);
+	void floodFillUtil(int x, int y, glm::vec2 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
 	void Draw_Normals(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection);
 	Renderer(int viewportWidth, int viewportHeight);
 	virtual ~Renderer();
@@ -19,9 +22,9 @@ public:
 	void DrawCamera(Camera camera,Scene scene);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 	void DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera camera);
+	void PutPixel(const int i, const int j, const glm::vec3& color);
 	
 private:
-	void PutPixel(const int i, const int j, const glm::vec3& color);
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 
 	void CreateBuffers(int w, int h);
