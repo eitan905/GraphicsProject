@@ -125,8 +125,8 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	

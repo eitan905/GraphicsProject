@@ -410,6 +410,8 @@ void Renderer::DrawCamera(Camera cameraobj, Scene scene)
 	}
 }
 
+
+
 void Renderer::DrawModel(MeshModel obj,Scene scene)
 {
 	
@@ -457,10 +459,45 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		DrawLine(p1, p2, glm::vec3(1, 0, 1));
 		DrawLine(p1, p3, glm::vec3(1, 0, 1));	
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
+		floodFillUtil(p1[0],p1[1], glm::vec3(1, 0, 1),p1,p2,p3)
 	}
 }
 
+void floodFillUtil( int x, int y, glm::vec2 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+{
+	// Base cases
+	if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
+		PutPixel(x, y, color);
+		// Recur for north, east, south and west
+		floodFillUtil( x + 1, y, color, p1,p2,p3);
+		floodFillUtil( x - 1, y, color, p1,p2,p3);
+		floodFillUtil( x, y + 1, color, p1,p2,p3);
+		floodFillUtil( x, y - 1, color, p1,p2,p3);
+	}
+	else {
+		return;
+	}
 
+}
+float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+{
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle(glm::vec2 pt, glm::vec2 v1, glm::vec2 v2, glm::vec2 v3)
+{
+	float d1, d2, d3;
+	bool has_neg, has_pos;
+
+	d1 = sign(pt, v1, v2);
+	d2 = sign(pt, v2, v3);
+	d3 = sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);
+}
 //compute nurmal faces
 glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
 {
