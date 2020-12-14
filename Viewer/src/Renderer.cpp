@@ -455,11 +455,11 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 
 
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
-		
+
 		DrawLine(p1, p2, glm::vec3(1, 0, 1));
-		DrawLine(p1, p3, glm::vec3(1, 0, 1));	
+		DrawLine(p1, p3, glm::vec3(1, 0, 1));
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
-		floodFillUtil(p1[0],p1[1], glm::vec3(1, 0, 1),p1,p2,p3)
+		floodFillUtil(p1[0], p1[1], glm::vec3(1, 0, 1), p1, p2, p3);
 	}
 }
 
