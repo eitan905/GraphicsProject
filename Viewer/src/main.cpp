@@ -68,9 +68,6 @@ double Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 
 	int z = (A_1 / A) * v1[2] + (A_2 / A) * v2[2] + (A_3 / A) * v3[2];
 
 	return z;
-
-
-
 }
 //compute if the point [x,y] is in the triangle [x1,y1] [x2,y2] [x3,y3]
 bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y)
