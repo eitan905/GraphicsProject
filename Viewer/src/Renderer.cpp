@@ -459,33 +459,33 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		DrawLine(p1, p2, glm::vec3(1, 0, 1));
 		DrawLine(p1, p3, glm::vec3(1, 0, 1));
 		DrawLine(p2, p3, glm::vec3(1, 0, 1));
-		floodFillUtil(p1[0], p1[1], glm::vec3(1, 0, 1), p1, p2, p3);
+		FloodFillUtil(p1[0], p1[1], glm::vec3(1, 0, 1), p1, p2, p3);
 	}
 }
 
-void floodFillUtil( int x, int y, glm::vec2 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
 	// Base cases
 	if (isInside( p1[0],p1[1], p2[0],p2[1], p3[0],p3[1],x,y)) {
 		PutPixel(x, y, color);
 		// Recur for north, east, south and west
-		floodFillUtil( x + 1, y, color, p1,p2,p3);
-		floodFillUtil( x - 1, y, color, p1,p2,p3);
-		floodFillUtil( x, y + 1, color, p1,p2,p3);
-		floodFillUtil( x, y - 1, color, p1,p2,p3);
+		//FloodFillUtil( x + 1, y, color, p1,p2,p3);
+		//FloodFillUtil( x - 1, y, color, p1,p2,p3);
+		//FloodFillUtil( x, y + 1, color, p1,p2,p3);
+		FloodFillUtil( x, y - 1, color, p1,p2,p3);
 	}
 	else {
 		return;
 	}
 
 }
-float area(float x1, float y1, float x2, float y2, float x3, float y3)
+float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
 }
 
 //compute if the point [x,y] is in the triangle [x1,y1] [x2,y2] [x3,y3]
-bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y)
+bool Renderer::isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y)
 {
 	/* Calculate area of triangle ABC */
 	float A = area(x1, y1, x2, y2, x3, y3);
