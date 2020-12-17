@@ -466,12 +466,13 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
 	// Base cases
-	if (isInside( p1[0],p1[1], p2[0],p2[1], p3[0],p3[1],x,y)) {
+	if(0<=x<= viewport_width_&& 0 <= y <= viewport_height_)
+	if (isInside( p1[0],p1[1], p2[0],p2[1], p3[0],p3[1],x,y)&& color_buffer_[INDEX(viewport_width_, x, y, 0)] !=color.x) {
 		PutPixel(x, y, color);
 		// Recur for north, east, south and west
-		//FloodFillUtil( x + 1, y, color, p1,p2,p3);
-		//FloodFillUtil( x - 1, y, color, p1,p2,p3);
-		//FloodFillUtil( x, y + 1, color, p1,p2,p3);
+		FloodFillUtil( x + 1, y, color, p1,p2,p3);
+		FloodFillUtil( x - 1, y, color, p1,p2,p3);
+		FloodFillUtil( x, y + 1, color, p1,p2,p3);
 		FloodFillUtil( x, y - 1, color, p1,p2,p3);
 	}
 	else {
@@ -479,6 +480,40 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec2 p1, glm::
 	}
 
 }
+int on_eage(int x, int y,glm::vec2 p1, glm::vec2 p2) {
+	int m = (p1[1] - p2[1]) / (p1[0] - p2[0]);
+	int y_on_line = m * (x - p1[0]) + p1[1];
+	if (y_on_line == y)return 1;
+	else return 0; 
+
+}
+void Renderer::scan_convertion(int x,int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+{
+	// Base cases
+	if (0 <= x < viewport_width_ && 0 <= y <= viewport_height_) {
+		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
+			flag = !flag;
+			if (flag)
+				PutPixel(x, y, color);
+			// Recur for north, east, south and west
+			scan_convertion(x + 1, y, color, p1, p2, p3);
+		}
+	}
+	if (x == viewport_width_) {
+		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
+			flag = !flag;
+			if (flag)
+				PutPixel(x, y, color);
+			// Recur for north, east, south and west
+			scan_convertion(0, y-1, color, p1, p2, p3);
+		}
+	}
+	else {
+			return;
+	}
+
+}
+
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
