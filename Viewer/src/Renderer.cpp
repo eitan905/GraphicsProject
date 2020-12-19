@@ -19,10 +19,21 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 	CreateBuffers(viewport_width, viewport_height);
 }
 
+
 Renderer::~Renderer()
 {
 	delete[] color_buffer_;
+	delete[] z_buffer;
 }
+
+int min(int x, int y) {
+	return x < y ? x : y;
+}
+int max(int x, int y) {
+	return x > y ? x : y;
+}
+
+
 
 void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 {
@@ -110,13 +121,25 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	}
 }
 
+double Renderer::Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt) {
+	double A_1 = area(v2[0], v2[1], v3[0], v3[1], pt[0], pt[1]);
+	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
+	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
+	double A = A_1 + A_2 + A_3;
+	int z = (A_1 / A) * v1[2] + (A_2 / A) * v2[2] + (A_3 / A) * v3[2];
 
+	return z;
+}
 
 void Renderer::CreateBuffers(int w, int h)
 {
 	CreateOpenGLBuffer(); //Do not remove this line.
 	color_buffer_ = new float[3 * w * h];
+	z_buffer = new float[w * h];
 	ClearColorBuffer(glm::vec3(0.0f, 0.0f, 0.0f));
+
+	
+
 }
 
 //##############################
@@ -240,6 +263,9 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 		for (int j = 0; j < viewport_height_; j++)
 		{
 			PutPixel(i, j, color);
+
+			z_buffer[Z_INDEX(viewport_width_,i,j)] = INFINITY;
+
 		}
 	}
 }
@@ -449,70 +475,104 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 		int point1 = face.GetVertexIndex(1) - 1;
 		int point2 = face.GetVertexIndex(2) - 1;
 
-		glm::vec2 p1(obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1]);
-		glm::vec2 p2(obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1]);
-		glm::vec2 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1]);
+		glm::vec3 p1(obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1], obj.getVerticeAtIndex(point0)[2]);
+		glm::vec3 p2(obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1], obj.getVerticeAtIndex(point1)[2]);
+		glm::vec3 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1], obj.getVerticeAtIndex(point2)[2]);
 
 
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
-		DrawLine(p1, p2, glm::vec3(1, 0, 1));
-		DrawLine(p1, p3, glm::vec3(1, 0, 1));
-		DrawLine(p2, p3, glm::vec3(1, 0, 1));
+	
 		FloodFillUtil(p1[0], p1[1], glm::vec3(1, 0, 1), p1, p2, p3);
-	}
+	}	
 }
 
-void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+
+float Renderer::sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
-	// Base cases
-	if(0<=x<= viewport_width_&& 0 <= y <= viewport_height_)
-	if (isInside( p1[0],p1[1], p2[0],p2[1], p3[0],p3[1],x,y)&& color_buffer_[INDEX(viewport_width_, x, y, 0)] !=color.x) {
-		PutPixel(x, y, color);
-		// Recur for north, east, south and west
-		FloodFillUtil( x + 1, y, color, p1,p2,p3);
-		FloodFillUtil( x - 1, y, color, p1,p2,p3);
-		FloodFillUtil( x, y + 1, color, p1,p2,p3);
-		FloodFillUtil( x, y - 1, color, p1,p2,p3);
-	}
-	else {
-		return;
-	}
-
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 }
-int on_eage(int x, int y,glm::vec2 p1, glm::vec2 p2) {
-	int m = (p1[1] - p2[1]) / (p1[0] - p2[0]);
-	int y_on_line = m * (x - p1[0]) + p1[1];
-	if (y_on_line == y)return 1;
-	else return 0; 
 
-}
-void Renderer::scan_convertion(int x,int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+bool Renderer::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3)
 {
-	// Base cases
-	if (0 <= x < viewport_width_ && 0 <= y <= viewport_height_) {
-		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
-			flag = !flag;
-			if (flag)
-				PutPixel(x, y, color);
-			// Recur for north, east, south and west
-			scan_convertion(x + 1, y, color, p1, p2, p3);
+	float d1, d2, d3;
+	bool has_neg, has_pos;
+
+	d1 = sign(pt, v1, v2);
+	d2 = sign(pt, v2, v3);
+	d3 = sign(pt, v3, v1);
+
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+	return !(has_neg && has_pos);
+}
+
+void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+	
+	int minX = max(min(p1[0], min(p2[0], p3[0])), 1);
+	int minY = max(min(p1[1], min(p2[1], p3[1])), 1);
+	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_-1);
+	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_-1);
+
+	color[0] = ((rand() % 256)/100) + 0.001;
+	color[1] = ((rand() % 256)/100) + 0.001;
+	color[2] = ((rand() % 256)/100) + 0.001;
+
+
+	for (int y = minY; y <= maxY; y++)
+	{
+		for (int x = minX; x <= maxX; x++)
+		{
+			float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
+			if (z < z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+				z_buffer[INDEX(viewport_width_, x, y, 0)] = z;
+				if (PointInTriangle(glm::vec2(x, y), p1, p2, p3))
+				{ /* inside triangle */
+
+					PutPixel(x, y, color);
+				}
+			}
+
+			
 		}
 	}
-	if (x == viewport_width_) {
-		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
-			flag = !flag;
-			if (flag)
-				PutPixel(x, y, color);
-			// Recur for north, east, south and west
-			scan_convertion(0, y-1, color, p1, p2, p3);
-		}
-	}
-	else {
-			return;
-	}
 
 }
+//int on_eage(int x, int y,glm::vec2 p1, glm::vec2 p2) {
+//	int m = (p1[1] - p2[1]) / (p1[0] - p2[0]);
+//	int y_on_line = m * (x - p1[0]) + p1[1];
+//	if (y_on_line == y)return 1;
+//	else return 0; 
+//
+//}
+//void Renderer::scan_convertion(int x,int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+//{
+//	// Base cases
+//	if (0 <= x < viewport_width_ && 0 <= y <= viewport_height_) {
+//		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
+//			flag = !flag;
+//			if (flag)
+//				PutPixel(x, y, color);
+//			// Recur for north, east, south and west
+//			scan_convertion(x + 1, y, color, p1, p2, p3);
+//		}
+//	}
+//	if (x == viewport_width_) {
+//		if (on_eage(x, y, p1, p2) || on_eage(x, y, p1, p3) || on_eage(x, y, p3, p2)) {
+//			flag = !flag;
+//			if (flag)
+//				PutPixel(x, y, color);
+//			// Recur for north, east, south and west
+//			scan_convertion(0, y-1, color, p1, p2, p3);
+//		}
+//	}
+//	else {
+//			return;
+//	}
+//
+//}
 
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
@@ -655,5 +715,4 @@ glm::vec3 Renderer::HomToCartesian(glm::vec4 vec)
 	}
 	return glm::vec3(vec[0] / vec[3], vec[1] / vec[3], vec[2] / vec[3]);
 }
-
 

@@ -22,10 +22,13 @@ public:
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 	void DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera camera);
 	void PutPixel(const int i, const int j, const glm::vec3& color);
-	void FloodFillUtil(int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
+	void FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 	void scan_convertion(int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3); 
 	int flag = 0;
 	int on_eage(int x, int y, glm::vec2 p1, glm::vec2 p2);
+	bool PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
+	float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
+	double Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt);
 private:
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 
@@ -34,6 +37,7 @@ private:
 	void InitOpenGLRendering();
 
 	float* color_buffer_;
+	float* z_buffer;
 	int viewport_width_;
 	int viewport_height_;
 	GLuint gl_screen_tex_;
