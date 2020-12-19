@@ -17,7 +17,7 @@ public:
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
 	void UseDrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
-	void DrawModel(MeshModel obj,Scene scene);
+	void DrawModel(MeshModel obj,Scene scene,glm::vec3 color);
 	void DrawCamera(Camera camera,Scene scene);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 	void DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera camera);

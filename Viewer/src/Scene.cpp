@@ -99,7 +99,7 @@ glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj)
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
 	glm::mat4x4 perspective = camera.GetPerspectiveNormalization();
-	return projection * perspective * cameraTransform * obj.GetTransform();
+	return perspective * cameraTransform * obj.GetTransform();
 }
 
 glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj)

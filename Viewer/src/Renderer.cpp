@@ -264,7 +264,7 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 		{
 			PutPixel(i, j, color);
 
-			z_buffer[Z_INDEX(viewport_width_,i,j)] = INFINITY;
+			z_buffer[Z_INDEX(viewport_width_,i,j)] = -INFINITY;
 
 		}
 	}
@@ -285,10 +285,16 @@ void Renderer::Render(const Scene& scene)
 	const glm::vec3 color1(1, 0, 1);
 	DrawLine(p3, p4, color1);
 	
-
+	glm::vec3 color2 = glm::vec3(134, 51, 224);
+	
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		
-		DrawModel(scene.GetModel(i),scene);
+		if (i == 1) {
+			DrawModel(scene.GetModel(i), scene, color2);
+		}
+		else {
+			DrawModel(scene.GetModel(i), scene, color);
+		}
 	
 	}
 	for (int i = 0; i < scene.GetCameraCount(); i++) {
@@ -438,7 +444,7 @@ void Renderer::DrawCamera(Camera cameraobj, Scene scene)
 
 
 
-void Renderer::DrawModel(MeshModel obj,Scene scene)
+void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 {
 	
 	//std::cout << scene.GetModelCount() << std::endl;
@@ -450,6 +456,8 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	glm::mat4x4 ortho = scene.GetOrthographicTransform(obj);
 	glm::mat4x4 projection = scene.GetProjection(obj);
 	glm::mat4x4 normal_projection = camera.GetCameraTransform() * obj.GetTransform();
+	glm::mat4x4 divideZ = camera.GetProjectionTransformation();
+
 	
 	glm::mat4 temp2 = glm::mat4(1);
 	temp2[2][2] = -1;
@@ -460,12 +468,18 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 	if (scene.displayNormals) {
 		Draw_Normals(obj, camera, projection, normal_projection);
 	}
-	
+	float tempZ;
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
-		glm::vec4 temp =  projection * glm::vec4(currentVer, 1);
 		
+		glm::vec4 temp =  projection * glm::vec4(currentVer, 1);
+		if (camera.GetActiveProjection() == 0) {
+			tempZ = temp[2];
+			temp = divideZ * temp;
+			
+		}
 		currentVer = HomToCartesian(temp);
+		currentVer[2] = tempZ;
 		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
 	}
 
@@ -482,8 +496,8 @@ void Renderer::DrawModel(MeshModel obj,Scene scene)
 
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
-	
-		FloodFillUtil(p1[0], p1[1], glm::vec3(1, 0, 1), p1, p2, p3);
+		
+		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3);
 	}	
 }
 
@@ -516,26 +530,22 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_-1);
 	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_-1);
 
-	color[0] = ((rand() % 256)/100) + 0.001;
+	/*color[0] = ((rand() % 256)/100) + 0.001;
 	color[1] = ((rand() % 256)/100) + 0.001;
-	color[2] = ((rand() % 256)/100) + 0.001;
+	color[2] = ((rand() % 256)/100) + 0.001;*/
 
 
 	for (int y = minY; y <= maxY; y++)
 	{
 		for (int x = minX; x <= maxX; x++)
 		{
-			float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
-			if (z < z_buffer[Z_INDEX(viewport_width_, x, y)]) {
-				z_buffer[INDEX(viewport_width_, x, y, 0)] = z;
-				if (PointInTriangle(glm::vec2(x, y), p1, p2, p3))
-				{ /* inside triangle */
-
+			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
+				float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
+				if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+					z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
 					PutPixel(x, y, color);
 				}
 			}
-
-			
 		}
 	}
 
