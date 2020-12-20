@@ -263,9 +263,7 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 		for (int j = 0; j < viewport_height_; j++)
 		{
 			PutPixel(i, j, color);
-
-			z_buffer[Z_INDEX(viewport_width_,i,j)] = -INFINITY;
-
+			z_buffer[Z_INDEX(viewport_width_, i, j)] = -INFINITY;
 		}
 	}
 }
@@ -497,7 +495,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
 		
-		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3);
+		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera);
 	}	
 }
 
@@ -522,13 +520,14 @@ bool Renderer::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::ve
 	return !(has_neg && has_pos);
 }
 
-void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera)
 {
 	
 	int minX = max(min(p1[0], min(p2[0], p3[0])), 1);
 	int minY = max(min(p1[1], min(p2[1], p3[1])), 1);
 	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_-1);
 	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_-1);
+	float c;
 
 	/*color[0] = ((rand() % 256)/100) + 0.001;
 	color[1] = ((rand() % 256)/100) + 0.001;
@@ -541,9 +540,15 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 		{
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
 				float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
-				if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
-					z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
-					PutPixel(x, y, color);
+				if (camera.zNear < -z && -z < camera.zFar) {
+					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
+						c = (z / camera.zFar);
+						//std::cout << c << std::endl;
+						//c = float(60) / 400;
+						
+						PutPixel(x, y, glm::vec3(1+c, 1+c, 1+c));
+					}
 				}
 			}
 		}
