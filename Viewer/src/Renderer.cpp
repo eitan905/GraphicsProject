@@ -399,12 +399,12 @@ void Renderer::DrawCamera(Camera cameraobj, Scene scene)
 
 	//std::cout << scene.GetModelCount() << std::endl;
 	//std::cout << "1" << std::endl;
-
+	float tempZ;
 	Camera camera = scene.GetActiveCamera();
 	//std::cout << "2" << std::endl;
-	glm::mat4x4 perspective = scene.GetPerspectiveTransform(cameraobj);
-	glm::mat4x4 ortho = scene.GetOrthographicTransform(cameraobj);
-	glm::mat4x4 projection = scene.GetProjection(cameraobj);
+	glm::mat4x4 perspective = scene.GetPerspectiveTransform(cameraobj,tempZ);
+	glm::mat4x4 ortho = scene.GetOrthographicTransform(cameraobj, tempZ);
+	glm::mat4x4 projection = scene.GetProjection(cameraobj, tempZ);
 	glm::mat4x4 normal_projection = camera.GetCameraTransform() * cameraobj.GetTransform();
 
 	glm::mat4 temp2 = glm::mat4(1);
@@ -450,9 +450,10 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 
 	Camera camera = scene.GetActiveCamera();
 	//std::cout << "2" << std::endl;
-	glm::mat4x4 perspective = scene.GetPerspectiveTransform(obj);
-	glm::mat4x4 ortho = scene.GetOrthographicTransform(obj);
-	glm::mat4x4 projection = scene.GetProjection(obj);
+	float tempZ;
+	glm::mat4x4 perspective = scene.GetPerspectiveTransform(obj,tempZ);
+	glm::mat4x4 ortho = camera.GetOrthoNormalization();
+	glm::mat4x4 projection = scene.GetProjection(obj,tempZ);
 	glm::mat4x4 normal_projection = camera.GetCameraTransform() * obj.GetTransform();
 	glm::mat4x4 divideZ = camera.GetProjectionTransformation();
 
@@ -466,7 +467,6 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 	if (scene.displayNormals) {
 		Draw_Normals(obj, camera, projection, normal_projection);
 	}
-	float tempZ;
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
 		
@@ -475,6 +475,11 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 			tempZ = temp[2];
 			temp = divideZ * temp;
 			
+		}
+		if (camera.GetActiveProjection() == 1) {
+			tempZ = temp[2];
+			temp = ortho * temp;
+
 		}
 		currentVer = HomToCartesian(temp);
 		currentVer[2] = tempZ;
@@ -540,14 +545,15 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 		{
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
 				float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
-				if (camera.zNear < -z && -z < camera.zFar) {
+				//std::cout << z << std::endl;
+				if (1) {
 					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
 						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
 						c = (z / camera.zFar);
 						//std::cout << c << std::endl;
 						//c = float(60) / 400;
-						
 						PutPixel(x, y, glm::vec3(1+c, 1+c, 1+c));
+						//PutPixel(x + 300, y, color);
 					}
 				}
 			}

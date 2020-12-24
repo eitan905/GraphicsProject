@@ -27,9 +27,9 @@ public:
 	int GetActiveModelIndex() const;
 	Camera& GetCameraAtIndex(int index) const;
 	
-	glm::mat4x4 GetPerspectiveTransform(MeshModel& obj);
-	glm::mat4x4 GetOrthographicTransform(MeshModel& obj);
-	glm::mat4x4 GetProjection(MeshModel& obj);
+	glm::mat4x4 GetPerspectiveTransform(MeshModel& obj, float& z);
+	glm::mat4x4 GetOrthographicTransform(MeshModel& obj,float& z);
+	glm::mat4x4 GetProjection(MeshModel& obj,float& z);
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 	void SetWidth(double w);
 	void SetHeight(double h);

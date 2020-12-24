@@ -133,8 +133,8 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	
@@ -271,7 +271,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	//Capture mouse event - drag
 	if (!io.WantCaptureMouse)
 	{
-
+		float tempZ;
 		double time = ImGui::GetTime();
 		double scale = 10;
 
@@ -292,7 +292,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 					if (camera.GetActiveProjection()) {
 						scale = 1;
 					}
-					glm::mat4x4 projection = scene.GetProjection(obj);
+					glm::mat4x4 projection = scene.GetProjection(obj,tempZ);
 					for (int j = 0; j < temp_obj.getVerticesSize(); j++) {
 						//Update obj vertices according to the transformation
 						glm::vec3 temp = (camera.GetViewPortTransformation(scene.HomToCartesian(projection * glm::vec4(temp_obj.getVerticeAtIndex(j), 1)),
@@ -469,7 +469,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				ImGui::SameLine();
 				ImGui::SliderFloat("ot.y", &obj.localTranslateBarValue_X, -100, 100);
 				ImGui::SameLine();
-				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -100, 100);
+				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -500, 500);
 				ImGui::SameLine();
 				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -100, 100);
 

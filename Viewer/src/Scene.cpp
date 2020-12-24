@@ -92,8 +92,9 @@ Camera& Scene::GetCameraAtIndex(int index) const
 	return *cameras_[index];
 }
 
-glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj)
+glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj, float& z)
 {
+	glm::vec4 temp;
 	Camera camera = GetActiveCamera();
 	glm::vec4 frustum = camera.GetFrustum();
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
@@ -102,22 +103,26 @@ glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj)
 	return perspective * cameraTransform * obj.GetTransform();
 }
 
-glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj)
+glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj,float& z)
 {
 	Camera camera = GetActiveCamera();
+	glm::vec4 temp = glm::vec4 (obj.getVerticeAtIndex(2), 1);
+	//std::cout <<"before" << temp[2] << std::endl;
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 ortho = camera.GetOrthoNormalization();
-	return ortho * cameraTransform * obj.GetTransform();
+	temp = cameraTransform * obj.GetTransform() * temp;
+	//std::cout <<"after" << temp[2] << std::endl;
+	return cameraTransform * obj.GetTransform();
 }
 
-glm::mat4x4 Scene::GetProjection(MeshModel& obj)
+glm::mat4x4 Scene::GetProjection(MeshModel& obj, float& z)
 {
 	Camera camera = GetActiveCamera();
 	if (camera.GetActiveProjection() == 1) {
-		return GetOrthographicTransform(obj);
+		return GetOrthographicTransform(obj,z);
 	}
 	else {
-		return GetPerspectiveTransform(obj);
+		return GetPerspectiveTransform(obj,z);
 	}
 }
 
