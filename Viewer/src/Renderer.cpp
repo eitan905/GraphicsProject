@@ -46,11 +46,16 @@ glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3
 	B_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[2], color_p2[2], color_p3[2], pt);
 	return glm::vec3(R_pt, G_pt, B_pt);
 }
-
+//phong shading for vertix =Gouraud_shading_for_vertix
+//this is Phong_shading for point in polygon
 glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle)
 {
-	glm::vec3 normal_of_polygon;
-	return p1;
+	glm::vec3 normal_of_polygon= glm::vec3(0,0,0);
+	normal_of_polygon[0]=Linear_Interpolation_by_choice(p1,p2,p3,pt, normal_p1[0], normal_p2[0], normal_p3[0]);
+	normal_of_polygon[1] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[1], normal_p2[1], normal_p3[1]);
+	normal_of_polygon[2] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[2], normal_p2[2], normal_p3[2]);
+	light_source.Set_N(normal_of_polygon);
+	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
 }
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
