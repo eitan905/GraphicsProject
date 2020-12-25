@@ -3,13 +3,27 @@
 #include <algorithm>
 
 #include <iostream>
-
+#include "light.h"
 #include "Renderer.h"
 #include "InitShader.h"
 #include <glm\ext\matrix_transform.hpp>
 
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
+
+glm::vec3 Renderer::Flat_shading(light light_source, MeshModel mesh,glm::vec3 normal_of_polygon,int  user_angle)
+{
+	
+	light_source.Set_N(normal_of_polygon);
+	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+}
+
+glm::vec3 Renderer::Gouraud_shading(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle)
+{
+
+	light_source.Set_N(normal_of_polygon);
+	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+}
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),     

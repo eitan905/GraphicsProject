@@ -29,6 +29,8 @@ public:
 	bool PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
 	float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
 	double Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt);
+	glm::vec3 Flat_shading(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int user_angle);
+	glm::vec3 Gouraud_shading(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle);
 private:
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 

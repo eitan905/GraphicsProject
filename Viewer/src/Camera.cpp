@@ -251,7 +251,6 @@ void Camera::RotateWorld(float x) {
 	c = worldRotationTransform * c;
 	cinv = cinv * glm::inverse(worldRotationTransform);
 }
-
 glm::mat4x4 Camera::GetTransform()
 {
 	UpdateObjcetTransform();

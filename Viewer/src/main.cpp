@@ -29,8 +29,6 @@ static double previous_time = 0;
 std::vector<MeshModel*> mouse_models;
 
 
-
-
 //sigh func- help for the PointInTriangle 
 float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 {
@@ -133,8 +131,8 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	

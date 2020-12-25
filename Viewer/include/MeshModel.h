@@ -4,7 +4,7 @@
 #include "Face.h"
 #include <stdio.h>
 #include <iostream>
-
+#include "light.h"
 
 
 class MeshModel
@@ -31,8 +31,9 @@ public:
 	std::vector<glm::vec3> GetNormals();
 	std::vector<Face> GetFaces();
 
-
-
+	glm::vec3 K_A;
+	glm::vec3 K_S;
+	glm::vec3 K_D;
 	
 	void SetModelName(std::string name);
 	void SetScaleBarValue(float value);
