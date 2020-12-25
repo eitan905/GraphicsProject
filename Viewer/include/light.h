@@ -18,6 +18,7 @@ private:
 
 public:
     glm::vec3 light::Mul(int x, glm::vec3 vec);
+    
 
     light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S);
     void light::Set_I(glm::vec3 I);
