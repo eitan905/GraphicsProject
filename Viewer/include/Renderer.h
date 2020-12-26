@@ -6,6 +6,14 @@
 class Renderer
 {
 public:
+
+	glm::mat3 Gaussian_kernal = glm::mat3x3(
+		1 / 16, 1 / 8, 1 / 16,
+		1 / 8, 1 / 4, 1 / 8,
+		1 / 16, 1 / 8, 1 / 16
+	);
+	glm::vec3 color_neighbers;
+	glm::vec3 Renderer::Convolution(glm::vec3 color_of_pt, glm::mat3x3 color_neighbers);
 	bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y);
 	float area(float x1, float y1, float x2, float y2, float x3, float y3);
 	void Draw_Normals(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection);
@@ -35,6 +43,11 @@ public:
 	glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt);
 	double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, int color_v1, int color_v2, int color_v3, glm::vec3 pt);
 	glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle);
+	glm::vec3 Renderer::Point_color_in_fog( glm::vec3 color_of_pt, float distance, float fog_density);
+	float Renderer::Fog_color(float distance, float fog_density);
+
+
+
 private:
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
 

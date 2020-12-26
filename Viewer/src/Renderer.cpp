@@ -10,6 +10,31 @@
 
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
+/*
+glm::vec3 Renderer::Convolution(glm::vec3 color_of_pt, glm::mat3x3 color_neighbers )
+{
+	float sum=0;
+	glm::mat3x3 result = Gaussian_kernal * neighbers;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			sum += result[i, j] * Gaussian_kernal[i, j];
+		}
+	}
+	return sum;
+}
+*/
+
+glm::vec3 Renderer::Point_color_in_fog( glm::vec3 color_of_pt, float distance, float fog_density)
+{
+	float fog_color; 
+	fog_color = Fog_color(distance, fog_density);
+	return glm::vec3((fog_color + color_of_pt[0]) / 2, (fog_color + color_of_pt[1]) / 2, (fog_color + color_of_pt[2]) / 2);
+}
+
+float Renderer::Fog_color(float distance, float fog_density)
+{
+	return exp( -distance * fog_density);
+}
 
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
