@@ -7,6 +7,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	model_name_(model_name)
 
 {
+	color = glm::vec4(1.0f, 0.0f, 1.0f,1.0f);
 	localRotateBarValue_X = 0;
 	localRotateBarValue_Y = 0;
 	localRotateBarValue_Z = 0;

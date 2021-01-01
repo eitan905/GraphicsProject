@@ -131,8 +131,8 @@ int main(int argc, char **argv)
 	Scene scene = Scene();
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/b.txt"));
-	scene.AddModel(Utils::LoadMeshModel("C:/Users/user/Desktop/camera.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 	
@@ -391,6 +391,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// Controls
 	ImGui::ColorEdit3("Clear Color", (float*)&clear_color);
+	ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
 	// TODO: Add more controls as needed
 	
 	ImGui::End();
@@ -467,9 +468,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				ImGui::SameLine();
 				ImGui::SliderFloat("ot.y", &obj.localTranslateBarValue_X, -100, 100);
 				ImGui::SameLine();
-				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -500, 500);
+				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -100, 100);
 				ImGui::SameLine();
-				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -100, 100);
+				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -1200, 0);
 
 				ImGui::SetNextItemWidth(400);
 				ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0, 1000);
@@ -510,7 +511,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
+		ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
 
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -644,5 +645,4 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 	}
 }
-
 

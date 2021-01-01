@@ -33,7 +33,7 @@ glm::vec3 Renderer::Point_color_in_fog( glm::vec3 color_of_pt, float distance, f
 
 float Renderer::Fog_color(float distance, float fog_density)
 {
-	return exp( -distance * fog_density);
+	return exp( -(distance * fog_density));
 }
 
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
@@ -363,17 +363,9 @@ void Renderer::Render(const Scene& scene)
 	const glm::vec3 color1(1, 0, 1);
 	DrawLine(p3, p4, color1);
 	
-	glm::vec3 color2 = glm::vec3(134, 51, 224);
 	
 	for (int i = 0; i < scene.GetModelCount(); i++) {
-		
-		if (i == 1) {
-			DrawModel(scene.GetModel(i), scene, color2);
-		}
-		else {
-			DrawModel(scene.GetModel(i), scene, color);
-		}
-	
+		DrawModel(scene.GetModel(i), scene, scene.GetModel(i).color);
 	}
 	for (int i = 0; i < scene.GetCameraCount(); i++) {
 		if (scene.GetActiveCameraIndex() != i) {
@@ -617,7 +609,7 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 	/*color[0] = ((rand() % 256)/100) + 0.001;
 	color[1] = ((rand() % 256)/100) + 0.001;
 	color[2] = ((rand() % 256)/100) + 0.001;*/
-
+	glm::vec3 temp;
 
 	for (int y = minY; y <= maxY; y++)
 	{
@@ -632,7 +624,17 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 						c = (z / camera.zFar);
 						//std::cout << c << std::endl;
 						//c = float(60) / 400;
-						PutPixel(x, y, glm::vec3(1+c, 1+c, 1+c));
+						c = abs(c);
+						/*color[0] *= c;
+						color[1] *= c;
+						color[2] *= c;
+						color[0] = 1 - color[0];
+						color[1] = 1 - color[1];
+						color[2] = 1 - color[2];*/
+						z = abs(z);
+						//PutPixel(x+300, y, color);
+						temp = Point_color_in_fog(color, c,1.3);
+						PutPixel(x, y, temp);
 						//PutPixel(x + 300, y, color);
 					}
 				}

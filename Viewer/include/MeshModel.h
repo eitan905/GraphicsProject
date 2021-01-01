@@ -73,6 +73,7 @@ public:
 	float worldTranslateBarValue_Z;
 	float worldTranslateBarValue_Y;
 	float worldTranslateBarValue_X;
+	glm::vec4 color;
 
 protected:
 	glm::mat4x4 objectTransform;
