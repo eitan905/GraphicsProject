@@ -392,6 +392,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// Controls
 	ImGui::ColorEdit3("Clear Color", (float*)&clear_color);
 	ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
+
+	
+	
+
 	// TODO: Add more controls as needed
 	
 	ImGui::End();
@@ -512,7 +516,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 		ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
+		if (ImGui::Button("Add Light")) {
+			scene.AddLight();
+		}
+		static const char* currentLights[50];
+		if (scene.GetLights().size() != 0) {
+			for (int i = 0; i < scene.GetLightsCount(); i++) {
+				std::string str = "light " + std::to_string(i);
+				currentLights[i] = strcpy(new char[str.length() + 1], str.c_str());
+			}
+			static int selectedLight;
+			selectedLight = scene.GetActiveLightIndex();
+			
+			ImGui::ListBox("active light", &selectedLight, currentLights, scene.GetLightsCount(), 2);
+			scene.SetActiveLightIndex(selectedLight);
+			ImGui::ColorEdit3("L_A", (float*)&scene.GetActiveLight().color_L_A);
+			ImGui::ColorEdit3("L_D", (float*)&scene.GetActiveLight().color_L_D);
+			ImGui::ColorEdit3("L_S", (float*)&scene.GetActiveLight().color_L_S);
 
+		}
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();

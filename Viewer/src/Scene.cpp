@@ -37,10 +37,42 @@ MeshModel& Scene::GetModel(int index) const
 	return *mesh_models_[index];
 }//
 
+light& Scene::GetActiveLight()
+{
+	return lights[active_light_index_];
+}
+
+void Scene::SetActiveLightIndex(int index)
+{
+	active_light_index_ = index;
+}
+
 MeshModel& Scene::GetActiveModel() const
 {
 	return *mesh_models_[active_model_index_];
 }
+
+void Scene::AddLight()
+{
+	lights.push_back(light(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)));
+	active_light_index_ = lights.size() - 1;
+}
+std::vector<light> Scene::GetLights()
+{
+	return lights;
+}
+
+int Scene::GetActiveLightIndex()
+{
+	return active_light_index_;
+}
+
+int Scene::GetLightsCount()
+{
+	return lights.size();
+}
+
+
 
 void Scene::AddCamera(const std::shared_ptr<Camera>& camera)
 {

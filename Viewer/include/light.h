@@ -18,6 +18,10 @@ private:
 
 public:
     glm::vec3 light::Mul(int x, glm::vec3 vec);
+    glm::vec4 color_L_A;
+    glm::vec4 color_L_D;
+    glm::vec4 color_L_S;
+
     
 
     light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S);
