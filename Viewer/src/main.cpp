@@ -391,7 +391,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	// Controls
 	ImGui::ColorEdit3("Clear Color", (float*)&clear_color);
-	ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
+	ImGui::ColorEdit3("model K_A", (float*)&scene.GetActiveModel().K_A);
+	ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
+	ImGui::ColorEdit3("model K_D", (float*)&scene.GetActiveModel().K_D);
 
 	
 	
@@ -515,7 +517,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-		ImGui::ColorEdit3("model Color", (float*)&scene.GetActiveModel().color);
+		ImGui::ColorEdit3("model K_A", (float*)&scene.GetActiveModel().K_A);
+		ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
+		ImGui::ColorEdit3("model K_D", (float*)&scene.GetActiveModel().K_D);
 		if (ImGui::Button("Add Light")) {
 			scene.AddLight();
 		}

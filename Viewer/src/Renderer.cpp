@@ -49,7 +49,7 @@ double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec
 
 	return z;
 }
-glm::vec3 Renderer::Flat_shading(light light_source, MeshModel mesh,glm::vec3 normal_of_polygon,int  user_angle)
+glm::vec3 Renderer::Flat_shading(light light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle)
 {
 	
 	light_source.Set_N(normal_of_polygon);
@@ -116,6 +116,25 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	color_buffer_[INDEX(viewport_width_, i, j, 1)] = color.y;
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
 }
+
+//compute nurmal faces
+glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
+{
+
+	glm::vec3 temp1 = x1 - x2;
+	glm::vec3 temp2 = x2 - x3;
+	/*std::cout << "1" << temp1[0] << "," << temp1[1] << "," << temp1[2] <<std::endl;
+	std::cout << "2" << temp2[0] << "," << temp2[1] << "," << temp2[2] << std::endl;*/
+	glm::vec3 ans = glm::cross(temp1, temp2);
+
+	double length = sqrt(pow(ans[0], 2) + pow(ans[1], 2) + pow(ans[2], 2));
+
+	ans[0] /= length;
+	ans[1] /= length;
+	ans[2] /= length;
+	return ans;
+}
+
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
@@ -572,7 +591,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
 		
-		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera,scene);
+		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera,scene,obj);
 	}	
 }
 
@@ -597,7 +616,7 @@ bool Renderer::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::ve
 	return !(has_neg && has_pos);
 }
 
-void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera,Scene& scene)
+void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera,Scene& scene, MeshModel& mesh)
 {
 	
 	int minX = max(min(p1[0], min(p2[0], p3[0])), 1);
@@ -637,7 +656,7 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 						//PutPixel(x+300, y, color);
 						if (scene.GetActiveLightIndex() != -1) {
 							light light1 = scene.GetActiveLight();
-							temp = scene.GetActiveLight().Final_light(color, glm::vec3(0,0,0), glm::vec3(0, 0, 0), 45);
+							temp = Flat_shading(light1, mesh, normal(p1,p2,p3), 45);
 						}
 						//temp = Point_color_in_fog(color, c,1.3);
 						PutPixel(x, y, temp);
@@ -705,23 +724,6 @@ bool Renderer::isInside(float x1, float y1, float x2, float y2, float x3, float 
 }
 
 
-//compute nurmal faces
-glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
-{
-	
-	glm::vec3 temp1 = x1 - x2;
-	glm::vec3 temp2 = x2 - x3;
-	/*std::cout << "1" << temp1[0] << "," << temp1[1] << "," << temp1[2] <<std::endl;
-	std::cout << "2" << temp2[0] << "," << temp2[1] << "," << temp2[2] << std::endl;*/
-	glm::vec3 ans = glm::cross(temp1, temp2);
-
-	double length = sqrt(pow(ans[0], 2) + pow(ans[1], 2) + pow(ans[2], 2));
-
-	ans[0] /= length;
-	ans[1] /= length;
-	ans[2] /= length;
-	return ans;
-}
 
 glm::vec3 new_normals(glm::vec3 point0, glm::vec3 point1, glm::vec3 point2) {
 	float normal_x = ((point1[1] - point0[1])
