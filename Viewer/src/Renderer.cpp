@@ -523,7 +523,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 	Camera camera = scene.GetActiveCamera();
 	//std::cout << "2" << std::endl;
 	float tempZ;
-	glm::mat4x4 perspective = scene.GetPerspectiveTransform(obj,tempZ);
+	glm::mat4x4 perspective = camera.GetPerspectiveNormalization();
 	glm::mat4x4 ortho = camera.GetOrthoNormalization();
 	glm::mat4x4 projection = scene.GetProjection(obj,tempZ);
 	glm::mat4x4 normal_projection = camera.GetCameraTransform() * obj.GetTransform();
@@ -545,7 +545,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		glm::vec4 temp =  projection * glm::vec4(currentVer, 1);
 		if (camera.GetActiveProjection() == 0) {
 			tempZ = temp[2];
-			temp = divideZ * temp;
+			temp = divideZ * perspective * temp;
 			
 		}
 		if (camera.GetActiveProjection() == 1) {
@@ -572,7 +572,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
 		
-		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera);
+		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera,scene);
 	}	
 }
 
@@ -597,7 +597,7 @@ bool Renderer::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::ve
 	return !(has_neg && has_pos);
 }
 
-void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera)
+void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera,Scene& scene)
 {
 	
 	int minX = max(min(p1[0], min(p2[0], p3[0])), 1);
@@ -609,7 +609,7 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 	/*color[0] = ((rand() % 256)/100) + 0.001;
 	color[1] = ((rand() % 256)/100) + 0.001;
 	color[2] = ((rand() % 256)/100) + 0.001;*/
-	glm::vec3 temp;
+	glm::vec3 temp = color;
 
 	for (int y = minY; y <= maxY; y++)
 	{
@@ -617,6 +617,8 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 		{
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
 				float z = Linear_Interpolation(p1, p2, p3, glm::vec2(x, y));
+				z = abs(z);
+				z = -z;
 				//std::cout << z << std::endl;
 				if (1) {
 					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
@@ -633,7 +635,11 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 						color[2] = 1 - color[2];*/
 						z = abs(z);
 						//PutPixel(x+300, y, color);
-						temp = Point_color_in_fog(color, c,1.3);
+						if (scene.GetActiveLightIndex() != -1) {
+							light light1 = scene.GetActiveLight();
+							temp = scene.GetActiveLight().Final_light(color, glm::vec3(0,0,0), glm::vec3(0, 0, 0), 45);
+						}
+						//temp = Point_color_in_fog(color, c,1.3);
 						PutPixel(x, y, temp);
 						//PutPixel(x + 300, y, color);
 					}

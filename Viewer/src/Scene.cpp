@@ -8,7 +8,8 @@ Scene::Scene() :
 	active_camera_index_(0),
 	active_model_index_(0),
 	viewport_width_(1280),
-	viewport_height_(720)
+	viewport_height_(720),
+	active_light_index_(-1)
 {
 	
 
@@ -132,7 +133,7 @@ glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj, float& z)
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
 	glm::mat4x4 perspective = camera.GetPerspectiveNormalization();
-	return perspective * cameraTransform * obj.GetTransform();
+	return  cameraTransform * obj.GetTransform();
 }
 
 glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj,float& z)

@@ -15,14 +15,18 @@ private:
     glm::vec3 I_A;
     glm::vec3 I_S;
     glm::vec3 I_D;
+    glm::mat4x4 localTransform;
+
 
 public:
     glm::vec3 light::Mul(int x, glm::vec3 vec);
     glm::vec4 color_L_A;
     glm::vec4 color_L_D;
     glm::vec4 color_L_S;
-
-    
+    void SetTransformX(float val);
+    void SetTransformY(float val);
+    void SetTransformZ(float val);
+    glm::mat4 GetTransform();
 
     light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S);
     void light::Set_I(glm::vec3 I);
