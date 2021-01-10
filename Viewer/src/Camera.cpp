@@ -279,6 +279,11 @@ void Camera::TranslatLocal(float x, float y, float z) {
 	localTranslateTransform = glm::mat4(1);
 }
 
+glm::vec3 Camera::GetPosition()
+{
+	return glm::vec3(objectTransform[0][0]+localTranslateBarValue_X, objectTransform[1][1] + localTranslateBarValue_Y, objectTransform[2][2] + localTranslateBarValue_Z);
+}
+
 //camera get transform
 glm::mat4x4 Camera::GetCameraTransform()
 {

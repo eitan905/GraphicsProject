@@ -243,7 +243,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			scene.GetActiveCamera().TranslateSpace(1, 0, 0);
 		}
-		if (io.KeysDown[90])//u: set local rotate transform (20 degree)
+		if (io.KeysDown[90])//z: set local rotate transform (20 degree)
 		{
 			scene.GetActiveCamera().TranslateSpace(-1, 0, 0);
 		}
@@ -263,7 +263,32 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			scene.GetActiveCamera().localTranslateTransform[3][2] -= 1;
 		}
-
+		if (scene.GetActiveLightIndex() != -1) {
+			if (io.KeysDown[77])//m: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformX(3);
+			}
+			if (io.KeysDown[78])//n: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformX(-3);
+			}
+			if (io.KeysDown[73])//i: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformY(3);
+			}
+			if (io.KeysDown[75])//k: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformY(-3);
+			}
+			if (io.KeysDown[88])//b: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformZ(3);
+			}
+			if (io.KeysDown[86])//v: set local rotate transform (20 degree)
+			{
+				scene.GetActiveLight().SetTransformZ(-3);
+			}
+		}
 	}
 
 	//Capture mouse event - drag
@@ -534,9 +559,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			
 			ImGui::ListBox("active light", &selectedLight, currentLights, scene.GetLightsCount(), 2);
 			scene.SetActiveLightIndex(selectedLight);
-			ImGui::ColorEdit3("L_A", (float*)&scene.GetActiveLight().color_L_A);
-			ImGui::ColorEdit3("L_D", (float*)&scene.GetActiveLight().color_L_D);
-			ImGui::ColorEdit3("L_S", (float*)&scene.GetActiveLight().color_L_S);
+			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);
+			ImGui::ColorEdit3("L_A", (float*)&scene.GetActiveLight().L_A);
+			ImGui::ColorEdit3("L_D", (float*)&scene.GetActiveLight().L_D);
+			ImGui::ColorEdit3("L_S", (float*)&scene.GetActiveLight().L_S);
+			
 
 		}
 

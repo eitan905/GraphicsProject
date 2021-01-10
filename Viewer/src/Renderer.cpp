@@ -10,6 +10,18 @@
 
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
+
+
+
+void DrawTriangle() {
+
+	glm::vec3 p1 = glm::vec3(100, 100, 100);
+	glm::vec3 p2 = glm::vec3(300, 100, 100);
+	glm::vec3 p3 = glm::vec3(200, 200, 100);
+
+
+
+}
 /*
 glm::vec3 Renderer::Convolution(glm::vec3 color_of_pt, glm::mat3x3 color_neighbers )
 {
@@ -36,6 +48,20 @@ float Renderer::Fog_color(float distance, float fog_density)
 	return exp( -(distance * fog_density));
 }
 
+void Renderer::DrawLight(light light1)
+{
+	glm::mat4 posMat = light1.GetTransform();
+	glm::vec3 pos(posMat[0][0], posMat[1][1], posMat[2][2]);
+	float scale = pos[2]/15;
+	for (int x = pos[0] - scale; x < pos[0] + scale; x++) {
+		for (int y = pos[1] - scale; y < pos[1] + scale; y++) {
+			PutPixel(x, y, glm::vec3(1, 1, 1));
+		}
+	}
+
+
+}
+
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
@@ -49,19 +75,19 @@ double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec
 
 	return z;
 }
-glm::vec3 Renderer::Flat_shading(light light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle)
+glm::vec3 Renderer::Flat_shading(light light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle, glm::vec3 camToPoint)
 {
 	
 	light_source.Set_N(normal_of_polygon);
-	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle,camToPoint);
 }
 
-glm::vec3 Renderer::Gouraud_shading_for_vertix(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle)
-{
-
-	light_source.Set_N(normal_of_polygon);
-	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
-}
+//glm::vec3 Renderer::Gouraud_shading_for_vertix(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle)
+//{
+//
+//	light_source.Set_N(normal_of_polygon);
+//	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+//}
 
 glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt)
 {
@@ -80,7 +106,8 @@ glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm:
 	normal_of_polygon[1] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[1], normal_p2[1], normal_p3[1]);
 	normal_of_polygon[2] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[2], normal_p2[2], normal_p3[2]);
 	light_source.Set_N(normal_of_polygon);
-	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+	return glm::vec3(0, 0, 0);
+	//return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
 }
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
@@ -576,6 +603,9 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		currentVer[2] = tempZ;
 		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
 	}
+	if (scene.GetActiveLightIndex() != -1) {
+		DrawLight(scene.GetActiveLight());
+	}
 
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
 		Face face = obj.GetFace(i);
@@ -593,6 +623,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		
 		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera,scene,obj);
 	}	
+	
 }
 
 
@@ -624,12 +655,22 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_-1);
 	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_-1);
 	float c;
-
+	glm::vec3 center((p1[0]+p2[0]+p3[0])/3, (p1[2] + p2[2] + p3[2]) / 3, (p1[2] + p2[2] + p3[2]) / 3);
+	glm::vec3 cameraPos = camera.GetPosition();
+	glm::vec3 pointToCam(cameraPos[0] - center[0], cameraPos[1] -center[1], cameraPos[2] - center[2]);
+	pointToCam = glm::normalize(pointToCam);
 	/*color[0] = ((rand() % 256)/100) + 0.001;
 	color[1] = ((rand() % 256)/100) + 0.001;
 	color[2] = ((rand() % 256)/100) + 0.001;*/
 	glm::vec3 temp = color;
-
+	if (scene.GetActiveLightIndex() != -1) {
+		light light1 = scene.GetActiveLight();
+		glm::vec3 lightPos = light1.GetPosVec();
+		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - center[0], lightPos[1] - center[1], lightPos[2] - center[2])));
+		light1.Set_V(pointToCam);
+		temp = Flat_shading(light1, mesh, normal(p1, p2, p3), 1,pointToCam);
+		//std::cout << temp[1] << std::endl;
+	}
 	for (int y = minY; y <= maxY; y++)
 	{
 		for (int x = minX; x <= maxX; x++)
@@ -654,10 +695,11 @@ void Renderer::FloodFillUtil( int x, int y, glm::vec3 color, glm::vec3 p1, glm::
 						color[2] = 1 - color[2];*/
 						z = abs(z);
 						//PutPixel(x+300, y, color);
-						if (scene.GetActiveLightIndex() != -1) {
-							light light1 = scene.GetActiveLight();
-							temp = Flat_shading(light1, mesh, normal(p1,p2,p3), 45);
-						}
+						/*std::cout << normal(p1, p2, p3)[0] << ",";
+						std::cout << normal(p1, p2, p3)[1] << ",";
+						std::cout << normal(p1, p2, p3)[2] << std::endl;*/
+						
+						
 						//temp = Point_color_in_fog(color, c,1.3);
 						PutPixel(x, y, temp);
 						//PutPixel(x + 300, y, color);

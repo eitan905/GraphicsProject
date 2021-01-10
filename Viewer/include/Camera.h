@@ -19,6 +19,8 @@ public:
 	void Camera::TranslateSpace(float x, float y, float z);
 	void Camera::TranslateWorld(float x, float y, float z);
 	void Camera::TranslatLocal(float x, float y, float z);
+
+	glm::vec3 GetPosition();
 	glm::mat4x4 GetCameraTransform();
 	void SetDistance(double value);
 	glm::mat4x4 GetPerspectiveNormalization();
