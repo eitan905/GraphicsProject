@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include "MeshModel.h"
 #include <string>
 #include "Utils.h"
 #include <iostream>
@@ -15,18 +14,7 @@ Scene::Scene() :
 
 }
 
-void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
-{
-	if (mesh_model->GetModelName() == "camera.txt" || mesh_model->GetModelName() == "camera.obj") {
-		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(),mesh_model->getVertices(),mesh_model->GetNormals()
-			,mesh_model->GetModelName()));
-		return;
-	}
-	
-	active_model_index_ = mesh_models_.size();
-	mesh_models_.push_back(mesh_model);	
 
-}
 
 int Scene::GetModelCount() const
 {
@@ -38,9 +26,9 @@ MeshModel& Scene::GetModel(int index) const
 	return *mesh_models_[index];
 }//
 
-light& Scene::GetActiveLight()
+light& Scene::GetActiveLight() const
 {
-	return lights[active_light_index_];
+	return *lights[active_light_index_];
 }
 
 void Scene::SetActiveLightIndex(int index)
@@ -53,27 +41,45 @@ MeshModel& Scene::GetActiveModel() const
 	return *mesh_models_[active_model_index_];
 }
 
-void Scene::AddLight()
-{
-	lights.push_back(light(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)));
-	active_light_index_ = lights.size() - 1;
-}
-std::vector<light> Scene::GetLights()
-{
-	return lights;
-}
 
-int Scene::GetActiveLightIndex()
+//std::vector<std::shared_ptr<light>> Scene::GetLights()
+//{
+//	return lights;
+//}
+
+int Scene::GetActiveLightIndex() const
 {
 	return active_light_index_;
 }
 
-int Scene::GetLightsCount()
+int Scene::GetLightsCount() const
 {
 	return lights.size();
 }
 
+void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
+{
+	if (mesh_model->GetModelName() == "camera.txt" || mesh_model->GetModelName() == "camera.obj") {
+		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals()
+			, mesh_model->GetModelName()));
+		return;
+	}
+	if (mesh_model->GetModelName() == "Sphere.obj") {
+		AddLight(std::make_shared<light>(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
+			mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals()
+			, mesh_model->GetModelName()));
+		return;
+	}
+	active_model_index_ = mesh_models_.size();
+	mesh_models_.push_back(mesh_model);
 
+}
+
+void Scene::AddLight(const std::shared_ptr<light>& light1)
+{
+	lights.push_back(light1);
+	active_light_index_ = lights.size() - 1;
+}
 
 void Scene::AddCamera(const std::shared_ptr<Camera>& camera)
 {
@@ -133,6 +139,9 @@ glm::mat4x4 Scene::GetPerspectiveTransform(MeshModel& obj, float& z)
 	glm::mat4x4 cameraTransform = camera.GetCameraTransform();
 	glm::mat4x4 projection = camera.GetProjectionTransformation();
 	glm::mat4x4 perspective = camera.GetPerspectiveNormalization();
+	if (obj.GetModelName() == "Sphere.obj") {
+		return cameraTransform * GetActiveLight().GetTransform();
+	}
 	return  cameraTransform * obj.GetTransform();
 }
 
@@ -145,6 +154,9 @@ glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj,float& z)
 	glm::mat4x4 ortho = camera.GetOrthoNormalization();
 	temp = cameraTransform * obj.GetTransform() * temp;
 	//std::cout <<"after" << temp[2] << std::endl;
+	if (obj.GetModelName() == "Sphere.obj") {
+		return cameraTransform * GetActiveLight().GetTransform();
+	}
 	return cameraTransform * obj.GetTransform();
 }
 

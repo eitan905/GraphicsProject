@@ -141,7 +141,9 @@ Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::ve
 //world mat
 
 
-Camera::~Camera(){}
+Camera::~Camera(){
+
+}
 // get camera projection
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {

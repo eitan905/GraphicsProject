@@ -30,7 +30,8 @@ public:
 	glm::vec3 HomToCartesian(glm::vec4 vec);
 	void DrawBoundingBox(MeshModel obj, glm::mat4x4 projection, Camera camera);
 	void PutPixel(const int i, const int j, const glm::vec3& color);
-	void FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera,Scene& scene,MeshModel& mesh);
+	void FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,Camera& camera,Scene& scene,MeshModel& mesh,glm::vec3 face_normal
+		, glm::vec3 realP1, glm::vec3 realP2, glm::vec3 realP3);
 	void scan_convertion(int x, int y, glm::vec3 color, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3); 
 	int flag = 0;
 	int on_eage(int x, int y, glm::vec2 p1, glm::vec2 p2);
@@ -38,7 +39,7 @@ public:
 	float sign(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
 	double Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt);
 	double Renderer::Linear_Interpolation_by_choice(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt, int choice_v1, int choice_v2, int choice_v3);
-	glm::vec3 Flat_shading(light light_source, MeshModel& mesh, glm::vec3 normal_of_polygon, int user_angle, glm::vec3 pointToCam);
+	glm::vec3 Flat_shading(light& light_source, MeshModel& mesh, glm::vec3 normal_of_polygon, int user_angle, glm::vec3 pointToCam);
 	glm::vec3 Gouraud_shading_for_vertix(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle);
 	glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt);
 	double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, int color_v1, int color_v2, int color_v3, glm::vec3 pt);

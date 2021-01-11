@@ -266,27 +266,27 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		if (scene.GetActiveLightIndex() != -1) {
 			if (io.KeysDown[77])//m: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformX(3);
+				scene.GetActiveLight().SetTransformX(1);
 			}
 			if (io.KeysDown[78])//n: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformX(-3);
+				scene.GetActiveLight().SetTransformX(-1);
 			}
 			if (io.KeysDown[73])//i: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformY(3);
+				scene.GetActiveLight().SetTransformY(1);
 			}
 			if (io.KeysDown[75])//k: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformY(-3);
+				scene.GetActiveLight().SetTransformY(-1);
 			}
 			if (io.KeysDown[88])//b: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformZ(3);
+				scene.GetActiveLight().SetTransformZ(1);
 			}
 			if (io.KeysDown[86])//v: set local rotate transform (20 degree)
 			{
-				scene.GetActiveLight().SetTransformZ(-3);
+				scene.GetActiveLight().SetTransformZ(-1);
 			}
 		}
 	}
@@ -546,10 +546,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
 		ImGui::ColorEdit3("model K_D", (float*)&scene.GetActiveModel().K_D);
 		if (ImGui::Button("Add Light")) {
-			scene.AddLight();
+			scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Documents/GitHub/computergraphics2021-eitan-and-hadar/computergraphics2021-eitan-and-hadar/Data/Sphere.obj"));
 		}
 		static const char* currentLights[50];
-		if (scene.GetLights().size() != 0) {
+		if (scene.GetLightsCount() != 0) {
 			for (int i = 0; i < scene.GetLightsCount(); i++) {
 				std::string str = "light " + std::to_string(i);
 				currentLights[i] = strcpy(new char[str.length() + 1], str.c_str());

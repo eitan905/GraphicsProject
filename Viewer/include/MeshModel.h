@@ -4,7 +4,6 @@
 #include "Face.h"
 #include <stdio.h>
 #include <iostream>
-#include "light.h"
 
 
 class MeshModel

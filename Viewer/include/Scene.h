@@ -16,12 +16,12 @@ public:
 	MeshModel& GetModel(int index) const;
 	MeshModel& GetActiveModel() const;
 
-	void AddLight();
-	std::vector<light> GetLights();
-	int GetActiveLightIndex();
-	int GetLightsCount();
-	light& GetActiveLight();
-	void SetActiveLightIndex(int index);
+	void AddLight(const std::shared_ptr<light>& light1);
+	//std::vector<std::shared_ptr<light>> GetLights();
+	int GetActiveLightIndex() const;
+	int GetLightsCount() const;
+	light& GetActiveLight() const;
+	void SetActiveLightIndex(int index) ;
 
 
 	void AddCamera(const std::shared_ptr<Camera>& camera);
@@ -52,7 +52,7 @@ public:
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
-	std::vector<light> lights;
+	std::vector<std::shared_ptr<light>> lights;
 
 	float viewport_width_;
 	float viewport_height_;
