@@ -18,6 +18,7 @@ light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D
 	int alfa;
 	this->N = N;
 	this->V = V;
+	user_angle = 1;
 	
 	this->L_A = L_A;
 	this->L_D = L_D;
@@ -148,9 +149,9 @@ glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D,glm::vec3 K_S, int use
 	std::cout << I[1] << ",";
 	std::cout << I[2] << std::endl;*/
 	R = glm::normalize(Mul(2, Mul(dot(I,N), N)) - I);
-	
+	R = glm::normalize(glm::reflect(-I, N));
 	//R = glm::normalize(glm::reflect(-I, N));
-	Find_I_S(K_S, user_angle);
+	Find_I_S(K_S, this->user_angle);
 	Find_I_A(K_A);
 	Find_I_D(K_D);
 	

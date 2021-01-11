@@ -560,6 +560,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ImGui::ListBox("active light", &selectedLight, currentLights, scene.GetLightsCount(), 2);
 			scene.SetActiveLightIndex(selectedLight);
 			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);
+			ImGui::InputFloat("user_angle", (float*)&scene.GetActiveLight().user_angle);
 			ImGui::ColorEdit3("L_A", (float*)&scene.GetActiveLight().L_A);
 			ImGui::ColorEdit3("L_D", (float*)&scene.GetActiveLight().L_D);
 			ImGui::ColorEdit3("L_S", (float*)&scene.GetActiveLight().L_S);
