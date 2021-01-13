@@ -18,14 +18,16 @@ light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D
 	int alfa;
 	this->N = N;
 	this->V = V;
-	user_angle = 1;
+	user_angle = 2;
 	
 	this->L_A = L_A;
 	this->L_D = L_D;
 	this->L_S = L_S;
 	localTransform = glm::mat4(1);
 	paralel - glm::vec3(1, 1, 1);
-	I = paralel;
+	I_A = glm::vec3(33, 37, 109);
+	I_D = glm::vec3(58, 61, 144);
+	I_S = glm::vec3(50, 54, 126);
 }
 
 void light::SetTransformX(float val)
@@ -69,9 +71,9 @@ float light::GetCosAlpha(glm::vec3 v1, glm::vec3 v2)
 
 }
 
-void light::SetPos(glm::vec3 new_pos)
+void light::SetPos()
 {
-	position = new_pos;
+	position = GetTransform() * glm::vec4(vertices_[0], 1);
 }
 
 void light::Set_I(glm::vec3 I) {
@@ -103,16 +105,18 @@ void light::Find_I_A(glm::vec3 K_A) {
 	I_A[0] = L_A[0] * K_A[0];
 	I_A[1] = L_A[1] * K_A[1];
 	I_A[2] = L_A[2] * K_A[2];
+	//this->I_A = cross(this->L_A, K_A);
 	I_A = glm::normalize(I_A);
 }
 
 
 void light::Find_I_D(glm::vec3 K_D) {
 	float alfa;
-	alfa = dot(I,N);
+	alfa = (dot(I,N));
 	I_D[0] = L_D[0] * K_D[0];
 	I_D[1] = L_D[1] * K_D[1];
 	I_D[2] = L_D[2] * K_D[2];
+	//I_D = cross(L_D, K_D);
 	//std::cout << alfa << std::endl;
 	this->I_D = Mul(alfa,I_D);
 	I_D = glm::normalize(I_D);
@@ -122,10 +126,12 @@ void light::Find_I_D(glm::vec3 K_D) {
 
 void light::Find_I_S(glm::vec3 K_S,int user_angle) {
 	float alfa;
-	alfa = dot(R, V);
+	alfa = abs(dot(R, V));
+	
 	I_S[0] = L_S[0] * K_S[0];
 	I_S[1] = L_S[1] * K_S[1];
 	I_S[2] = L_S[2] * K_S[2];
+	//I_S = cross(L_S, K_S);
 	this->I_S = Mul(pow(alfa, user_angle) ,I_S);
 	I_S = glm::normalize(I_S);
 }
@@ -150,11 +156,9 @@ glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D,glm::vec3 K_S, int use
 	std::cout << I[2] << std::endl;*/
 	R = glm::normalize(Mul(2, Mul(dot(I,N), N)) - I);
 	R = glm::normalize(glm::reflect(-I, N));
-	//R = glm::normalize(glm::reflect(-I, N));
 	Find_I_S(K_S, this->user_angle);
 	Find_I_A(K_A);
 	Find_I_D(K_D);
-	
 	/*std::cout << I_D[0] << ",";
 	std::cout << I_D[1] << ",";
 	std::cout << I_D[2] << std::endl;*/

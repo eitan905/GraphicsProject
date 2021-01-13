@@ -28,6 +28,7 @@ public:
 	glm::mat4x4 GetScaleTransform();
 
 	std::vector<glm::vec3> GetNormals();
+	glm::vec3 GetNormalAtIndex(int index);
 	std::vector<Face> GetFaces();
 
 	glm::vec3 K_A;

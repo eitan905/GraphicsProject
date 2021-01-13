@@ -543,8 +543,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 		ImGui::ColorEdit3("model K_A", (float*)&scene.GetActiveModel().K_A);
-		ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
 		ImGui::ColorEdit3("model K_D", (float*)&scene.GetActiveModel().K_D);
+		ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
+
 		if (ImGui::Button("Add Light")) {
 			scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Documents/GitHub/computergraphics2021-eitan-and-hadar/computergraphics2021-eitan-and-hadar/Data/Sphere.obj"));
 		}
@@ -559,6 +560,19 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			
 			ImGui::ListBox("active light", &selectedLight, currentLights, scene.GetLightsCount(), 2);
 			scene.SetActiveLightIndex(selectedLight);
+
+			if (ImGui::Button("Gouraud")) {
+				scene.SetShading("Gouraud");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Phong")) {
+				scene.SetShading("Phong");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Flat")) {
+				scene.SetShading("Flat");
+			}
+			
 			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);
 			ImGui::InputFloat("user_angle", (float*)&scene.GetActiveLight().user_angle);
 			ImGui::ColorEdit3("L_A", (float*)&scene.GetActiveLight().L_A);

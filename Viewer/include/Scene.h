@@ -47,6 +47,9 @@ public:
 	bool displayBox;
 	bool displayNormals;
 
+
+	void SetShading(std::string shade);
+	std::string GetShading();
 	
 	
 private:
@@ -57,6 +60,7 @@ private:
 	float viewport_width_;
 	float viewport_height_;
 	
+	std::string shading;
 	int active_camera_index_;
 	int active_model_index_;
 	int active_light_index_;

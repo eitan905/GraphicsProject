@@ -10,7 +10,7 @@ Scene::Scene() :
 	viewport_height_(720),
 	active_light_index_(-1)
 {
-	
+	shading = "Flat";
 
 }
 
@@ -199,6 +199,16 @@ float Scene::GetWidth()
 float Scene::GetHeight()
 {
 	return viewport_height_;
+}
+
+void Scene::SetShading(std::string shade)
+{
+	shading = shade;
+}
+
+std::string Scene::GetShading()
+{
+	return shading;
 }
 
 

@@ -11,7 +11,12 @@
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
 
-
+int min(int x, int y) {
+	return x < y ? x : y;
+}
+int max(int x, int y) {
+	return x > y ? x : y;
+}
 
 void DrawTriangle() {
 
@@ -90,17 +95,21 @@ glm::vec3 To3(glm::vec4 vec) {
 //{
 //
 //	light_source.Set_N(normal_of_polygon);
-//	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+//	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle,camToPoint);
 //}
 
 glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt)
 {
-	int R_pt, G_pt, B_pt;
+	float R_pt, G_pt, B_pt;
 	R_pt=Linear_Interpolation_color(p1, p2, p3, color_p1[0], color_p2[0], color_p3[0], pt);
 	G_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[1], color_p2[1], color_p3[1], pt);
 	B_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[2], color_p2[2], color_p3[2], pt);
-	return glm::vec3(R_pt, G_pt, B_pt);
+	return glm::normalize(glm::vec3(R_pt, G_pt, B_pt));
 }
+
+
+
+
 //phong shading for vertix =Gouraud_shading_for_vertix
 //this is Phong_shading for point in polygon
 glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle)
@@ -122,6 +131,80 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 	CreateBuffers(viewport_width, viewport_height);
 }
 
+void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colorP3, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3
+	, Camera& camera, Scene& scene, MeshModel& mesh, glm::vec3 p1_normal, glm::vec3 p2_normal, glm::vec3 p3_normal, glm::vec3 realP1, glm::vec3 realP2, glm::vec3 realP3)
+{
+
+	int minX = max(min(p1[0], min(p2[0], p3[0])), 1);
+	int minY = max(min(p1[1], min(p2[1], p3[1])), 1);
+	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_ - 1);
+	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_ - 1);
+
+
+	glm::vec3 final_light;
+	glm::vec3 pointToCam;
+	glm::vec3 cameraPos = camera.GetPosition();
+	light light1 = scene.GetActiveLight();
+	glm::vec3 lightPos = light1.GetPosVec();
+	
+
+	pointToCam = glm::vec3(cameraPos[0] - realP1[0], cameraPos[1] - realP1[1], cameraPos[2] - realP1[2]);
+	pointToCam = glm::normalize(pointToCam);
+	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP1[0], lightPos[1] - realP1[1], lightPos[2] - realP1[2])));
+	light1.Set_V(pointToCam);
+	colorP1 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
+
+
+
+
+	pointToCam = glm::vec3(cameraPos[0] - realP2[0], cameraPos[1] - realP2[1], cameraPos[2] - realP2[2]);
+	pointToCam = glm::normalize(pointToCam);
+	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP2[0], lightPos[1] - realP2[1], lightPos[2] - realP2[2])));
+	light1.Set_V(pointToCam);
+	colorP2 = Flat_shading(light1, mesh, p2_normal, 1, pointToCam);
+
+
+
+
+	pointToCam = glm::vec3(cameraPos[0] - realP3[0], cameraPos[1] - realP3[1], cameraPos[2] - realP3[2]);
+	pointToCam = glm::normalize(pointToCam);
+	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP3[0], lightPos[1] - realP3[1], lightPos[2] - realP3[2])));
+	light1.Set_V(pointToCam);
+	colorP3 = Flat_shading(light1, mesh, p3_normal, 1, pointToCam);
+
+	for (int y = minY; y <= maxY; y++)
+	{
+		for (int x = minX; x <= maxX; x++)
+		{
+			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
+				float z = Linear_Interpolation(realP1, realP2, realP3, glm::vec2(x, y));
+				z = abs(z);
+				z = -z;
+				//std::cout << z << std::endl;
+				if (1) {
+					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
+
+						final_light = Gouraud_shading_for_point_in_polygon(p1, p2, p3, colorP1, colorP2, colorP3, glm::vec3(x, y, z));
+						//temp = Point_color_in_fog(color, c,1.3);
+						if (mesh.GetModelName() == "Sphere.obj") {
+							PutPixel(x, y, glm::vec3(1, 1, 1));
+						}
+						else {
+							PutPixel(x, y, final_light);
+						}
+						//PutPixel(x + 300, y, color);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
+
+}
+
 
 Renderer::~Renderer()
 {
@@ -129,12 +212,7 @@ Renderer::~Renderer()
 	delete[] z_buffer;
 }
 
-int min(int x, int y) {
-	return x < y ? x : y;
-}
-int max(int x, int y) {
-	return x > y ? x : y;
-}
+
 
 
 
@@ -423,6 +501,7 @@ void Renderer::Render(const Scene& scene)
 		}
 	}
 	if (scene.GetActiveLightIndex() != -1) {
+		scene.GetActiveLight().SetPos();
 		DrawModel(scene.GetActiveLight(),scene, glm::vec3(1,1,1));
 	}
 	
@@ -611,15 +690,12 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		currentVer[2] = tempZ;
 		
 		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
-		if (obj.GetModelName() == "Sphere.obj") {
-			scene.GetActiveLight().SetPos(currentVer);
-		}
+		
 	}
-	if (scene.GetActiveLightIndex() != -1) {
-		DrawLight(scene.GetActiveLight());
-	}
+	
 
 	for (int i = 0; i < obj.GetFacesCount(); i++) {
+		
 		Face face = obj.GetFace(i);
 		int point0 = face.GetVertexIndex(0) - 1;
 		int point1 = face.GetVertexIndex(1) - 1;
@@ -628,6 +704,9 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		glm::vec3 p1(obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1], obj.getVerticeAtIndex(point0)[2]);
 		glm::vec3 p2(obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1], obj.getVerticeAtIndex(point1)[2]);
 		glm::vec3 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1], obj.getVerticeAtIndex(point2)[2]);
+		glm::vec3 p1_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
+		glm::vec3 p2_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
+		glm::vec3 p3_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
 
 		glm::vec3 realP1(realMesh.getVerticeAtIndex(point0)[0], realMesh.getVerticeAtIndex(point0)[1], realMesh.getVerticeAtIndex(point0)[2]);
 		glm::vec3 realP2(realMesh.getVerticeAtIndex(point1)[0], realMesh.getVerticeAtIndex(point1)[1], realMesh.getVerticeAtIndex(point1)[2]);
@@ -643,14 +722,18 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 
 
 
+		
 
 
 		
 		//std::cout << ver1[0] << std::endl;
+		if (scene.GetActiveLightIndex() != -1 && scene.GetShading() == "Gouraud") {
+			Draw_Gouraud(color, color, color, p1, p2, p3, camera, scene, obj, p1_normal, p2_normal, p3_normal, realP1, realP2, realP3);
 
-		
-		
-		FloodFillUtil(p1[0], p1[1], color, p1, p2, p3,camera,scene,obj,glm::vec3(1,1,1),realP1,realP2,realP3);
+		}
+		if (scene.GetShading() == "Flat") {
+			FloodFillUtil(p1[0], p1[1], color, p1, p2, p3, camera, scene, obj, glm::vec3(1, 1, 1), realP1, realP2, realP3);
+		}
 	}	
 	
 }
@@ -697,7 +780,6 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 		if (scene.GetActiveLightIndex() != -1) {
 			light& light1 = scene.GetActiveLight();
 			glm::vec3 lightPos = light1.GetPosVec();
-			//std::cout << lightPos[1] << std::endl;
 			light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - center[0], lightPos[1] - center[1], lightPos[2] - center[2])));
 			light1.Set_V(pointToCam);
 			temp = Flat_shading(light1, mesh, normal(realP1, realP2, realP3), 2, pointToCam);
@@ -745,6 +827,10 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 			}
 		}
 	}
+
+
+
+
 
 }
 //int on_eage(int x, int y,glm::vec2 p1, glm::vec2 p2) {

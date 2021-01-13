@@ -18,6 +18,18 @@ public:
 	float area(float x1, float y1, float x2, float y2, float x3, float y3);
 	void Draw_Normals(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection);
 	Renderer(int viewportWidth, int viewportHeight);
+
+
+
+	void Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colorP3, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, Camera& camera, Scene& scene
+		, MeshModel& mesh, glm::vec3 p1_normal, glm::vec3 p2_normal, glm::vec3 p3_normal, glm::vec3 realP1
+		, glm::vec3 realP2, glm::vec3 realP3);
+
+
+
+
+
+
 	virtual ~Renderer();
 	void Render(const Scene& scene);
 	void SwapBuffers();

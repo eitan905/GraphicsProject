@@ -103,6 +103,9 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		 0, 0, 0, 1
 	 );
 
+	 K_A = glm::vec3(149, 50, 120);
+	 K_A = glm::vec3(149, 50, 120);
+	 K_A = glm::vec3(149, 50, 120);
 	 
 	 
 }
@@ -170,43 +173,43 @@ void MeshModel::GETworld() {
 
 //set Local Rotation Transform by getting alfa parameter (in degrees)
 void MeshModel::LocalRotationTransform_Z() {
-	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) /  (2 * 180));
-	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / (2 * 180));
-	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / (2 * 180));
-	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) /  ( 180));
+	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / ( 180));
+	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / ( 180));
+	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / ( 180));
 }
 void MeshModel::LocalRotationTransform_Y() {
-	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / ( 180));
 }
 void MeshModel::LocalRotationTransform_X() {
-	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / ( 180));
 }
 
 void MeshModel::WorldRotationTransform_Z() {
-	worldRotationTransform_Z[0][0] = cos((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[0][1] = sin((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[1][0] = -sin((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[1][1] = cos((worldRotateBarValue_Z * 3.14) / (2 * 180));
+	worldRotationTransform_Z[0][0] = cos((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[0][1] = sin((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[1][0] = -sin((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[1][1] = cos((worldRotateBarValue_Z * 3.14) / ( 180));
 }
 
 void MeshModel::WorldRotationTransform_Y() {
-	worldRotationTransform_Y[0][0] = cos((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[0][2] = sin((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[2][0] = -sin((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[2][2] = cos((worldRotateBarValue_Y * 3.14) / (2 * 180));
+	worldRotationTransform_Y[0][0] = cos((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[0][2] = sin((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[2][0] = -sin((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[2][2] = cos((worldRotateBarValue_Y * 3.14) / ( 180));
 }
 
 void MeshModel::WorldRotationTransform_X() {
-	worldRotationTransform_X[1][1] = cos((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[1][2] = sin((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[2][1] = -sin((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[2][2] = cos((worldRotateBarValue_X * 3.14) / (2 * 180));
+	worldRotationTransform_X[1][1] = cos((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[1][2] = sin((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[2][1] = -sin((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[2][2] = cos((worldRotateBarValue_X * 3.14) / ( 180));
 }
 
 //set Local Translate Transform by getting x,y,z parameter (parameters which determine the change)
@@ -391,6 +394,11 @@ glm::mat4x4 MeshModel::GetScaleTransform()
 std::vector<glm::vec3> MeshModel::GetNormals()
 {
 	return normals_;
+}
+
+glm::vec3 MeshModel::GetNormalAtIndex(int index)
+{
+	return normals_[index];
 }
 
 std::vector<Face> MeshModel::GetFaces()

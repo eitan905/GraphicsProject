@@ -33,7 +33,7 @@ public:
     glm::mat4 GetTransform();
     glm::vec3 GetPosVec();
     float GetCosAlpha(glm::vec3 v1, glm::vec3 v2);
-    void SetPos(glm::vec3 new_pos);
+    void SetPos();
     float user_angle;
 
 

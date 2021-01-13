@@ -283,7 +283,7 @@ void Camera::TranslatLocal(float x, float y, float z) {
 
 glm::vec3 Camera::GetPosition()
 {
-	return glm::vec3(objectTransform[0][0]+localTranslateBarValue_X, objectTransform[1][1] + localTranslateBarValue_Y, objectTransform[2][2] + localTranslateBarValue_Z);
+	return c * glm::vec4(1,1,1,1);
 }
 
 //camera get transform
@@ -448,10 +448,10 @@ void Camera::SetLookAt(MeshModel& obj)
 
 
 void Camera::LocalRotationTransform_Z() {
-	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / (2*180));
-	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / (2 * 180));
-	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / (2 * 180));
-	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / (2 * 180));
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180));
+	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / ( 180));
+	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / ( 180));
+	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / ( 180));
 	c = c * localRotationTransform_Z;
 	cinv = glm::inverse(localRotationTransform_Z) * cinv;
 }
@@ -562,47 +562,47 @@ void Camera::Reset()
 
 }
 void Camera::LocalRotationTransform_Y() {
-	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / (2 * 180));
-	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / (2 * 180));
+	localRotationTransform_Y[0][0] = cos((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[0][2] = sin((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[2][0] = -sin((localRotateBarValue_Y * 3.14) / ( 180));
+	localRotationTransform_Y[2][2] = cos((localRotateBarValue_Y * 3.14) / ( 180));
 	c = c * localRotationTransform_Y;
 	cinv = glm::inverse(localRotationTransform_Y) * cinv;
 }
 void Camera::LocalRotationTransform_X() {
-	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / (2 * 180));
-	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / (2 * 180));
+	localRotationTransform_X[1][1] = cos((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[1][2] = sin((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[2][1] = -sin((localRotateBarValue_X * 3.14) / ( 180));
+	localRotationTransform_X[2][2] = cos((localRotateBarValue_X * 3.14) / ( 180));
 	c = c * localRotationTransform_X;
 	cinv = glm::inverse(localRotationTransform_X) * cinv;
 }
 
 
 void Camera::WorldRotationTransform_Z() {
-	worldRotationTransform_Z[0][0] = cos((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[0][1] = sin((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[1][0] = -sin((worldRotateBarValue_Z * 3.14) / (2 * 180));
-	worldRotationTransform_Z[1][1] = cos((worldRotateBarValue_Z * 3.14) / (2 * 180));
+	worldRotationTransform_Z[0][0] = cos((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[0][1] = sin((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[1][0] = -sin((worldRotateBarValue_Z * 3.14) / ( 180));
+	worldRotationTransform_Z[1][1] = cos((worldRotateBarValue_Z * 3.14) / ( 180));
 
 	c = worldRotationTransform_Z * c ;
 	cinv = cinv * glm::inverse(worldRotationTransform_Z);
 }
 
 void Camera::WorldRotationTransform_Y() {
-	worldRotationTransform_Y[0][0] = cos((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[0][2] = sin((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[2][0] = -sin((worldRotateBarValue_Y * 3.14) / (2 * 180));
-	worldRotationTransform_Y[2][2] = cos((worldRotateBarValue_Y * 3.14) / (2 * 180));
+	worldRotationTransform_Y[0][0] = cos((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[0][2] = sin((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[2][0] = -sin((worldRotateBarValue_Y * 3.14) / ( 180));
+	worldRotationTransform_Y[2][2] = cos((worldRotateBarValue_Y * 3.14) / ( 180));
 	c = worldRotationTransform_Y * c;
 	cinv = cinv * glm::inverse(worldRotationTransform_Y);
 }
 
 void Camera::WorldRotationTransform_X() {
-	worldRotationTransform_X[1][1] = cos((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[1][2] = sin((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[2][1] = -sin((worldRotateBarValue_X * 3.14) / (2 * 180));
-	worldRotationTransform_X[2][2] = cos((worldRotateBarValue_X * 3.14) / (2 * 180));
+	worldRotationTransform_X[1][1] = cos((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[1][2] = sin((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[2][1] = -sin((worldRotateBarValue_X * 3.14) / ( 180));
+	worldRotationTransform_X[2][2] = cos((worldRotateBarValue_X * 3.14) / ( 180));
 	c = worldRotationTransform_X * c;
 	cinv = cinv * glm::inverse(worldRotationTransform_X);
 }
