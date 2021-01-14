@@ -448,7 +448,7 @@ void Camera::SetLookAt(MeshModel& obj)
 
 
 void Camera::LocalRotationTransform_Z() {
-	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180));
+	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180);
 	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / ( 180));
 	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / ( 180));
 	localRotationTransform_Z[1][1] = cos((localRotateBarValue_Z * 3.14) / ( 180));

@@ -14,7 +14,11 @@ glm::vec3 light::Mul(float x, glm::vec3 vec) {
 
 light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S,
 	std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
-	MeshModel(faces, vertices, normals, model_name) {
+	MeshModel(faces, vertices, normals, model_name),
+	I_D(40,50, 110),
+	I_S(40,50, 110),
+	I_A(40,50, 110)
+{
 	int alfa;
 	this->N = N;
 	this->V = V;

@@ -71,12 +71,12 @@ float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
 }
-double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, int color_v1, int color_v2, int color_v3, glm::vec3 pt) {
+double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, float color_v1, float color_v2, float color_v3, glm::vec3 pt) {
 	double A_1 = area(v2[0], v2[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
 	double A = A_1 + A_2 + A_3;
-	int z = (A_1 / A) * color_v1 + (A_2 / A) * color_v2 + (A_3 / A) * color_v3;
+	float z = (A_1 / A) * color_v1 + (A_2 / A) * color_v2 + (A_3 / A) * color_v3;
 
 	return z;
 }
@@ -101,7 +101,7 @@ glm::vec3 To3(glm::vec4 vec) {
 glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt)
 {
 	float R_pt, G_pt, B_pt;
-	R_pt=Linear_Interpolation_color(p1, p2, p3, color_p1[0], color_p2[0], color_p3[0], pt);
+	R_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[0], color_p2[0], color_p3[0], pt);
 	G_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[1], color_p2[1], color_p3[1], pt);
 	B_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[2], color_p2[2], color_p3[2], pt);
 	return glm::normalize(glm::vec3(R_pt, G_pt, B_pt));
@@ -320,7 +320,7 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 		distance_to_end--;
 	}
 }
-double Renderer::Linear_Interpolation_by_choice(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt,int choice_v1, int choice_v2, int choice_v3) {
+double Renderer::Linear_Interpolation_by_choice(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt, float choice_v1, float choice_v2, float choice_v3) {
 	double A_1 = area(v2[0], v2[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
@@ -334,7 +334,7 @@ double Renderer::Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, 
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
 	double A = A_1 + A_2 + A_3;
-	int z = (A_1 / A) * v1[2] + (A_2 / A) * v2[2] + (A_3 / A) * v3[2];
+	float z = (A_1 / A) * v1[2] + (A_2 / A) * v2[2] + (A_3 / A) * v3[2];
 
 	return z;
 }
@@ -707,6 +707,11 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		glm::vec3 p1_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
 		glm::vec3 p2_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
 		glm::vec3 p3_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
+
+
+		p1_normal = glm::normalize(projection * glm::vec4(p1_normal, 1));
+		p2_normal = glm::normalize(projection * glm::vec4(p2_normal, 1));
+		p3_normal = glm::normalize(projection * glm::vec4(p3_normal, 1));
 
 		glm::vec3 realP1(realMesh.getVerticeAtIndex(point0)[0], realMesh.getVerticeAtIndex(point0)[1], realMesh.getVerticeAtIndex(point0)[2]);
 		glm::vec3 realP2(realMesh.getVerticeAtIndex(point1)[0], realMesh.getVerticeAtIndex(point1)[1], realMesh.getVerticeAtIndex(point1)[2]);

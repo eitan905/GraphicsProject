@@ -4,7 +4,10 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	faces_(faces),
 	vertices_(vertices),
 	normals_(normals),
-	model_name_(model_name)
+	model_name_(model_name),
+	K_D(120,50,130),
+	K_S(120,50,130),
+	K_A(120,50,130)
 
 {
 	color = glm::vec4(1.0f, 0.0f, 1.0f,1.0f);
