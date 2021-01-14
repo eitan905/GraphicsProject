@@ -83,7 +83,7 @@ double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec
 glm::vec3 Renderer::Flat_shading(light& light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle, glm::vec3 camToPoint)
 {
 	
-	light_source.Set_N(normal_of_polygon);
+	//light_source.Set_N(normal_of_polygon);
 	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle,camToPoint);
 }
 glm::vec3 To3(glm::vec4 vec) {
@@ -115,12 +115,11 @@ glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3
 glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle)
 {
 	glm::vec3 normal_of_polygon= glm::vec3(0,0,0);
-	normal_of_polygon[0]=Linear_Interpolation_by_choice(p1,p2,p3,pt, normal_p1[0], normal_p2[0], normal_p3[0]);
+	normal_of_polygon[0] = Linear_Interpolation_by_choice(p1,p2,p3,pt, normal_p1[0], normal_p2[0], normal_p3[0]);
 	normal_of_polygon[1] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[1], normal_p2[1], normal_p3[1]);
 	normal_of_polygon[2] = Linear_Interpolation_by_choice(p1, p2, p3, pt, normal_p1[2], normal_p2[2], normal_p3[2]);
-	light_source.Set_N(normal_of_polygon);
-	return glm::vec3(0, 0, 0);
-	//return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle);
+	light_source.Set_N(glm::normalize(normal_of_polygon));
+	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle,glm::vec3(1,1,1));
 }
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
@@ -140,52 +139,61 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 	int maxX = min(max(p1[0], max(p2[0], p3[0])), viewport_width_ - 1);
 	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_ - 1);
 
-
+	
 	glm::vec3 final_light;
 	glm::vec3 pointToCam;
 	glm::vec3 cameraPos = camera.GetPosition();
 	light light1 = scene.GetActiveLight();
 	glm::vec3 lightPos = light1.GetPosVec();
 	
-
-	pointToCam = glm::vec3(cameraPos[0] - realP1[0], cameraPos[1] - realP1[1], cameraPos[2] - realP1[2]);
-	pointToCam = glm::normalize(pointToCam);
-	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP1[0], lightPos[1] - realP1[1], lightPos[2] - realP1[2])));
-	light1.Set_V(pointToCam);
-	colorP1 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
+	if (scene.GetShading() != "Phong") {
 
 
-
-
-	pointToCam = glm::vec3(cameraPos[0] - realP2[0], cameraPos[1] - realP2[1], cameraPos[2] - realP2[2]);
-	pointToCam = glm::normalize(pointToCam);
-	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP2[0], lightPos[1] - realP2[1], lightPos[2] - realP2[2])));
-	light1.Set_V(pointToCam);
-	colorP2 = Flat_shading(light1, mesh, p2_normal, 1, pointToCam);
+		pointToCam = glm::vec3(cameraPos[0] - realP1[0], cameraPos[1] - realP1[1], cameraPos[2] - realP1[2]);
+		pointToCam = glm::normalize(pointToCam);
+		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP1[0], lightPos[1] - realP1[1], lightPos[2] - realP1[2])));
+		light1.Set_V(pointToCam);
+		colorP1 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
 
 
 
 
-	pointToCam = glm::vec3(cameraPos[0] - realP3[0], cameraPos[1] - realP3[1], cameraPos[2] - realP3[2]);
-	pointToCam = glm::normalize(pointToCam);
-	light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP3[0], lightPos[1] - realP3[1], lightPos[2] - realP3[2])));
-	light1.Set_V(pointToCam);
-	colorP3 = Flat_shading(light1, mesh, p3_normal, 1, pointToCam);
+		pointToCam = glm::vec3(cameraPos[0] - realP2[0], cameraPos[1] - realP2[1], cameraPos[2] - realP2[2]);
+		pointToCam = glm::normalize(pointToCam);
+		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP2[0], lightPos[1] - realP2[1], lightPos[2] - realP2[2])));
+		light1.Set_V(pointToCam);
+		colorP2 = Flat_shading(light1, mesh, p2_normal, 1, pointToCam);
+
+
+
+
+		pointToCam = glm::vec3(cameraPos[0] - realP3[0], cameraPos[1] - realP3[1], cameraPos[2] - realP3[2]);
+		pointToCam = glm::normalize(pointToCam);
+		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP3[0], lightPos[1] - realP3[1], lightPos[2] - realP3[2])));
+		light1.Set_V(pointToCam);
+		colorP3 = Flat_shading(light1, mesh, p3_normal, 1, pointToCam);
+
+	}
+
 
 	for (int y = minY; y <= maxY; y++)
 	{
 		for (int x = minX; x <= maxX; x++)
 		{
+
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
-				float z = Linear_Interpolation(realP1, realP2, realP3, glm::vec2(x, y));
+				float z = Linear_Interpolation(p1,p2, p3, glm::vec2(x, y));
 				z = abs(z);
 				z = -z;
-				//std::cout << z << std::endl;
 				if (1) {
-					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+					if (z < camera.zNear && z > camera.zFar && z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
 						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
-
-						final_light = Gouraud_shading_for_point_in_polygon(p1, p2, p3, colorP1, colorP2, colorP3, glm::vec3(x, y, z));
+						if (scene.GetShading() == "Phong") {
+							final_light = Phong_shading(p1, p2, p3, p1_normal, p2_normal, p3_normal, glm::vec3(x, y, z), light1, mesh, 1);
+						}
+						else {
+							final_light = Gouraud_shading_for_point_in_polygon(p1, p2, p3, colorP1, colorP2, colorP3, glm::vec3(x, y, z));
+						}
 						//temp = Point_color_in_fog(color, c,1.3);
 						if (mesh.GetModelName() == "Sphere.obj") {
 							PutPixel(x, y, glm::vec3(1, 1, 1));
@@ -193,7 +201,6 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 						else {
 							PutPixel(x, y, final_light);
 						}
-						//PutPixel(x + 300, y, color);
 					}
 				}
 			}
@@ -325,10 +332,11 @@ double Renderer::Linear_Interpolation_by_choice(glm::vec3 v1, glm::vec3 v2, glm:
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
 	double A = A_1 + A_2 + A_3;
-	int z = (A_1 / A) * choice_v1 + (A_2 / A) * choice_v2 + (A_3 / A) * choice_v3;
+	float z = (A_1 / A) * choice_v1 + (A_2 / A) * choice_v2 + (A_3 / A) * choice_v3;
 
 	return z;
 }
+
 double Renderer::Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt) {
 	double A_1 = area(v2[0], v2[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
@@ -501,7 +509,7 @@ void Renderer::Render(const Scene& scene)
 		}
 	}
 	if (scene.GetActiveLightIndex() != -1) {
-		scene.GetActiveLight().SetPos();
+
 		DrawModel(scene.GetActiveLight(),scene, glm::vec3(1,1,1));
 	}
 	
@@ -619,7 +627,6 @@ void Renderer::DrawCamera(Camera cameraobj, Scene scene)
 	for (int j = 0; j < cameraobj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = cameraobj.getVerticeAtIndex(j);
 		glm::vec4 temp = projection * glm::vec4(currentVer, 1);
-		//glm::vec4 temp3 = obj.GetTransform() * glm::vec4(currentVer, 1);
 
 		currentVer = HomToCartesian(temp);
 		currentVer = camera.GetViewPortTransformation(currentVer, viewport_width_, viewport_height_);
@@ -662,6 +669,21 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 	glm::mat4x4 divideZ = camera.GetProjectionTransformation();
 	
 	
+	if (scene.GetActiveLightIndex() != -1) {
+		light& light1 = scene.GetActiveLight();
+		Camera& camera2 = scene.GetActiveCamera();
+
+		light1.SetPos((scene.GetProjection(light1,tempZ) * glm::vec4(light1.GetVerAtIndex(1), 1)));
+		camera2.SetPos(camera.GetCameraTransform() * glm::vec4(camera.getVerticeAtIndex(1), 1));
+
+	}
+	/*if (scene.GetActiveLightIndex() != -1) {
+		light& light1 = scene.GetActiveLight();
+		light1.SetPos(glm::vec4(light1.GetVerAtIndex(1), 1));
+		Camera& camera2 = scene.GetActiveCamera();
+		camera2.SetPos(glm::vec3(0,0,0));
+
+	}*/
 	glm::mat4 temp2 = glm::mat4(1);
 	temp2[2][2] = -1;
 	//
@@ -674,11 +696,17 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 	for (int j = 0; j < obj.getVerticesSize(); j++) {
 		glm::vec3& currentVer = obj.getVerticeAtIndex(j);
 		glm::vec3& currentRealVer = realMesh.getVerticeAtIndex(j);
+
+
+
+
 		currentRealVer = realMesh.GetTransform() * glm::vec4(currentRealVer,1);
+
+
+
 		glm::vec4 temp =  projection * glm::vec4(currentVer, 1);
 		if (camera.GetActiveProjection() == 0) {
 			tempZ = temp[2];
-			
 			temp = divideZ * perspective * temp;
 		}
 		if (camera.GetActiveProjection() == 1) {
@@ -704,35 +732,35 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		glm::vec3 p1(obj.getVerticeAtIndex(point0)[0], obj.getVerticeAtIndex(point0)[1], obj.getVerticeAtIndex(point0)[2]);
 		glm::vec3 p2(obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1], obj.getVerticeAtIndex(point1)[2]);
 		glm::vec3 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1], obj.getVerticeAtIndex(point2)[2]);
-		glm::vec3 p1_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
-		glm::vec3 p2_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
-		glm::vec3 p3_normal = obj.GetNormalAtIndex(face.GetNormalIndex(0));
+		
 
 
-		p1_normal = glm::normalize(projection * glm::vec4(p1_normal, 1));
-		p2_normal = glm::normalize(projection * glm::vec4(p2_normal, 1));
-		p3_normal = glm::normalize(projection * glm::vec4(p3_normal, 1));
+		glm::vec3 p1_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(0)), 1));
+		glm::vec3 p2_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(1)), 1));
+		glm::vec3 p3_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(2)), 1));
+
+		p1_normal[0] = -p1_normal[0];
+		p1_normal[1] = -p1_normal[1];
+		p1_normal[2] = -p1_normal[2];
+
+		p2_normal[0] = -p2_normal[0];
+		p2_normal[1] = -p2_normal[1];
+		p2_normal[2] = -p2_normal[2];
+
+		p3_normal[0] = -p3_normal[0];
+		p3_normal[1] = -p3_normal[1];
+		p3_normal[2] = -p3_normal[2];	
 
 		glm::vec3 realP1(realMesh.getVerticeAtIndex(point0)[0], realMesh.getVerticeAtIndex(point0)[1], realMesh.getVerticeAtIndex(point0)[2]);
 		glm::vec3 realP2(realMesh.getVerticeAtIndex(point1)[0], realMesh.getVerticeAtIndex(point1)[1], realMesh.getVerticeAtIndex(point1)[2]);
 		glm::vec3 realP3(realMesh.getVerticeAtIndex(point2)[0], realMesh.getVerticeAtIndex(point2)[1], realMesh.getVerticeAtIndex(point2)[2]);
-		//std::cout << "MODEL_X " << p1[0] << " MODEL_Y" << p1[1] << std::endl;
 
 
-
-
-
-
-
-
-
-
-		
 
 
 		
 		//std::cout << ver1[0] << std::endl;
-		if (scene.GetActiveLightIndex() != -1 && scene.GetShading() == "Gouraud") {
+		if (scene.GetActiveLightIndex() != -1 && scene.GetShading() == "Gouraud" || scene.GetShading() == "Phong") {
 			Draw_Gouraud(color, color, color, p1, p2, p3, camera, scene, obj, p1_normal, p2_normal, p3_normal, realP1, realP2, realP3);
 
 		}
@@ -778,16 +806,31 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 	if (mesh.GetModelName() != "Sphere.obj") {
 
 		glm::vec3 center((realP1[0] + realP2[0] + realP3[0]) / 3, (realP1[2] + realP2[2] + realP3[2]) / 3, (realP1[2] + realP2[2] + realP3[2]) / 3);
+		//glm::vec3 center((p1[0] + p2[0] + p3[0]) / 3, (p1[2] + p2[2] + p3[2]) / 3, (p1[2] + p2[2] + p3[2]) / 3);
 		glm::vec3 cameraPos = camera.GetPosition();
+
 		glm::vec3 pointToCam(cameraPos[0] - center[0], cameraPos[1] - center[1], cameraPos[2] - center[2]);
 		pointToCam = glm::normalize(pointToCam);
+		glm::vec3 point_after_cam1 = camera.GetCameraTransform() * glm::vec4(realP1,1);
+		glm::vec3 point_after_cam2 = camera.GetCameraTransform() * glm::vec4(realP2,1);
+		glm::vec3 point_after_cam3 = camera.GetCameraTransform() * glm::vec4(realP3,1);
 		
 		if (scene.GetActiveLightIndex() != -1) {
 			light& light1 = scene.GetActiveLight();
 			glm::vec3 lightPos = light1.GetPosVec();
-			light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - center[0], lightPos[1] - center[1], lightPos[2] - center[2])));
+			glm::vec3 I = glm::normalize(glm::vec3(lightPos[0] - center[0], lightPos[1] - center[1], lightPos[2] - center[2]));
+			light1.Set_I(I);
+			glm::vec3 N = normal(realP1, realP2, realP3);
+			light1.Set_N(N);
+			/*std::cout << N[0] << ",";
+			std::cout << N[1] << ",";
+			std::cout << N[2] << std::endl;*/
+			/*std::cout << I[0] << ",";
+			std::cout << I[1] << ",";
+			std::cout << I[2] << std::endl;*/
 			light1.Set_V(pointToCam);
-			temp = Flat_shading(light1, mesh, normal(realP1, realP2, realP3), 2, pointToCam);
+			temp = Flat_shading(light1, mesh, normal(realP1,realP2,realP3), 2, pointToCam);
+			//temp = Flat_shading(light1, mesh, normal(p1,p2,p3), 2, pointToCam);
 		}
 	}
 	for (int y = minY; y <= maxY; y++)
@@ -795,31 +838,17 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 		for (int x = minX; x <= maxX; x++)
 		{
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
-				float z = Linear_Interpolation(realP1, realP2, realP3, glm::vec2(x, y));
+				float z = Linear_Interpolation(p1,p2, p3, glm::vec2(x, y));
 				z = abs(z);
 				z = -z;
 				//std::cout << z << std::endl;
 				if (1) {
-					if (z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
+					/*std::cout << camera.zNear << std::endl;
+					std::cout << camera.zFar << std::endl;*/
+					if (z < camera.zNear && z > camera.zFar && z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
 						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
-						c = (z / camera.zFar);
-						//std::cout << z << std::endl;
-						//c = float(60) / 400;
-						c = abs(c);
-						/*color[0] *= c;
-						color[1] *= c;
-						color[2] *= c;
-						color[0] = 1 - color[0];
-						color[1] = 1 - color[1];
-						color[2] = 1 - color[2];*/
-						z = abs(z);
-						//PutPixel(x+300, y, color);
-						/*std::cout << normal(p1, p2, p3)[0] << ",";
-						std::cout << normal(p1, p2, p3)[1] << ",";
-						std::cout << normal(p1, p2, p3)[2] << std::endl;*/
 						
-						
-						//temp = Point_color_in_fog(color, c,1.3);
+
 						if (mesh.GetModelName() == "Sphere.obj") {
 							PutPixel(x, y, glm::vec3(1,1,1));
 						}

@@ -44,7 +44,7 @@ public:
 	void WorldRotationTransform_Z();
 	void WorldRotationTransform_Y();
 	void WorldRotationTransform_X();
-	
+	void SetPos(glm::vec3 pos);
 	void Camera::RotateLocal(float x);
 	void Camera::ScaleLocal(float x, float y, float z);
 
@@ -92,5 +92,6 @@ public:
 	glm::vec3 eye;
 	glm::vec3 up;
 	glm::vec3 at;
-	
+	glm::vec3 pos;
+
 };

@@ -11,14 +11,22 @@ glm::vec3 light::Mul(float x, glm::vec3 vec) {
 	return glm::vec3(x * vec[0], x * vec[1], x * vec[2]);
 }
 
+float min(int x, int y) {
+	return x < y ? x : y;
+}
+float max(int x, int y) {
+	return x > y ? x : y;
+}
+
 
 light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S,
 	std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
 	MeshModel(faces, vertices, normals, model_name),
-	I_D(40,50, 110),
-	I_S(40,50, 110),
-	I_A(40,50, 110)
+	L_D(40,50, 110),
+	L_S(40,50, 110),
+	L_A(40,50, 110)
 {
+	light_type = "Point";
 	int alfa;
 	this->N = N;
 	this->V = V;
@@ -59,10 +67,6 @@ glm::mat4 light::GetTransform()
 	
 }
 
-glm::vec3 light::GetPosVec()
-{
-	return position;
-}
 
 float light::GetCosAlpha(glm::vec3 v1, glm::vec3 v2)
 {
@@ -75,9 +79,25 @@ float light::GetCosAlpha(glm::vec3 v1, glm::vec3 v2)
 
 }
 
-void light::SetPos()
+void light::SetPos(glm::vec3 pos)
 {
 	position = GetTransform() * glm::vec4(vertices_[0], 1);
+}
+
+glm::vec3 light::GetPosVec()
+{
+	return position;
+}
+
+
+void light::SetActiveLight(std::string light)
+{
+	light_type = light;
+}
+
+glm::vec3 light::GetVerAtIndex(int index)
+{
+	return vertices_[index];
 }
 
 void light::Set_I(glm::vec3 I) {
@@ -116,14 +136,15 @@ void light::Find_I_A(glm::vec3 K_A) {
 
 void light::Find_I_D(glm::vec3 K_D) {
 	float alfa;
-	alfa = (dot(I,N));
+	alfa = ((GetCosAlpha(I,N)));
+	//std::cout << alfa << std::endl;
 	I_D[0] = L_D[0] * K_D[0];
 	I_D[1] = L_D[1] * K_D[1];
 	I_D[2] = L_D[2] * K_D[2];
-	//I_D = cross(L_D, K_D);
-	//std::cout << alfa << std::endl;
-	this->I_D = Mul(alfa,I_D);
 	I_D = glm::normalize(I_D);
+	I_D = Mul(alfa,I_D);
+
+	
 
 }
 
@@ -136,29 +157,19 @@ void light::Find_I_S(glm::vec3 K_S,int user_angle) {
 	I_S[1] = L_S[1] * K_S[1];
 	I_S[2] = L_S[2] * K_S[2];
 	//I_S = cross(L_S, K_S);
-	this->I_S = Mul(pow(alfa, user_angle) ,I_S);
 	I_S = glm::normalize(I_S);
+
+	this->I_S = Mul(pow(alfa, user_angle) ,I_S);
 }
 
 
 glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D,glm::vec3 K_S, int user_angle, glm::vec3 V) {
 	glm::vec3 final_color ;
-	
-	/*K_A = glm::normalize(K_A);
 
-	K_S = glm::normalize(K_S);
-	K_D = glm::normalize(K_D);
-	L_A = glm::normalize(L_A);
-	L_S = glm::normalize(L_S);
-	L_D = glm::normalize(L_D);*/
-	/*std::cout << K_A[0] << ",";
-	std::cout << K_A[1] << ",";
-	std::cout << K_A[2] << std::endl;*/
-	paralel = glm::normalize(paralel);
-	/*std::cout << I[0] << ",";
-	std::cout << I[1] << ",";
-	std::cout << I[2] << std::endl;*/
-	R = glm::normalize(Mul(2, Mul(dot(I,N), N)) - I);
+	if (light_type == "Parallel") {
+		I = glm::normalize(paralel);
+	}
+
 	R = glm::normalize(glm::reflect(-I, N));
 	Find_I_S(K_S, this->user_angle);
 	Find_I_A(K_A);

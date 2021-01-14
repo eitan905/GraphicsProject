@@ -11,6 +11,7 @@ Scene::Scene() :
 	active_light_index_(-1)
 {
 	shading = "Flat";
+	light_type = "Point";
 
 }
 
@@ -157,6 +158,7 @@ glm::mat4x4 Scene::GetOrthographicTransform(MeshModel& obj,float& z)
 	if (obj.GetModelName() == "Sphere.obj") {
 		return cameraTransform * GetActiveLight().GetTransform();
 	}
+
 	return cameraTransform * obj.GetTransform();
 }
 
@@ -209,6 +211,11 @@ void Scene::SetShading(std::string shade)
 std::string Scene::GetShading()
 {
 	return shading;
+}
+
+void Scene::SetActiveLight(std::string light)
+{
+	light_type = light;
 }
 
 

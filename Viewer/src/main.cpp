@@ -572,6 +572,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::Button("Flat")) {
 				scene.SetShading("Flat");
 			}
+			if (ImGui::Button("Parallel")) {
+				scene.GetActiveLight().SetActiveLight("Parallel");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Point")) {
+				scene.GetActiveLight().SetActiveLight("Point");
+			}
 			
 			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);
 			ImGui::InputFloat("user_angle", (float*)&scene.GetActiveLight().user_angle);

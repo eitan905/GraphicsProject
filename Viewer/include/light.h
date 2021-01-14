@@ -17,6 +17,7 @@ private:
     glm::vec3 I_D;
     glm::mat4x4 localTransform;
     glm::vec3 position;
+    std::string light_type;
 
 
 public:
@@ -33,8 +34,11 @@ public:
     glm::mat4 GetTransform();
     glm::vec3 GetPosVec();
     float GetCosAlpha(glm::vec3 v1, glm::vec3 v2);
-    void SetPos();
+    void SetPos(glm::vec3 pos);
     float user_angle;
+    void SetActiveLight(std::string light);
+    glm::vec3 GetVerAtIndex(int index);
+    
 
 
     

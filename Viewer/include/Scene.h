@@ -50,6 +50,7 @@ public:
 
 	void SetShading(std::string shade);
 	std::string GetShading();
+	void SetActiveLight(std::string light);
 	
 	
 private:
@@ -59,6 +60,7 @@ private:
 
 	float viewport_width_;
 	float viewport_height_;
+	std::string light_type;
 	
 	std::string shading;
 	int active_camera_index_;
