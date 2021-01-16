@@ -77,7 +77,7 @@ double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec
 	double A_3 = area(v2[0], v2[1], v1[0], v1[1], pt[0], pt[1]);
 	double A = A_1 + A_2 + A_3;
 	float z = (A_1 / A) * color_v1 + (A_2 / A) * color_v2 + (A_3 / A) * color_v3;
-
+	
 	return z;
 }
 glm::vec3 Renderer::Flat_shading(light& light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle, glm::vec3 camToPoint)
@@ -91,20 +91,29 @@ glm::vec3 To3(glm::vec4 vec) {
 }
 
 
-//glm::vec3 Renderer::Gouraud_shading_for_vertix(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle)
-//{
-//
-//	light_source.Set_N(normal_of_polygon);
-//	return light_source.Final_light(mesh.K_A, mesh.K_D, mesh.K_S, user_angle,camToPoint);
-//}
+glm::vec3 Renderer::Gouraud_shading_for_vertix(light light_source, MeshModel mesh)
+{
+
+	return light_source.Final_light_gouraud(mesh.K_A, mesh.K_D, mesh.K_S);
+}
 
 glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt)
 {
+	/*std::cout << "----------------------------------------" << std::endl;
+	std::cout << color_p1[0] << "," << color_p1[1] << "," << color_p1[2] << std::endl;
+	std::cout << color_p2[0] << "," << color_p2[1] << "," << color_p2[2] << std::endl;
+	std::cout << color_p3[0] << "," << color_p3[1] << "," << color_p3[2] << std::endl;*/
 	float R_pt, G_pt, B_pt;
 	R_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[0], color_p2[0], color_p3[0], pt);
 	G_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[1], color_p2[1], color_p3[1], pt);
 	B_pt = Linear_Interpolation_color(p1, p2, p3, color_p1[2], color_p2[2], color_p3[2], pt);
-	return glm::normalize(glm::vec3(R_pt, G_pt, B_pt));
+	glm::vec3 final = (glm::vec3(R_pt, G_pt, B_pt));
+	//glm::vec3 final_normalized = glm::normalize(final);
+	/*std::cout << final[0] << "," << final[1] << "," << final[2] << std::endl;
+	std::cout << final_normalized[0] << "," << final_normalized[1] << "," << final_normalized[2] << std::endl;
+	std::cout << "----------------------------------------" << std::endl;*/
+
+	return final;
 }
 
 
@@ -151,10 +160,11 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 
 		pointToCam = glm::vec3(cameraPos[0] - realP1[0], cameraPos[1] - realP1[1], cameraPos[2] - realP1[2]);
 		pointToCam = glm::normalize(pointToCam);
+		light1.Set_N(p1_normal);
 		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP1[0], lightPos[1] - realP1[1], lightPos[2] - realP1[2])));
 		light1.Set_V(pointToCam);
-		colorP1 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
-
+		colorP1 = Flat_shading(light1, mesh,p1_normal,1,pointToCam);
+		//std::cout << colorP1[0] << ",";
 
 
 
@@ -162,7 +172,10 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 		pointToCam = glm::normalize(pointToCam);
 		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP2[0], lightPos[1] - realP2[1], lightPos[2] - realP2[2])));
 		light1.Set_V(pointToCam);
-		colorP2 = Flat_shading(light1, mesh, p2_normal, 1, pointToCam);
+		light1.Set_N(p2_normal);
+
+		colorP2 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
+		//std::cout << colorP2[0] << ",";
 
 
 
@@ -171,7 +184,10 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 		pointToCam = glm::normalize(pointToCam);
 		light1.Set_I(glm::normalize(glm::vec3(lightPos[0] - realP3[0], lightPos[1] - realP3[1], lightPos[2] - realP3[2])));
 		light1.Set_V(pointToCam);
-		colorP3 = Flat_shading(light1, mesh, p3_normal, 1, pointToCam);
+		light1.Set_N(p3_normal);
+
+		colorP3 = Flat_shading(light1, mesh, p1_normal, 1, pointToCam);
+		//std::cout << colorP3[0] << std::endl;
 
 	}
 
@@ -182,9 +198,7 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 		{
 
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
-				float z = Linear_Interpolation(p1,p2, p3, glm::vec2(x, y));
-				z = abs(z);
-				z = -z;
+				float z = Linear_Interpolation(realP1,realP2, realP3, glm::vec2(x, y));
 				if (1) {
 					if (z < camera.zNear && z > camera.zFar && z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
 						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
@@ -193,6 +207,10 @@ void Renderer::Draw_Gouraud(glm::vec3 colorP1, glm::vec3 colorP2, glm::vec3 colo
 						}
 						else {
 							final_light = Gouraud_shading_for_point_in_polygon(p1, p2, p3, colorP1, colorP2, colorP3, glm::vec3(x, y, z));
+							/*std::cout << p1[0] << "," << p2[0] << "," << p3[0] << std::endl;
+							std::cout << p1[1] << "," << p2[1] << "," << p3[1] << std::endl;
+							std::cout << x << "," << y << std::endl;
+							std::cout << final_light[0] << std::endl;*/
 						}
 						//temp = Point_color_in_fog(color, c,1.3);
 						if (mesh.GetModelName() == "Sphere.obj") {
@@ -237,7 +255,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 glm::vec3 normal(glm::vec3 x1, glm::vec3 x2, glm::vec3 x3)
 {
 
-	glm::vec3 temp1 = x1 - x2;
+	glm::vec3 temp1 = x1 - x3;
 	glm::vec3 temp2 = x2 - x3;
 	/*std::cout << "1" << temp1[0] << "," << temp1[1] << "," << temp1[2] <<std::endl;
 	std::cout << "2" << temp2[0] << "," << temp2[1] << "," << temp2[2] << std::endl;*/
@@ -733,13 +751,23 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 		glm::vec3 p2(obj.getVerticeAtIndex(point1)[0], obj.getVerticeAtIndex(point1)[1], obj.getVerticeAtIndex(point1)[2]);
 		glm::vec3 p3(obj.getVerticeAtIndex(point2)[0], obj.getVerticeAtIndex(point2)[1], obj.getVerticeAtIndex(point2)[2]);
 		
+		glm::vec3 p1_normal;
+		glm::vec3 p2_normal;
+		glm::vec3 p3_normal;
 
 
-		glm::vec3 p1_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(0)), 1));
-		glm::vec3 p2_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(1)), 1));
-		glm::vec3 p3_normal = glm::normalize(normal_projection * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(2)), 1));
+		if (!scene.GetNormals()) {
+			p1_normal = glm::normalize(obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(0) - 1), 1));
+			p2_normal = glm::normalize(obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(1) - 1), 1));
+			p3_normal = glm::normalize(obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(2) - 1), 1));
+		}
+		else {
+			p1_normal = glm::normalize(camera.GetViewPortTransformation(HomToCartesian(divideZ * perspective * camera.GetCameraTransform() * obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(0) - 1), 1)), viewport_width_, viewport_height_));
+			p2_normal = glm::normalize(camera.GetViewPortTransformation(HomToCartesian(divideZ * perspective * camera.GetCameraTransform() * obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(1) - 1), 1)), viewport_width_, viewport_height_));
+			p3_normal = glm::normalize(camera.GetViewPortTransformation(HomToCartesian(divideZ * perspective * camera.GetCameraTransform() * obj.GetTransform() * glm::vec4(obj.GetNormalAtIndex(face.GetNormalIndex(2) - 1), 1)), viewport_width_, viewport_height_));
+		}
 
-		p1_normal[0] = -p1_normal[0];
+		/*p1_normal[0] = -p1_normal[0];
 		p1_normal[1] = -p1_normal[1];
 		p1_normal[2] = -p1_normal[2];
 
@@ -749,7 +777,7 @@ void Renderer::DrawModel(MeshModel obj,Scene scene,glm::vec3 color)
 
 		p3_normal[0] = -p3_normal[0];
 		p3_normal[1] = -p3_normal[1];
-		p3_normal[2] = -p3_normal[2];	
+		p3_normal[2] = -p3_normal[2];*/
 
 		glm::vec3 realP1(realMesh.getVerticeAtIndex(point0)[0], realMesh.getVerticeAtIndex(point0)[1], realMesh.getVerticeAtIndex(point0)[2]);
 		glm::vec3 realP2(realMesh.getVerticeAtIndex(point1)[0], realMesh.getVerticeAtIndex(point1)[1], realMesh.getVerticeAtIndex(point1)[2]);
@@ -802,6 +830,7 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 	int maxY = min(max(p1[1], max(p2[1], p3[1])), viewport_height_-1);
 	float c;
 	glm::vec3 temp = color;
+	glm::vec3 after_fog;
 
 	if (mesh.GetModelName() != "Sphere.obj") {
 
@@ -819,43 +848,39 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 			light& light1 = scene.GetActiveLight();
 			glm::vec3 lightPos = light1.GetPosVec();
 			glm::vec3 I = glm::normalize(glm::vec3(lightPos[0] - center[0], lightPos[1] - center[1], lightPos[2] - center[2]));
+			//glm::vec3 I = glm::normalize(glm::vec3(center[0] - lightPos[0], center[1] - lightPos[1], center[2] - lightPos[2]));
 			light1.Set_I(I);
-			glm::vec3 N = normal(realP1, realP2, realP3);
-			light1.Set_N(N);
-			/*std::cout << N[0] << ",";
-			std::cout << N[1] << ",";
-			std::cout << N[2] << std::endl;*/
-			/*std::cout << I[0] << ",";
-			std::cout << I[1] << ",";
-			std::cout << I[2] << std::endl;*/
+			if (!scene.GetNormals()) {
+				light1.Set_N(normal(realP1, realP2, realP3));
+			}
+			else {
+				light1.Set_N(normal(p1, p2, p3));
+			}
 			light1.Set_V(pointToCam);
-			temp = Flat_shading(light1, mesh, normal(realP1,realP2,realP3), 2, pointToCam);
-			//temp = Flat_shading(light1, mesh, normal(p1,p2,p3), 2, pointToCam);
+			temp = Flat_shading(light1, mesh, normal(p1,p2,p3), 2, pointToCam);
 		}
 	}
+
 	for (int y = minY; y <= maxY; y++)
 	{
 		for (int x = minX; x <= maxX; x++)
 		{
 			if (PointInTriangle(glm::vec2(x, y), p1, p2, p3)) {
-				float z = Linear_Interpolation(p1,p2, p3, glm::vec2(x, y));
-				z = abs(z);
-				z = -z;
+				float z = Linear_Interpolation(realP1,realP2,realP3, glm::vec2(x, y));
 				//std::cout << z << std::endl;
 				if (1) {
-					/*std::cout << camera.zNear << std::endl;
-					std::cout << camera.zFar << std::endl;*/
+
 					if (z < camera.zNear && z > camera.zFar && z > z_buffer[Z_INDEX(viewport_width_, x, y)]) {
 						z_buffer[Z_INDEX(viewport_width_, x, y)] = z;
-						
 
 						if (mesh.GetModelName() == "Sphere.obj") {
 							PutPixel(x, y, glm::vec3(1,1,1));
 						}
 						else {
-							PutPixel(x, y, temp);
+							after_fog = Point_color_in_fog(temp,abs(camera.zNear - z)/abs(camera.zFar), 1.2);
+							PutPixel(x, y, after_fog);
 						}
-						//PutPixel(x + 300, y, color);
+						//PutPixel(x + 300, y, glm::vec3(c,c,c));
 					}
 				}
 			}

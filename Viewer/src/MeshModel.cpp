@@ -21,8 +21,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	position = 0;
 		objPosition = glm::vec3(0, 0, 0);
 
-	localTranslateBarValue_Y =
-		localTranslateBarValue_X =
+		localTranslateBarValue_Y = 0;
+		localTranslateBarValue_X = 0;
 		localTranslateBarValue_Z = 0;
 	worldTranslateBarValue_Y =
 		worldTranslateBarValue_X =
@@ -150,7 +150,6 @@ void MeshModel::GETlocal() {
 	temp2[3][0] += localTranslateBarValue_X;
 	temp2[3][1] += localTranslateBarValue_Y;
 	temp2[3][2] += localTranslateBarValue_Z;
-	
 
 
 	objectTransform = temp2 * temp * localRotationTransform_X * 

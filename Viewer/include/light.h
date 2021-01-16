@@ -39,7 +39,7 @@ public:
     void SetActiveLight(std::string light);
     glm::vec3 GetVerAtIndex(int index);
     
-
+    glm::vec3 light::Final_light_gouraud(glm::vec3 K_A, glm::vec3 K_D, glm::vec3 K_S);
 
     
     void light::Set_I(glm::vec3 I);
@@ -53,6 +53,10 @@ public:
     void light::Find_I_A(glm::vec3 K_A); 
     void light::Find_I_S(glm::vec3 K_S, int user_angle);
     void light::Find_I_D(glm::vec3 K_D);
+    void Find_I_A_gouraud(glm::vec3 K_A);
+    void Find_I_S_gouraud(glm::vec3 K_S, int user_angle);
+    void Find_I_D_gouraud(glm::vec3 K_D);
+
     glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D, glm::vec3 K_S, int user_angle, glm::vec3 V);
 
 };

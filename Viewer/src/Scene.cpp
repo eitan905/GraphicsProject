@@ -12,6 +12,7 @@ Scene::Scene() :
 {
 	shading = "Flat";
 	light_type = "Point";
+	normals = 0;
 
 }
 
@@ -217,5 +218,17 @@ void Scene::SetActiveLight(std::string light)
 {
 	light_type = light;
 }
+
+void Scene::SetNormals(bool n)
+{
+	normals = n;
+}
+
+bool Scene::GetNormals()
+{
+	return normals;
+}
+
+
 
 

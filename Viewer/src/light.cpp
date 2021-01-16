@@ -129,6 +129,7 @@ void light::Find_I_A(glm::vec3 K_A) {
 	I_A[0] = L_A[0] * K_A[0];
 	I_A[1] = L_A[1] * K_A[1];
 	I_A[2] = L_A[2] * K_A[2];
+	//I_A = glm::cross(L_A, K_A);
 	//this->I_A = cross(this->L_A, K_A);
 	I_A = glm::normalize(I_A);
 }
@@ -136,11 +137,12 @@ void light::Find_I_A(glm::vec3 K_A) {
 
 void light::Find_I_D(glm::vec3 K_D) {
 	float alfa;
-	alfa = ((GetCosAlpha(I,N)));
+	alfa = ((dot(N,I)));
 	//std::cout << alfa << std::endl;
 	I_D[0] = L_D[0] * K_D[0];
 	I_D[1] = L_D[1] * K_D[1];
 	I_D[2] = L_D[2] * K_D[2];
+	//I_D = glm::cross(L_D, K_D);
 	I_D = glm::normalize(I_D);
 	I_D = Mul(alfa,I_D);
 
@@ -151,12 +153,12 @@ void light::Find_I_D(glm::vec3 K_D) {
 
 void light::Find_I_S(glm::vec3 K_S,int user_angle) {
 	float alfa;
-	alfa = abs(dot(R, V));
-	
+	//I_S = glm::vec3(0, 0, 0);
+	alfa = abs(dot(R,V));
 	I_S[0] = L_S[0] * K_S[0];
 	I_S[1] = L_S[1] * K_S[1];
 	I_S[2] = L_S[2] * K_S[2];
-	//I_S = cross(L_S, K_S);
+	//I_S = glm::cross(L_S, K_S);
 	I_S = glm::normalize(I_S);
 
 	this->I_S = Mul(pow(alfa, user_angle) ,I_S);
@@ -169,15 +171,106 @@ glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D,glm::vec3 K_S, int use
 	if (light_type == "Parallel") {
 		I = glm::normalize(paralel);
 	}
+	I = glm::normalize(I);
+	V = glm::normalize(V);
+	N = glm::normalize(N);
+	R = glm::normalize(glm::reflect(-I, N));
+	/*std::cout << I[0] << "," << I[1] << "," << I[2] << std::endl;
+	std::cout << V[0] << "," << V[1] << "," <<V[2] << std::endl;
+	std::cout << N[0] << "," << N[1] << "," << N[2] << std::endl;
+	std::cout << R[0] << "," << R[1] << "," << R[2] << std::endl;*/
+	Find_I_S(K_S, this->user_angle);
+	Find_I_A(K_A);
+	Find_I_D(K_D);
+	
 
+
+	final_color = this->I_S + this->I_D + this->I_A;
+	// = glm::normalize(final_color);
+	if (final_color[0] > 1) {
+		final_color[0] = 1;
+	}
+	if (final_color[1] > 1) {
+		final_color[1] = 1;
+	}
+	if (final_color[2] > 1) {
+		final_color[2] = 1;
+	}
+
+	if (final_color[0] < 0) {
+		final_color[0] = 0;
+	}
+	if (final_color[1] < 0) {
+		final_color[1] = 0;
+	}
+	if (final_color[2] < 0) {
+		final_color[2] = 0;
+	}
+
+	/*final_color[0] = (final_color[0]+1)/2;
+	final_color[1] = (final_color[1]+1)/2;
+	final_color[2] = (final_color[2]+1)/2;*/
+
+	//if (final_color[0] < 0 || final_color[1] < 0 || final_color[2] < 0) {
+	//	std::cout << "----------------------------------------------" << std::endl;
+	//	std::cout << final_color[0] << "," << final_color[1] << "," << final_color[2] << std::endl;;
+	//	/*std::cout << I_A[0] << "," << I_A[1] << "," << I_A[2] << std::endl;
+	//	std::cout << I_D[0] << "," << I_D[1] << "," << I_D[2] << std::endl;
+	//	std::cout << I_S[0] << "," << I_S[1] << "," << I_S[2] << std::endl;*/
+	//}
+
+	return final_color;
+
+}
+
+
+
+void light::Find_I_A_gouraud(glm::vec3 K_A) {
+	I_A[0] = L_A[0] * K_A[0];
+	I_A[1] = L_A[1] * K_A[1];
+	I_A[2] = L_A[2] * K_A[2];
+	
+}
+
+
+void light::Find_I_D_gouraud(glm::vec3 K_D) {
+	float alfa;
+	alfa = ((dot(I, N)));
+	I_D[0] = L_D[0] * K_D[0];
+	I_D[1] = L_D[1] * K_D[1];
+	I_D[2] = L_D[2] * K_D[2];
+
+	I_D = Mul(alfa, I_D);
+
+}
+
+void light::Find_I_S_gouraud(glm::vec3 K_S, int user_angle) {
+	float alfa;
+	alfa = abs(dot(R, V));
+
+	I_S[0] = L_S[0] * K_S[0];
+	I_S[1] = L_S[1] * K_S[1];
+	I_S[2] = L_S[2] * K_S[2];
+
+	this->I_S = Mul(pow(alfa, user_angle), I_S);
+}
+
+glm::vec3 light::Final_light_gouraud(glm::vec3 K_A, glm::vec3 K_D, glm::vec3 K_S) {
+	glm::vec3 final_color;
+
+	if (light_type == "Parallel") {
+		I = glm::normalize(paralel);
+	}
+	I = glm::normalize(I);
+	V = glm::normalize(V);
+	N = glm::normalize(N);
 	R = glm::normalize(glm::reflect(-I, N));
 	Find_I_S(K_S, this->user_angle);
 	Find_I_A(K_A);
 	Find_I_D(K_D);
-	/*std::cout << I_D[0] << ",";
-	std::cout << I_D[1] << ",";
-	std::cout << I_D[2] << std::endl;*/
 	
+	
+
 	final_color = this->I_S + this->I_D + this->I_A;
 	if (final_color[0] > 1) {
 		final_color[0] = 1;
@@ -188,7 +281,7 @@ glm::vec3 light::Final_light(glm::vec3 K_A, glm::vec3 K_D,glm::vec3 K_S, int use
 	if (final_color[2] > 1) {
 		final_color[2] = 1;
 	}
+
 	return final_color;
 
 }
-

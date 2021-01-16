@@ -46,11 +46,13 @@ public:
 	float GetHeight();
 	bool displayBox;
 	bool displayNormals;
-
+	
 
 	void SetShading(std::string shade);
 	std::string GetShading();
 	void SetActiveLight(std::string light);
+	void SetNormals(bool n);
+	bool GetNormals();
 	
 	
 private:
@@ -61,7 +63,8 @@ private:
 	float viewport_width_;
 	float viewport_height_;
 	std::string light_type;
-	
+	bool normals;
+
 	std::string shading;
 	int active_camera_index_;
 	int active_model_index_;

@@ -16,8 +16,8 @@ Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::ve
 	viewport_height_ =float (720);
 	fovy = -55.0f;
 	aspect = viewport_width_/viewport_height_;
-	zNear = -30.0f;
-	zFar = -800.0f;
+	zNear = 15.0f;
+	zFar = -400.0f;
 	right = (viewport_width_);
 	left = 0.0f;
 	bottom = 0.0f;

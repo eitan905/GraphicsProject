@@ -501,7 +501,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				ImGui::SameLine();
 				ImGui::SliderFloat("ot.z", &obj.localTranslateBarValue_Y, -100, 100);
 				ImGui::SameLine();
-				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -1200, 0);
+				ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -600, 200);
 
 				ImGui::SetNextItemWidth(400);
 				ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0, 1000);
@@ -578,6 +578,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ImGui::SameLine();
 			if (ImGui::Button("Point")) {
 				scene.GetActiveLight().SetActiveLight("Point");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("realP")) {
+				scene.SetNormals(0);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("p")) {
+				scene.SetNormals(1);
 			}
 			
 			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);

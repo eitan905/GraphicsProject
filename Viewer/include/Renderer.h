@@ -52,7 +52,7 @@ public:
 	double Linear_Interpolation(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt);
 	double Renderer::Linear_Interpolation_by_choice(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 pt, float choice_v1, float choice_v2, float choice_v3);
 	glm::vec3 Flat_shading(light& light_source, MeshModel& mesh, glm::vec3 normal_of_polygon, int user_angle, glm::vec3 pointToCam);
-	glm::vec3 Gouraud_shading_for_vertix(light light_source, MeshModel mesh, glm::vec3 normal_of_polygon, int  user_angle);
+	glm::vec3 Gouraud_shading_for_vertix(light light_source, MeshModel mesh);
 	glm::vec3 Renderer::Gouraud_shading_for_point_in_polygon(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 color_p1, glm::vec3 color_p2, glm::vec3 color_p3, glm::vec3 pt);
 	double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, float color_v1, float color_v2, float color_v3, glm::vec3 pt);
 	glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle);
