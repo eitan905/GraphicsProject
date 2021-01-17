@@ -17,6 +17,11 @@ Part 2:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/e.jpeg?raw=true)
 
 Part 3:
+
+Phong shading.
+Point light position is: left, top, back.
+Tea pot rotated 14 degree on the X-axis.
+
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/one.jpeg?raw=true)
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/two.jpeg?raw=true)
