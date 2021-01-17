@@ -32,13 +32,13 @@ Tea pot rotated 14 degree on the X-axis.
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/13.jpeg?raw=true)
 
 phong
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/phong.jpeg?raw=true)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/phong.jpg?raw=true)
 
 gouraud
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/gouraud.jpeg?raw=true)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/gouraud.jpg?raw=true)
 
 flat
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/flat.jpeg?raw=true)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/flat.jpg?raw=true)
 
 Fog
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/six.jpeg?raw=true)
@@ -48,10 +48,10 @@ without Fog
 
 Before bloom:
 
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/before_bloom.jpeg?raw=true)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/before_bloom.jpg?raw=true)
 
 After_bloom:
 
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/after_bloom.jpeg?raw=true)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/after_bloom.jpg?raw=true)
 
 
