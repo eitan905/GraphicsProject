@@ -1,50 +1,39 @@
 Part 3:
 
-Phong shading.
-Point light position is: left, top, back.
-Tea pot rotated 14 degree on the X-axis.
 
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/one.jpeg?raw=true)
 
-Flat shading.
-Point light position is: left, top, back.
-Tea pot rotated 14 degree on the X-axis.
-
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/two.jpeg?raw=true)
-
-gouraud shading.
-Point light position is: left, top, back.
-Tea pot rotated 14 degree on the X-axis.
-
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/three.jpeg?raw=true)
-
-Flat shading.
-Point light position is: left, top, back.
-Tea pot rotated 14 degree on the X-axis.
-
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/four.jpeg?raw=true)
-
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/five.jpeg?raw=true)
+parallel light with flat shading  from direction (1,0,0)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/11.jpeg?raw=true)
 
+parallel light with gouraud shading form direction (1,0,0)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/12.jpeg?raw=true)
 
+parallel light with phong shading form direction (1,0,0)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/13.jpeg?raw=true)
 
-phong
+
+point light with phong shading from behind and to the upper left of the teap pot
+
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/phong.jpg?raw=true)
 
-gouraud
+point light with gouraud shading from behind and to the upper left of the teap pot
+
+
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/gouraud.jpg?raw=true)
 
-flat
+point light with flat shading from behind and to the upper left of the teap pot
+
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/flat.jpg?raw=true)
 
-Fog
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/six.jpeg?raw=true)
+
 without Fog 
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/seven.jpeg?raw=true)
+
+with Fog
+
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/six.jpeg?raw=true)
 
 Before bloom:
 
