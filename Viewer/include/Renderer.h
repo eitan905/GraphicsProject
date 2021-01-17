@@ -7,13 +7,13 @@ class Renderer
 {
 public:
 
-	glm::mat3 Gaussian_kernal = glm::mat3x3(
-		1 / 16, 1 / 8, 1 / 16,
-		1 / 8, 1 / 4, 1 / 8,
-		1 / 16, 1 / 8, 1 / 16
+	glm::mat3x3 Gaussian_kernal = glm::mat3x3(
+		float(1 / 16), float(1 / 8), float(1 / 16),
+		float(1 / 8), float(1 / 4), float(1 / 8),
+		float(1 / 16), float(1 / 8), float(1 / 16)
 	);
 	glm::vec3 color_neighbers;
-	glm::vec3 Renderer::Convolution(glm::vec3 color_of_pt, glm::mat3x3 color_neighbers);
+	float Renderer::Convolution(float* bright, int r,int x ,int y);
 	bool isInside(float x1, float y1, float x2, float y2, float x3, float y3, float x, float y);
 	float area(float x1, float y1, float x2, float y2, float x3, float y3);
 	void Draw_Normals(MeshModel obj, Camera camera,glm::mat4x4 projection,glm::mat4x4 normal_projection);
@@ -58,7 +58,9 @@ public:
 	glm::vec3 Renderer::Phong_shading(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 normal_p1, glm::vec3 normal_p2, glm::vec3 normal_p3, glm::vec3 pt, light light_source, MeshModel mesh, int  user_angle);
 	glm::vec3 Renderer::Point_color_in_fog( glm::vec3 color_of_pt, float distance, float fog_density);
 	float Renderer::Fog_color(float distance, float fog_density);
-
+	void Renderer::PutPixel_MASS(int i, int j, const glm::vec3& color);
+	void Renderer::PutPixel_Bloom(int i, int j, const glm::vec3& color);
+	void Renderer::PutPixel_Bright(int i, int j, const glm::vec3& color);
 
 	void DrawLight(light light1);
 
@@ -72,6 +74,9 @@ private:
 
 	float* color_buffer_;
 	float* z_buffer;
+	float* mass_buffer;
+	float* only_bright;
+	float* bloom;
 	int viewport_width_;
 	int viewport_height_;
 	GLuint gl_screen_tex_;

@@ -18,6 +18,78 @@ int max(int x, int y) {
 	return x > y ? x : y;
 }
 
+
+std::vector<int> boxesForGauss(float sigma,int n)  // standard deviation, number of boxes
+{
+	float wIdeal = glm::sqrt((12 * sigma * sigma / n) + 1);  // Ideal averaging filter width 
+	int wl = glm::floor(wIdeal);  if (wl % 2 == 0) wl--;
+	int wu = wl + 2;
+
+	float mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
+	int m = glm::round(mIdeal);
+	// var sigmaActual = Math.sqrt( (m*wl*wl + (n-m)*wu*wu - n)/12 );
+
+	std::vector<int> sizes;
+	for (int i = 0; i < n; i++) sizes.push_back(i < m ? wl : wu);
+	return sizes;
+}
+
+
+void gaussBlur_4(float* scl, float* tcl,int w,int h,int r) {
+	std::vector<int> bxs = boxesForGauss(r, 3);
+	boxBlur_4(scl, tcl, w, h, (bxs[0] - 1) / 2);
+	boxBlur_4(tcl, scl, w, h, (bxs[1] - 1) / 2);
+	boxBlur_4(scl, tcl, w, h, (bxs[2] - 1) / 2);
+}
+
+void boxBlur_4(float* scl, float* tcl, int  w, int  h, int  r) {
+	for (int i = 0; i < w*h-1; i++) tcl[i] = scl[i];
+	boxBlurH_4(tcl, scl, w, h, r);
+	boxBlurT_4(scl, tcl, w, h, r);
+}
+void boxBlurH_4(float* scl, float* tcl, int  w, int  h, int  r) {
+	float iarr = 1 / (r + r + 1);
+	for (int i = 0; i < h; i++) {
+		int ti = i * w, li = ti, ri = ti + r;
+		float fv = scl[ti], lv = scl[ti + w - 1], val = (r + 1) * fv;
+		for (int j = 0; j < r; j++) val += scl[ti + j];
+		for (int j = 0; j <= r; j++) { val += scl[ri++] - fv;   tcl[ti++] = glm::round(val * iarr); }
+		for (int j = r + 1; j < w - r; j++) { val += scl[ri++] - scl[li++];   tcl[ti++] = glm::round(val * iarr); }
+		for (int j = w - r; j < w; j++) { val += lv - scl[li++];   tcl[ti++] = glm::round(val * iarr); }
+	}
+}
+void boxBlurT_4(float* scl, float* tcl, int  w, int  h, int  r) {
+	float iarr = 1 / (r + r + 1);
+	for (int i = 0; i < w; i++) {
+		int ti = i, li = ti, ri = ti + r * w;
+		float fv = scl[ti], lv = scl[ti + w * (h - 1)], val = (r + 1) * fv;
+		for (int j = 0; j < r; j++) val += scl[ti + j * w];
+		for (int j = 0; j <= r; j++) { val += scl[ri] - fv;  tcl[ti] = glm::round(val * iarr);  ri += w; ti += w; }
+		for (int j = r + 1; j < h - r; j++) { val += scl[ri] - scl[li];  tcl[ti] = glm::round(val * iarr);  li += w; ri += w; ti += w; }
+		for (int j = h - r; j < h; j++) { val += lv - scl[li];  tcl[ti] = glm::round(val * iarr);  li += w; ti += w; }
+	}
+}
+
+void gaussBlur_1(float* scl,float*  tcl,int  w,int  h, int  r,int rgb) {
+	int rs = glm::round(r* 2.57);     // significant radius
+	for (int i = 0; i < h; i++)
+		for (int j = 0; j < w; j++) {
+			float val = 0, wsum = 0;
+			for (int iy = i - rs; iy < i + rs + 1; iy++)
+				for (int ix = j - rs; ix < j + rs + 1; ix++) {
+					int x = min(w - 1, max(0, ix));
+					int y = min(h - 1, max(0, iy));
+					int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
+					float wght = exp(-dsq / (2 * r * r)) / (float(3.14159) * 2 * float(r) * float(r));
+					val += scl[INDEX(w,x,y,rgb)] * wght;
+					wsum += wght;
+				}
+			
+			tcl[INDEX(w,j,i,rgb)] = float(val / wsum);
+		}
+}
+
+
 void DrawTriangle() {
 
 	glm::vec3 p1 = glm::vec3(100, 100, 100);
@@ -27,25 +99,69 @@ void DrawTriangle() {
 
 
 }
-/*
-glm::vec3 Renderer::Convolution(glm::vec3 color_of_pt, glm::mat3x3 color_neighbers )
+
+float GetColor(int x, int y,float* bright,int index) {
+	if (x <= 0 || x >= 1280 || y <= 0 || y >= 720)
+		return(1);
+	else {
+		//std::cout << bright[INDEX(1280, x, y, index)] << std::endl;
+		return bright[INDEX(1280, x, y, index)];
+	}
+}
+
+float Renderer::Convolution(float* bright,int r ,int x, int y)
 {
-	float sum=0;
-	glm::mat3x3 result = Gaussian_kernal * neighbers;
+	float sum = 0;
+
+	
+
+	glm::mat3x3 color_neigbors;
+
+	glm::mat3x3 Gaussian_kernal1 = glm::mat3x3(
+		float(1.0f / 16.0f), float(1.0f / 8.0f), float(1.0f / 16.0f),
+		float(1.0f / 8.0f), float(1.0f / 4.0f), float(1.0f / 8.0f),
+		float(1.0f / 16.0f), float(1.0f / 8.0f), float(1.0f / 16.0f)
+	);
+
+	color_neigbors[0] [0]= GetColor(x-1, y-1, bright, r);
+	color_neigbors[0] [1]= GetColor(x-1, y, bright, r);
+	color_neigbors[0] [2]= GetColor(x, y+1, bright, r);
+	color_neigbors[1][0] = GetColor(x, y-1, bright, r);
+	color_neigbors[1][1] = GetColor(x, y, bright, r);
+	color_neigbors[1][2] = GetColor(x, y+1, bright, r);
+	color_neigbors[2][0] = GetColor(x+1, y, bright, r);
+	color_neigbors[2][1] = GetColor(x+1, y, bright, r);
+	color_neigbors[2][2] = GetColor(x+1, y+1, bright, r);
+
+	
+	//std::cout << Gaussian_kernal1[0][0] << "," << Gaussian_kernal1[0][1] << "," << "," << Gaussian_kernal1[0][2] << std::endl;
+
+
+	
+
+	glm::mat3x3 result = Gaussian_kernal1 * color_neigbors;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			sum += result[i, j] * Gaussian_kernal[i, j];
+			sum += (result[i][j]);
 		}
 	}
 	return sum;
 }
-*/
+
 
 glm::vec3 Renderer::Point_color_in_fog( glm::vec3 color_of_pt, float distance, float fog_density)
 {
 	float fog_color; 
+
+	
 	fog_color = Fog_color(distance, fog_density);
-	return glm::vec3((fog_color + color_of_pt[0]) / 2, (fog_color + color_of_pt[1]) / 2, (fog_color + color_of_pt[2]) / 2);
+	if (fog_color < color_of_pt[0])
+		color_of_pt[0] = (color_of_pt[0] - (color_of_pt[0] - fog_color) * (distance));
+	if (fog_color < color_of_pt[1])
+		color_of_pt[1] = (color_of_pt[1] - (color_of_pt[1] - fog_color) * (distance));
+	if (fog_color < color_of_pt[2])
+		color_of_pt[2] = (color_of_pt[2] - (color_of_pt[2] - fog_color) * (distance));
+	return color_of_pt;
 }
 
 float Renderer::Fog_color(float distance, float fog_density)
@@ -64,13 +180,14 @@ void Renderer::DrawLight(light light1)
 		}
 	}
 
-
 }
 
 float Renderer::area(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
 }
+
+
 double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, float color_v1, float color_v2, float color_v3, glm::vec3 pt) {
 	double A_1 = area(v2[0], v2[1], v3[0], v3[1], pt[0], pt[1]);
 	double A_2 = area(v1[0], v1[1], v3[0], v3[1], pt[0], pt[1]);
@@ -80,6 +197,8 @@ double Renderer::Linear_Interpolation_color(glm::vec3 v1, glm::vec3 v2, glm::vec
 	
 	return z;
 }
+
+
 glm::vec3 Renderer::Flat_shading(light& light_source, MeshModel& mesh,glm::vec3 normal_of_polygon,int  user_angle, glm::vec3 camToPoint)
 {
 	
@@ -135,6 +254,11 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),     
 	viewport_height_(viewport_height)
 {
+	Gaussian_kernal = glm::mat3x3(
+		float(1 / 16), float(1 / 8), float(1 / 16),
+		float(1 / 8), float(1 / 4), float(1 / 8),
+		float(1 / 16), float(1 / 8),float( 1 / 16)
+	);
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
 }
@@ -235,6 +359,9 @@ Renderer::~Renderer()
 {
 	delete[] color_buffer_;
 	delete[] z_buffer;
+	delete[] bloom;
+	delete[] only_bright;
+	//delete[] mass_buffer;
 }
 
 
@@ -249,6 +376,26 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	color_buffer_[INDEX(viewport_width_, i, j, 0)] = color.x;
 	color_buffer_[INDEX(viewport_width_, i, j, 1)] = color.y;
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
+}
+
+void Renderer::PutPixel_Bloom(int i, int j, const glm::vec3& color)
+{
+	if (i < 0) return; if (i >= viewport_width_) return;
+	if (j < 0) return; if (j >= viewport_height_) return;
+
+	bloom[INDEX(viewport_width_, i, j, 0)] = color.x;
+	bloom[INDEX(viewport_width_, i, j, 1)] = color.y;
+	bloom[INDEX(viewport_width_, i, j, 2)] = color.z;
+}
+
+void Renderer::PutPixel_Bright(int i, int j, const glm::vec3& color)
+{
+	if (i < 0) return; if (i >= viewport_width_ ) return;
+	if (j < 0) return; if (j >= viewport_height_ ) return;
+
+	only_bright[INDEX(viewport_width_, i, j, 0)] = color.x;
+	only_bright[INDEX(viewport_width_, i, j, 1)] = color.y;
+	only_bright[INDEX(viewport_width_, i, j, 2)] = color.z;
 }
 
 //compute nurmal faces
@@ -369,7 +516,10 @@ void Renderer::CreateBuffers(int w, int h)
 {
 	CreateOpenGLBuffer(); //Do not remove this line.
 	color_buffer_ = new float[3 * w * h];
+	only_bright = new float[3 * w * h];
+	bloom = new float[3 * w * h];
 	z_buffer = new float[w * h];
+	//mass_buffer = new float[3 * w * h * 4];
 	ClearColorBuffer(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	
@@ -497,7 +647,17 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 		for (int j = 0; j < viewport_height_; j++)
 		{
 			PutPixel(i, j, color);
+			PutPixel_Bloom(i, j, color);
+			PutPixel_Bright(i, j, glm::vec3(0, 0, 0));
+			PutPixel_Bright(i, j, glm::vec3(0, 0, 0));
 			z_buffer[Z_INDEX(viewport_width_, i, j)] = -INFINITY;
+		}
+	}
+	for (int i = 0; i < viewport_width_*2; i++)
+	{
+		for (int j = 0; j < viewport_height_*2; j++)
+		{
+			//PutPixel_MASS(i, j, color);
 		}
 	}
 }
@@ -531,7 +691,33 @@ void Renderer::Render(const Scene& scene)
 		DrawModel(scene.GetActiveLight(),scene, glm::vec3(1,1,1));
 	}
 	
-	
+	if (scene.GetBloom()) {
+
+
+
+
+
+
+		gaussBlur_1(color_buffer_, bloom, viewport_width_, viewport_height_, 10,0);
+		gaussBlur_1(color_buffer_, bloom, viewport_width_, viewport_height_, 10,1);
+		gaussBlur_1(color_buffer_, bloom, viewport_width_, viewport_height_, 10,2);
+		for (int i = 0; i < viewport_width_; i++) {
+			for (int j = 0; j < viewport_height_; j++) {
+
+				/*bloom[INDEX(viewport_width_, i, j, 0)] = Convolution(only_bright, 0,i,j);
+				bloom[INDEX(viewport_width_, i, j, 1)] = Convolution(only_bright, 1,i,j);
+				bloom[INDEX(viewport_width_, i, j, 2)] = Convolution(only_bright, 2,i,j);*/
+
+				color_buffer_[INDEX(viewport_width_, i, j, 0)] = (color_buffer_[INDEX(viewport_width_, i, j, 0)] + bloom[INDEX(viewport_width_, i, j, 0)]) / 2;
+				color_buffer_[INDEX(viewport_width_, i, j, 1)] = (color_buffer_[INDEX(viewport_width_, i, j, 1)] + bloom[INDEX(viewport_width_, i, j, 1)]) / 2;
+				color_buffer_[INDEX(viewport_width_, i, j, 2)] = (color_buffer_[INDEX(viewport_width_, i, j, 2)] + bloom[INDEX(viewport_width_, i, j, 2)]) / 2;
+
+				/*color_buffer_[INDEX(viewport_width_, i, j, 0)] = ( bloom[INDEX(viewport_width_, i, j, 0)]) ;
+				color_buffer_[INDEX(viewport_width_, i, j, 1)] =  (bloom[INDEX(viewport_width_, i, j, 1)]) ;
+				color_buffer_[INDEX(viewport_width_, i, j, 2)] = (bloom[INDEX(viewport_width_, i, j, 2)]) ;*/
+			}
+		}
+	}
 
 }
 
@@ -877,8 +1063,16 @@ void Renderer::FloodFillUtil(int x, int y, glm::vec3 color, glm::vec3 p1, glm::v
 							PutPixel(x, y, glm::vec3(1,1,1));
 						}
 						else {
-							after_fog = Point_color_in_fog(temp,abs(camera.zNear - z)/abs(camera.zFar), 1.2);
-							PutPixel(x, y, after_fog);
+							if (scene.GetPreProcessing() == "fog") {
+								PutPixel(x,y,Point_color_in_fog(temp,abs(camera.zNear - z)/abs(camera.zFar), 3));
+
+							}
+							if (scene.GetPreProcessing() == "normal") {
+								if (temp[0] + temp[1] + temp[2] > 0.9) {
+									PutPixel_Bright(x, y, temp);
+								}
+								PutPixel(x, y, temp);
+							}
 						}
 						//PutPixel(x + 300, y, glm::vec3(c,c,c));
 					}

@@ -53,7 +53,10 @@ public:
 	void SetActiveLight(std::string light);
 	void SetNormals(bool n);
 	bool GetNormals();
-	
+	void SetPreProcessing(std::string n);
+	std::string GetPreProcessing();
+	void SetBloom(bool b);
+	bool GetBloom() const;
 	
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
@@ -64,7 +67,8 @@ private:
 	float viewport_height_;
 	std::string light_type;
 	bool normals;
-
+	std::string pre_processing;
+	bool use_bloom;
 	std::string shading;
 	int active_camera_index_;
 	int active_model_index_;

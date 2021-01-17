@@ -13,6 +13,8 @@ Scene::Scene() :
 	shading = "Flat";
 	light_type = "Point";
 	normals = 0;
+	use_bloom = 0;
+	pre_processing = "normal";
 
 }
 
@@ -227,6 +229,26 @@ void Scene::SetNormals(bool n)
 bool Scene::GetNormals()
 {
 	return normals;
+}
+
+void Scene::SetPreProcessing(std::string n)
+{
+	pre_processing = n;
+}
+
+std::string Scene::GetPreProcessing()
+{
+	return pre_processing;
+}
+
+void Scene::SetBloom(bool b)
+{
+	use_bloom = b;
+}
+
+bool Scene::GetBloom() const
+{
+	return use_bloom;
 }
 
 

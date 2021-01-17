@@ -587,6 +587,22 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::Button("p")) {
 				scene.SetNormals(1);
 			}
+
+			if (ImGui::Button("normal")) {
+				scene.SetPreProcessing("normal");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("fog")) {
+				scene.SetPreProcessing("fog");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("MASS")) {
+				scene.SetPreProcessing("MASS");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("bloom")) {
+				scene.SetBloom(1 - scene.GetBloom());
+			}
 			
 			ImGui::InputFloat3("paralel",(float*) &scene.GetActiveLight().paralel, 2);
 			ImGui::InputFloat("user_angle", (float*)&scene.GetActiveLight().user_angle);
