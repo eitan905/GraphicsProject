@@ -20,8 +20,8 @@ float max(int x, int y) {
 
 
 light::light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S,
-	std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
-	MeshModel(faces, vertices, normals, model_name),
+	std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords, const std::string& model_name) :
+	MeshModel(faces, vertices, normals, textureCoords,model_name),
 	L_D(40,50, 110),
 	L_S(40,50, 110),
 	L_A(40,50, 110)

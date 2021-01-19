@@ -22,7 +22,7 @@ private:
 
 public:
     light(glm::vec3 I, glm::vec3 N, glm::vec3 V, glm::vec3 L_A, glm::vec3 L_D, glm::vec3 L_S,
-        std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
+        std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords,const std::string& model_name);
     glm::vec3 light::Mul(float x, glm::vec3 vec);
     glm::vec3 L_A;
     glm::vec3 L_S;

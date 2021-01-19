@@ -64,13 +64,13 @@ int Scene::GetLightsCount() const
 void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 {
 	if (mesh_model->GetModelName() == "camera.txt" || mesh_model->GetModelName() == "camera.obj") {
-		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals()
+		AddCamera(std::make_shared<Camera>(mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals(),mesh_model->GetTexture()
 			, mesh_model->GetModelName()));
 		return;
 	}
 	if (mesh_model->GetModelName() == "Sphere.obj") {
 		AddLight(std::make_shared<light>(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
-			mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals()
+			mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals(), mesh_model->GetTexture()
 			, mesh_model->GetModelName()));
 		return;
 	}

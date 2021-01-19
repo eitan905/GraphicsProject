@@ -239,29 +239,31 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			obj.LocalScaleTransform(0.95, 0.95, 0.95);
 		}
 		
-		if (io.KeysDown[67])//u: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().TranslateSpace(1, 0, 0);
-		}
-		if (io.KeysDown[90])//z: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().TranslateSpace(-1, 0, 0);
-		}
-		if (io.KeysDown[71])//g: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().SetDistance(1);
-		}
-		if (io.KeysDown[70])//f: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().SetDistance(-1);
-		}
-		if (io.KeysDown[72])//h: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().localTranslateTransform[3][2] += 1;
-		}
-		if (io.KeysDown[74])//j: set local rotate transform (20 degree)
-		{
-			scene.GetActiveCamera().localTranslateTransform[3][2] -= 1;
+		if (scene.GetCameraCount() != 0) {
+			if (io.KeysDown[67])//u: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().TranslateSpace(1, 0, 0);
+			}
+			if (io.KeysDown[90])//z: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().TranslateSpace(-1, 0, 0);
+			}
+			if (io.KeysDown[71])//g: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().SetDistance(1);
+			}
+			if (io.KeysDown[70])//f: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().SetDistance(-1);
+			}
+			if (io.KeysDown[72])//h: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().localTranslateTransform[3][2] += 1;
+			}
+			if (io.KeysDown[74])//j: set local rotate transform (20 degree)
+			{
+				scene.GetActiveCamera().localTranslateTransform[3][2] -= 1;
+			}
 		}
 		if (scene.GetActiveLightIndex() != -1) {
 			if (io.KeysDown[77])//m: set local rotate transform (20 degree)
@@ -479,9 +481,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		
 
 			static float scaleValue1;
-			Camera& camera = scene.GetActiveCamera();
-			scaleValue1 = camera.GetScaleBarValue();
-			
+			if (scene.GetCameraCount() != 0) {
+				Camera& camera = scene.GetActiveCamera();
+				scaleValue1 = camera.GetScaleBarValue();
+			}
 			if (ImGui::Button("Reset object")) {
 				obj.Reset();
 			}
@@ -619,7 +622,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 		// 3. Show another simple window.
-		if (show_another_window)
+		if (show_another_window && scene.GetCameraCount() != 0)
 		{
 		
 			static float scaleValue1;

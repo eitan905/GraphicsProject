@@ -2,8 +2,8 @@
 #include <math.h>       /* sqrt */
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
-	MeshModel(faces, vertices, normals, model_name)
+Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords, const std::string& model_name) :
+	MeshModel(faces, vertices, normals,textureCoords, model_name)
 {
 	eye = glm::vec3(0, 0, -1);
 	up = glm::vec3(0, 1, 0);

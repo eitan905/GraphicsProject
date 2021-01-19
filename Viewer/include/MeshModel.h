@@ -1,15 +1,22 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 #include <string>
 #include "Face.h"
 #include <stdio.h>
 #include <iostream>
 
+struct Vertex
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 textureCoords;
+};
 
 class MeshModel
 {
 public:
-	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
+	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords, const std::string& model_name);
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;
 	int GetFacesCount() const;
@@ -34,7 +41,7 @@ public:
 	glm::vec3 K_A;
 	glm::vec3 K_S;
 	glm::vec3 K_D;
-	
+
 	void SetModelName(std::string name);
 	void SetScaleBarValue(float value);
 	float& GetScaleBarValue();
@@ -42,6 +49,7 @@ public:
 
 	void MeshModel::GETlocal();
 	void MeshModel::GETworld();
+	std::vector<glm::vec2> GetTexture();
 
 	void LocalRotationTransform_X();
 	void LocalRotationTransform_Y();
@@ -56,7 +64,7 @@ public:
 	void Reset();
 	glm::vec3 GetcCenter();
 	glm::vec3& getPosition();
-	
+
 	float position;
 	glm::vec3 objPosition;
 	float localRotateBarValue_X;
@@ -73,7 +81,7 @@ public:
 	float worldTranslateBarValue_Z;
 	float worldTranslateBarValue_Y;
 	float worldTranslateBarValue_X;
-	glm::vec4 color;
+	glm::vec3 color;
 
 protected:
 	glm::mat4x4 objectTransform;
@@ -95,10 +103,12 @@ protected:
 	std::vector<Face> faces_;
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;
+	std::vector<glm::vec2> textureCoords;
 	std::string model_name_;
 
-	
-
+	std::vector<Vertex> modelVertices;
+	GLuint vbo;
+	GLuint vao;
 	float worldRotateBarValue;
 
 };
