@@ -83,6 +83,13 @@ public:
 	float worldTranslateBarValue_X;
 	glm::vec3 color;
 
+
+	GLuint GetVAO();
+	GLuint GetVBO();
+	const std::vector<Vertex>& GetModelVertices();
+	
+
+
 protected:
 	glm::mat4x4 objectTransform;
 	glm::mat4x4 localRotationTransform_Z;

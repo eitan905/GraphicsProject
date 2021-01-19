@@ -137,6 +137,23 @@ Camera::Camera(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::ve
 			0, 0, 1, 0,
 			0, 0, 0, 1
 		);
+
+
+
+
+	SetPerspectiveProjection(fovy,aspect,zNear,zFar);
+
+
+
+
+
+
+
+
+
+
+
+
 }
 //world mat
 
@@ -147,17 +164,14 @@ Camera::~Camera(){
 // get camera projection
 const glm::mat4x4& Camera::GetProjectionTransformation() const
 {
-	glm::mat4x4 temp = projection_transformation_;
-	return (projection_transformation_);
-	if (distance != 0) {
-		temp[2][3] /= distance;
-	}
-	return (temp);
+
+	return projectionTransformation;
+	
 }
 //get camera view pransform
 const glm::mat4x4& Camera::GetViewTransformation() const
 {
-	return view_transformation_;
+	return cinv;
 }
 
 glm::vec3 HomToCartesian(glm::vec4 vec)
@@ -287,7 +301,7 @@ glm::vec3 Camera::GetPosition()
 }
 
 //camera get transform
-glm::mat4x4 Camera::GetCameraTransform()
+const glm::mat4x4 Camera::GetCameraTransform()
 {
 	UpdateObjcetTransform();
 	
@@ -610,4 +624,25 @@ void Camera::WorldRotationTransform_X() {
 void Camera::SetPos(glm::vec3 pos)
 {
 	pos = pos;
+}
+
+
+void Camera::SetOrthographicProjection(
+	const float height,
+	const float aspectRatio,
+	const float zNear,
+	const float zFar)
+{
+	
+	float width = aspectRatio * height;
+	projectionTransformation = glm::ortho(-width / 2, width / 2, -height / 2, height / 2, zNear, zFar);
+}
+
+void Camera::SetPerspectiveProjection(
+	const float fovy,
+	const float aspectRatio,
+	const float zNear,
+	const float zFar)
+{
+	projectionTransformation = glm::perspective(fovy, aspectRatio, zNear, zFar);
 }

@@ -21,7 +21,7 @@ public:
 	void Camera::TranslatLocal(float x, float y, float z);
 
 	glm::vec3 GetPosition();
-	glm::mat4x4 GetCameraTransform();
+	const glm::mat4x4 GetCameraTransform();
 	void SetDistance(double value);
 	glm::mat4x4 GetPerspectiveNormalization();
 	glm::mat4x4 GetOrthoNormalization();
@@ -53,6 +53,44 @@ public:
 
 	void Camera::RotateWorld(float x);
 	glm::mat4x4 GetTransform();
+
+
+
+
+
+
+	
+
+
+
+
+	void Camera::SetOrthographicProjection(
+		const float height,
+		const float aspectRatio,
+		const float zNear,
+		const float zFar);
+	void Camera::SetPerspectiveProjection(
+		const float fovy,
+		const float aspectRatio,
+		const float zNear,
+		const float zFar);
+
+
+
+
+	bool perspective;
+	glm::mat4x4 projectionTransformation;
+
+
+
+
+
+
+
+
+
+
+
 
 	glm::mat4x4 c;
 	glm::mat4x4 cinv;

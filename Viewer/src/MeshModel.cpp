@@ -34,8 +34,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 			int normalIndex = currentFace.GetNormalIndex(j) - 1;
 			Vertex vertex;
 			vertex.position = vertices[vertexIndex];
-			std::cout << "normals.size"<< normals.size() << std::endl;
-			std::cout << "normalxIndex" << normalIndex << std::endl;
+			
 
 			vertex.normal = normals[normalIndex];
 
@@ -445,6 +444,21 @@ glm::vec3 MeshModel::GetcCenter()
 glm::vec3& MeshModel::getPosition()
 {
 	return objPosition;
+}
+
+GLuint MeshModel::GetVAO()
+{
+	return vao;
+}
+
+GLuint MeshModel::GetVBO()
+{
+	return vbo;
+}
+
+const std::vector<Vertex>& MeshModel::GetModelVertices()
+{
+	return modelVertices;
 }
 
 
