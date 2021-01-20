@@ -3,28 +3,42 @@
 struct Material
 {
 	sampler2D textureMap;
-	// You can add more fields here...
-	// Such as:
-	//		1. diffuse/specular relections constants
-	//		2. specular alpha constant
-	//		3. Anything else you find relevant
+	
 };
 
-// We set this field's properties from the C++ code
 uniform Material material;
+uniform vec3 K_A;
+uniform vec3 K_S;
+uniform vec3 K_D;
+uniform vec3 L_S;
+uniform vec3 L_D;
+uniform vec3 L_A;
+uniform vec3 lightPos;
+uniform vec3 cameraPos;
+uniform float user_angle;
 
-// Inputs from vertex shader (after interpolation was applied)
+
 in vec3 fragPos;
 in vec3 fragNormal;
 in vec2 fragTexCoords;
-in vec3 orig_fragPos;
-// The final color of the fragment (pixel)
+
+
+
 out vec4 frag_color;
 
 void main()
 {
-	// Sample the texture-map at the UV coordinates given by 'fragTexCoords'
 	vec3 textureColor = vec3(texture(material.textureMap, fragTexCoords));
+	vec3 N = normalize(fragNormal);
+	vec3 I = normalize(lightPos - (fragPos.xyz ));
+	vec3 V = normalize(cameraPos - (fragPos.xyz ));
+	vec3 R = normalize(reflect(-I, N));
 
-	frag_color = vec4(1,0,0,1);
+	vec3 I_A = (K_A * L_A);
+	vec3 I_D = (max(dot(N, I), 0.0f) * normalize(K_D * L_D));
+	vec3 I_S = (pow(max(dot(R, V),0.0f), user_angle) * normalize(K_S * L_S));
+
+	vec3 final_light = I_A + I_D + I_S;
+	
+	frag_color = vec4(final_light,1);
 }

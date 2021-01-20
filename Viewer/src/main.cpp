@@ -82,7 +82,6 @@ int main(int argc, char** argv)
 	}
 	glfwMakeContextCurrent(window);
 	int frameBufferWidth, frameBufferHeight;
-	//glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
 
 	
 
@@ -96,7 +95,8 @@ int main(int argc, char** argv)
 
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
-
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
 
 
@@ -111,8 +111,7 @@ int main(int argc, char** argv)
 
 		glfwPollEvents();
 		StartFrame();
-
-
+		glfwMakeContextCurrent(window);
 		DrawImguiMenus(io, scene);
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -298,7 +297,7 @@ int r = 0;
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
 
-	ImGui::Render();
+	//ImGui::Render();
 	int frameBufferWidth, frameBufferHeight;
 	//glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);

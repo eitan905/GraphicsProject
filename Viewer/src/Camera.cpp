@@ -297,7 +297,7 @@ void Camera::TranslatLocal(float x, float y, float z) {
 
 glm::vec3 Camera::GetPosition()
 {
-	return c * glm::vec4(1,1,1,1);
+	return c * glm::vec4(vertices_[0],1);
 }
 
 //camera get transform

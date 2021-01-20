@@ -86,7 +86,7 @@ void light::SetPos(glm::vec3 pos)
 
 glm::vec3 light::GetPosVec()
 {
-	return position;
+	return GetTransform() * glm::vec4(vertices_[0], 1);
 }
 
 

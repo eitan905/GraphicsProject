@@ -28,8 +28,9 @@ Renderer::Renderer() :
 {
 
 	//glewExperimental = GL_TRUE;
-	InitOpenGLRendering();
-	CreateBuffers(viewport_width_, viewport_height_);
+	//InitOpenGLRendering();
+	//SwapBuffers();
+	//CreateBuffers(viewport_width_, viewport_height_);
 
 }
 
@@ -53,10 +54,10 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 void Renderer::CreateBuffers(int w, int h)
 {
 	CreateOpenGLBuffer(); //Do not remove this line.
-	color_buffer_ = new float[3 * w * h];
+	//color_buffer_ = new float[3 * w * h];
 
 	//mass_buffer = new float[3 * w * h * 4];
-	ClearColorBuffer(glm::vec3(0.0f, 0.0f, 0.0f));
+	//ClearColorBuffer(glm::vec3(0.0f, 0.0f, 0.0f));
 
 
 
@@ -242,11 +243,25 @@ void Renderer::Render(const Scene& scene)
 			colorShader.setUniform("view", camera.GetCameraTransform());
 			colorShader.setUniform("projection", camera.GetProjectionTransformation());
 			colorShader.setUniform("material.textureMap", 0);
-
+			colorShader.setUniform("K_A", currentModel.K_A);
+			colorShader.setUniform("K_D", currentModel.K_D);
+			colorShader.setUniform("K_S", currentModel.K_S);
+			if (scene.GetActiveLightIndex() != -1) {
+				light light1 = scene.GetActiveLight();
+				colorShader.setUniform("lightPos", light1.GetPosVec());
+				colorShader.setUniform("user_angle", light1.user_angle);
+				colorShader.setUniform("lightTransform", light1.GetTransform());
+				colorShader.setUniform("L_A", light1.L_A);
+				colorShader.setUniform("L_D", light1.L_D);
+				colorShader.setUniform("L_S", light1.L_S);
+			}
+			colorShader.setUniform("cameraPos", camera.GetPosition());
+			
 			// Set 'texture1' as the active texture at slot #0
 			texture1.bind(0);
 
 			// Drag our model's faces (triangles) in fill mode
+			glBindVertexArray(camera.GetVAO());
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBindVertexArray(currentModel.GetVAO());
 			glDrawArrays(GL_TRIANGLES, 0, currentModel.GetModelVertices().size());
