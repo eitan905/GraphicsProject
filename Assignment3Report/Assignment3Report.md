@@ -150,5 +150,36 @@ void Renderer::Render(const Scene& scene)
 	}
 
 }
+light from below - alpha 1:
+
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20below%20-%20alpha%201.png)
+
+light from below - alpha 5:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20below%20-%20alpha%205.png)
+
+light from camera - alpha 2:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20camera%20-%20alpha%202.png)
+
+light from camera - alpha 20:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20camera%20-%20alpha%2020.png)
+
+light from camera - alpha 5:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20camera%20-%20alpha%205.png)
+
+light from the right - alpha 10:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20the%20right%20-%20alpha%2010.png)
+
+light front - alpha 2:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%202.png)
+
+light front - alpha 5:
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
+
 
