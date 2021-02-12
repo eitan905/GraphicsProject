@@ -40,5 +40,5 @@ void main()
 
 	vec3 final_light = I_A + I_D + I_S;
 	
-	frag_color = vec4(final_light,1);
+	frag_color = vec4(textureColor,1);
 }

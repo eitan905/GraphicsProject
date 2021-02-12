@@ -31,7 +31,6 @@ bool Texture2D::loadTexture(const string& fileName, bool generateMipMaps)
 
 	// Use stbi image library to load our image
 	unsigned char* imageData = stbi_load(fileName.c_str(), &width, &height, &components, STBI_rgb_alpha);
-
 	if (imageData == NULL)
 	{
 		std::cerr << "Error loading texture '" << fileName << "'" << std::endl;

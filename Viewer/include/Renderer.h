@@ -35,15 +35,15 @@ public:
 	void LoadShaders();
 	void LoadTextures();
 
-	
+	void CreateOpenGLBuffer();
+	void InitOpenGLRendering();
+	void CreateBuffers(int w, int h);
 	
 
 
 private:
 
-	void CreateOpenGLBuffer();
-	void InitOpenGLRendering();
-	void CreateBuffers(int w, int h);
+	
 
 	float* color_buffer_;
 	float* z_buffer;

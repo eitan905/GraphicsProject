@@ -7,6 +7,7 @@
 #include <sstream>
 #include <random>
 #include <glm/gtc/matrix_transform.hpp>
+float PI = 3.14159265359f;
 MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords, const std::string& model_name) :
 	faces_(faces),
 	vertices_(vertices),
@@ -18,6 +19,11 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	K_A(120, 50, 130)
 
 {
+	glm::mat4 temp(1);
+	temp[1][1] = cos((90 * 3.14) / (180));
+	temp[1][2] = sin((90 * 3.14) / (180));
+	temp[2][1] = -sin((90 * 3.14) / (180));
+	temp[2][2] = cos((90 * 3.14) / (180));
 
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -30,18 +36,38 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		Face currentFace = faces.at(i);
 		for (int j = 0; j < 3; j++)
 		{
-			int vertexIndex = currentFace.GetVertexIndex(j) - 1;
-			int normalIndex = currentFace.GetNormalIndex(j) - 1;
 			Vertex vertex;
+
+			int vertexIndex = currentFace.GetVertexIndex(j) - 1;
+			if (normals_.size() > 0) {
+				int normalIndex = currentFace.GetNormalIndex(j) - 1;
+				vertex.normal = normals[normalIndex];
+
+			}
 			vertex.position = vertices[vertexIndex];
 			
 
-			vertex.normal = normals[normalIndex];
 
 			if (textureCoords.size() > 0)
 			{
-				int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
-				vertex.textureCoords = textureCoords[textureCoordsIndex];
+				//int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
+				//vertex.textureCoords = textureCoords[textureCoordsIndex];
+				//vertex.textureCoords = glm::vec2((abs(sin(vertex.position.x)) + abs(cos(vertex.position.y))) * 2 * 3.14 * vertex.position.z, ((vertex.position.y)));
+				vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
+
+
+			}
+			else {
+				//std::cout << vertex.position.x << "," << vertex.position.y << std::endl;
+				/*float theta = glm::atan(vertex.position.z / vertex.position.x);
+				vertex.textureCoords.x = 0.5 * glm::sin(2 * PI * theta);
+				vertex.textureCoords.y = 0.5 * glm::cos(2 * PI * theta);*/
+				float radius = 0.4;
+				float theta = glm::atan(vertex.position.z / vertex.position.x);
+				vertex.textureCoords.x = radius * glm::cos(2 * PI * theta);
+				vertex.textureCoords.y = radius * glm::sin(2 * PI * theta);
+				//vertex.textureCoords = (glm::vec2((abs(sin(vertex.position.x))+ abs(cos(vertex.position.y)) )*2*3.14* vertex.position.z,((vertex.position.y))));
+				//vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
 			}
 
 			modelVertices.push_back(vertex);

@@ -68,12 +68,12 @@ void Scene::AddModel(const std::shared_ptr<MeshModel>& mesh_model)
 			, mesh_model->GetModelName()));
 		return;
 	}
-	if (mesh_model->GetModelName() == "Sphere.obj") {
+	/*if (mesh_model->GetModelName() == "Sphere.obj") {
 		AddLight(std::make_shared<light>(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 0, 0),
 			mesh_model->GetFaces(), mesh_model->getVertices(), mesh_model->GetNormals(), mesh_model->GetTexture()
 			, mesh_model->GetModelName()));
 		return;
-	}
+	}*/
 	active_model_index_ = mesh_models_.size();
 	mesh_models_.push_back(mesh_model);
 

@@ -257,7 +257,7 @@ void Renderer::Render(const Scene& scene)
 			}
 			colorShader.setUniform("cameraPos", camera.GetPosition());
 			
-			// Set 'texture1' as the active texture at slot #0
+			// Set 'texture1' as the active texture at slot #	0
 			texture1.bind(0);
 
 			// Drag our model's faces (triangles) in fill mode
@@ -270,7 +270,7 @@ void Renderer::Render(const Scene& scene)
 			// Unset 'texture1' as the active texture at slot #0
 			texture1.unbind(0);
 
-			colorShader.setUniform("color", glm::vec3(0, 0, 0));
+			//colorShader.setUniform("color", glm::vec3(0, 0, 0));
 
 			// Drag our model's faces (triangles) in line mode (wireframe)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -302,9 +302,12 @@ void Renderer::LoadShaders()
 
 void Renderer::LoadTextures()
 {
-	if (!texture1.loadTexture("bin\\Debug\\crate.jpg", true))
+	if (!texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true))
 	{
-		texture1.loadTexture("bin\\Release\\crate.jpg", true);
+		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_C.jpg", true);
+		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_N.jpg", true);
+		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_S.jpg", true);
+		texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true);
 	}
 }
 

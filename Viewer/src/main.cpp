@@ -90,15 +90,18 @@ int main(int argc, char** argv)
 	if (!window)
 		return 1;
 	Renderer renderer;
+	//renderer.InitOpenGLRendering();
 	renderer.LoadShaders();
 	renderer.LoadTextures();
 
 	scene.SetWidth(windowWidth);
 	scene.SetHeight(windowHeight);
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/bunny.txt"));
+	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Documents//GitHub/computergraphics2021-eitan-and-hadar/computergraphics2021-eitan-and-hadar/Data/handGun_C"));
+	//scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/armadillo.txt"));
 	scene.AddModel(Utils::LoadMeshModel("C:/Users/Eitan/Desktop/camera.txt"));
 
-
+	
 
 
 
@@ -195,7 +198,7 @@ GLFWwindow* SetupGlfwWindow(int windowWidth, int windowHeight, const char* windo
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// forward compatible with newer versions of OpenGL as they become available but not backward compatible (it will not run on devices that do not support OpenGL 3.3
@@ -313,27 +316,27 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		{
 			if (io.KeysDown[68])//d: move right
 			{
-				obj.LocalTranslateTransform(1, 0, 0);
+				obj.LocalTranslateTransform(0.2, 0, 0);
 			}
 			if (io.KeysDown[65])//a: move left
 			{
-				obj.LocalTranslateTransform(-1, 0, 0);
+				obj.LocalTranslateTransform(-0.2, 0, 0);
 			}
 			if (io.KeysDown[83])//s: move down
 			{
-				obj.LocalTranslateTransform(0, -1, 0);
+				obj.LocalTranslateTransform(0, -0.2, 0);
 			}
 			if (io.KeysDown[87])//w: move up
 			{
-				obj.LocalTranslateTransform(0, 1, 0);
+				obj.LocalTranslateTransform(0, 0.2, 0);
 			}
 			if (io.KeysDown[80])//p: set local scale transform (2)
 			{
-				obj.LocalScaleTransform(1.05, 1.05, 1.05);
+				obj.LocalScaleTransform(1.01, 1.01, 1.01);
 			}
 			if (io.KeysDown[79])//o: set local scale transform (0.5)
 			{
-				obj.LocalScaleTransform(0.95, 0.95, 0.95);
+				obj.LocalScaleTransform(0.99, 0.99, 0.99);
 			}
 		}
 	}
