@@ -57,5 +57,6 @@ private:
 	ShaderProgram lightShader;
 	ShaderProgram colorShader;
 	Texture2D texture1;
+	Texture2D texture2;
 
 };

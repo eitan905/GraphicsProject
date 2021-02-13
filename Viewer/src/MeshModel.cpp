@@ -50,10 +50,9 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 
 			if (textureCoords.size() > 0)
 			{
-				//int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
-				//vertex.textureCoords = textureCoords[textureCoordsIndex];
-				//vertex.textureCoords = glm::vec2((abs(sin(vertex.position.x)) + abs(cos(vertex.position.y))) * 2 * 3.14 * vertex.position.z, ((vertex.position.y)));
-				vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
+				int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
+				vertex.textureCoords = textureCoords[textureCoordsIndex];
+				
 
 
 			}
@@ -62,12 +61,16 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 				/*float theta = glm::atan(vertex.position.z / vertex.position.x);
 				vertex.textureCoords.x = 0.5 * glm::sin(2 * PI * theta);
 				vertex.textureCoords.y = 0.5 * glm::cos(2 * PI * theta);*/
-				float radius = 0.4;
-				float theta = glm::atan(vertex.position.z / vertex.position.x);
-				vertex.textureCoords.x = radius * glm::cos(2 * PI * theta);
-				vertex.textureCoords.y = radius * glm::sin(2 * PI * theta);
-				//vertex.textureCoords = (glm::vec2((abs(sin(vertex.position.x))+ abs(cos(vertex.position.y)) )*2*3.14* vertex.position.z,((vertex.position.y))));
+				float radius = 0.5;
+				//float theta = atan2(vertex.position.z, vertex.position.x) + glm::pi<float>();
+				//vertex.textureCoords = glm::vec2(theta, vertex.position.y);
+				vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
+				vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
+				
+			
+			
 				//vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
+
 			}
 
 			modelVertices.push_back(vertex);

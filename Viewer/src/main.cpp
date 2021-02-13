@@ -187,73 +187,73 @@ static void GlfwErrorCallback(int error, const char* description)
 
 
 
-GLFWwindow* SetupGlfwWindow(int windowWidth, int windowHeight, const char* windowName)
-{
-	// Intialize GLFW
-	if (!glfwInit())
-	{
-		// An error occured
-		std::cerr << "GLFW initialization failed" << std::endl;
-		return false;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// forward compatible with newer versions of OpenGL as they become available but not backward compatible (it will not run on devices that do not support OpenGL 3.3
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-
-	// Create an OpenGL 3.3 core, forward compatible context window
-	window = glfwCreateWindow(windowWidth, windowHeight, windowName, NULL, NULL);
-	if (window == NULL)
-	{
-		std::cerr << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return false;
-	}
-
-	// Make the window's context the current one
-	glfwMakeContextCurrent(window);
-
-	// Setup window events callbacks
-	glfwSetFramebufferSizeCallback(window, glfw_OnFramebufferSize);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		// An error occured
-		std::cerr << "GLAD initialization failed" << std::endl;
-		return false;
-	}
-
-	return window;
-}
-
-
-//
-//GLFWwindow* SetupGlfwWindow(int w, int h, const char* window_name)
+//GLFWwindow* SetupGlfwWindow(int windowWidth, int windowHeight, const char* windowName)
 //{
-//	glfwSetErrorCallback(GlfwErrorCallback);
+//	// Intialize GLFW
 //	if (!glfwInit())
-//		return NULL;
+//	{
+//		// An error occured
+//		std::cerr << "GLFW initialization failed" << std::endl;
+//		return false;
+//	}
+//
 //	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 //	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 //	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-//	
-//	#if __APPLE__
-//		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//	#endif
-//	
-//	GLFWwindow* window = glfwCreateWindow(w, h, window_name, NULL, NULL);
-//	glfwMakeContextCurrent(window);
-//	glfwSwapInterval(1); // Enable vsync
-//						 // very importent!! initialization of glad
-//						 // https://stackoverflow.com/questions/48582444/imgui-with-the-glad-opengl-loader-throws-segmentation-fault-core-dumped
 //
-//	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+//	// forward compatible with newer versions of OpenGL as they become available but not backward compatible (it will not run on devices that do not support OpenGL 3.3
+//	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//
+//
+//	// Create an OpenGL 3.3 core, forward compatible context window
+//	window = glfwCreateWindow(windowWidth, windowHeight, windowName, NULL, NULL);
+//	if (window == NULL)
+//	{
+//		std::cerr << "Failed to create GLFW window" << std::endl;
+//		glfwTerminate();
+//		return false;
+//	}
+//
+//	// Make the window's context the current one
+//	glfwMakeContextCurrent(window);
+//
+//	// Setup window events callbacks
+//	glfwSetFramebufferSizeCallback(window, glfw_OnFramebufferSize);
+//
+//	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+//	{
+//		// An error occured
+//		std::cerr << "GLAD initialization failed" << std::endl;
+//		return false;
+//	}
+//
 //	return window;
 //}
+
+
+
+GLFWwindow* SetupGlfwWindow(int w, int h, const char* window_name)
+{
+	glfwSetErrorCallback(GlfwErrorCallback);
+	if (!glfwInit())
+		return NULL;
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	
+	#if __APPLE__
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	#endif
+	
+	window = glfwCreateWindow(w, h, window_name, NULL, NULL);
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1); // Enable vsync
+						 // very importent!! initialization of glad
+						 // https://stackoverflow.com/questions/48582444/imgui-with-the-glad-opengl-loader-throws-segmentation-fault-core-dumped
+
+	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	return window;
+}
 
 
 bool Setup(int windowWidth, int windowHeight, const char* windowName)

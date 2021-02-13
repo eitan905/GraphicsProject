@@ -256,9 +256,12 @@ void Renderer::Render(const Scene& scene)
 				colorShader.setUniform("L_S", light1.L_S);
 			}
 			colorShader.setUniform("cameraPos", camera.GetPosition());
-			
+			colorShader.setUniformSampler("normalMap", 1);
 			// Set 'texture1' as the active texture at slot #	0
 			texture1.bind(0);
+			texture2.bind(1);
+			
+			
 
 			// Drag our model's faces (triangles) in fill mode
 			glBindVertexArray(camera.GetVAO());
@@ -269,6 +272,7 @@ void Renderer::Render(const Scene& scene)
 
 			// Unset 'texture1' as the active texture at slot #0
 			texture1.unbind(0);
+			texture2.unbind(1);
 
 			//colorShader.setUniform("color", glm::vec3(0, 0, 0));
 
@@ -302,12 +306,18 @@ void Renderer::LoadShaders()
 
 void Renderer::LoadTextures()
 {
-	if (!texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true))
+	if (!texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate.jpg", true))
 	{
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_C.jpg", true);
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_N.jpg", true);
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_S.jpg", true);
-		texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true);
+		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//normal_4k.jpg", true);
+		texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate.jpg", true);
+	}
+	if (!texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate_normal_map.jpg", true))
+	{
+		texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate_normal_map.jpg", true);
+		
 	}
 }
 

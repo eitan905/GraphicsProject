@@ -73,12 +73,14 @@ bool Texture2D::loadTexture(const string& fileName, bool generateMipMaps)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+	glTexImage2D(GL_TEXTURE_2D, 1, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
 	if (generateMipMaps)
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(imageData);
 	glBindTexture(GL_TEXTURE_2D, 0); // unbind texture when done so we don't accidentally mess up our mTexture
+	glBindTexture(GL_TEXTURE_2D, 1); // unbind texture when done so we don't accidentally mess up our mTexture
 
 	return true;
 }
@@ -89,9 +91,11 @@ bool Texture2D::loadTexture(const string& fileName, bool generateMipMaps)
 void Texture2D::bind(GLuint texUnit)
 {
 	assert(texUnit >= 0 && texUnit < 32);
-
+	
+	
 	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, mTexture);
+	
 }
 
 //-----------------------------------------------------------------------------
