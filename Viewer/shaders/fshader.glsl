@@ -7,6 +7,7 @@ struct Material
 };
 
 uniform Material material;
+uniform bool normalFlag;
 uniform vec3 K_A;
 uniform vec3 K_S;
 uniform vec3 K_D;
@@ -38,13 +39,16 @@ void main()
 	vec3 I = normalize(lightPos - (fragPos.xyz ));
 	vec3 V = normalize(cameraPos - (fragPos.xyz ));
 	vec3 R = normalize(reflect(-I, N));
+	if(normalFlag){
+		N = normal;
+	}
 	vec3 I_A = (textureColor * L_A);
-	vec3 I_D = (max(dot(normal, I), 0.0f) * normalize(textureColor * L_D));
+	vec3 I_D = (max(dot(N, I), 0.0f) * normalize(textureColor * L_D));
 	vec3 I_S = (pow(max(dot(R, V),0.0f), user_angle) * normalize(textureColor * L_S));
 
 	vec3 final_light = (I_A + I_D + I_S);
 	final_light.x = final_light.x/2;
 	final_light.y = final_light.y/2;
 	final_light.z = final_light.z/2;
-	frag_color = vec4(textureColor,1);
+	frag_color = vec4(final_light,1);
 }

@@ -243,6 +243,7 @@ void Renderer::Render(const Scene& scene)
 			colorShader.setUniform("view", camera.GetCameraTransform());
 			colorShader.setUniform("projection", camera.GetProjectionTransformation());
 			colorShader.setUniform("material.textureMap", 0);
+			colorShader.setUniform("normalFlag", currentModel.useNormalMapping);
 			colorShader.setUniform("K_A", currentModel.K_A);
 			colorShader.setUniform("K_D", currentModel.K_D);
 			colorShader.setUniform("K_S", currentModel.K_S);

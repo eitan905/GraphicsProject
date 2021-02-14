@@ -518,6 +518,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Bounding Box", &scene.displayBox);
 		ImGui::SameLine();
 		ImGui::Checkbox("Normals", &scene.displayNormals);
+		ImGui::SameLine();
+		if (ImGui::Button("normal Mapping")) {
+			obj.useNormalMapping = 1 - obj.useNormalMapping;
+		}
 
 
 		//simple GUI

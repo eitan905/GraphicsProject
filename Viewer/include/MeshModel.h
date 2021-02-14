@@ -82,6 +82,7 @@ public:
 	float worldTranslateBarValue_Y;
 	float worldTranslateBarValue_X;
 	glm::vec3 color;
+	bool useNormalMapping;
 
 
 	GLuint GetVAO();
