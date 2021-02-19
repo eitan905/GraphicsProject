@@ -182,4 +182,12 @@ light front - alpha 5:
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
 
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20front%20-%20alpha%205.png)
+
 
