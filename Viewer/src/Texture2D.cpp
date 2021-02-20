@@ -4,6 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
@@ -81,6 +82,103 @@ bool Texture2D::loadTexture(const string& fileName, bool generateMipMaps)
 	stbi_image_free(imageData);
 	glBindTexture(GL_TEXTURE_2D, 0); // unbind texture when done so we don't accidentally mess up our mTexture
 	glBindTexture(GL_TEXTURE_2D, 1); // unbind texture when done so we don't accidentally mess up our mTexture
+
+	return true;
+}
+
+
+
+unsigned int Texture2D::loadCubemap(std::vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);	
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
+}
+
+
+bool Texture2D::loadTextureCube(const string& fileName, bool generateMipMaps)
+{
+	int width, height, components;
+
+	// Use stbi image library to load our image
+	unsigned char* imageData[6];
+	unsigned char* data;
+	imageData[0] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posx.jpg", &width, &height, &components, 0);
+	imageData[1] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negx.jpg", &width, &height, &components, 0);
+	imageData[2] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posy.jpg", &width, &height, &components, 0);
+	imageData[3] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negy.jpg", &width, &height, &components, 0);
+	imageData[4] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posz.jpg", &width, &height, &components, 0);
+	imageData[5] = stbi_load("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negz.jpg", &width, &height, &components, 0);
+
+	
+	glGenTextures(1, &mTexture3);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture3); // all upcoming GL_TEXTURE_2D operations will affect our texture object (mTexture)
+
+	
+
+	int j = 0;
+
+
+	
+	for (j ; j < 6; j++)
+	{
+		data = imageData[j];
+		if (data) {
+			glTexImage2D(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + j,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+		}
+		else {
+			std::cout << "failed to load cube data" << j << std::endl;
+			stbi_image_free(data);
+		}
+	}
+
+
+	
+	
+	// Set the texture wrapping/filtering options (on the currently bound texture object)
+	// GL_CLAMP_TO_EDGE
+	// GL_REPEAT
+	// GL_MIRRORED_REPEAT
+	// GL_CLAMP_TO_BORDER
+	// GL_LINEAR
+	// GL_NEAREST
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+
+	
 
 	return true;
 }

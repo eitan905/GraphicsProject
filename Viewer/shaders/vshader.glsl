@@ -25,6 +25,7 @@ out vec3 fragNormal;
 out vec2 fragTexCoords;
 out vec3 fragLightPos;
 out vec3 fragCameraPos;
+out vec3 textureDir;
 
 
 void main()
@@ -33,7 +34,7 @@ void main()
 	fragPos = vec3(model * vec4(pos, 1.0f));
 	fragNormal = mat3(model) * normal;
 
-	
+	textureDir = pos;
 	fragTexCoords = texCoords;
 
 	gl_Position = projection * view *  model * vec4(pos, 1.0f);

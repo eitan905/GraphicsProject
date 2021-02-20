@@ -56,7 +56,13 @@ private:
 	GLuint gl_screen_vtc_;	
 	ShaderProgram lightShader;
 	ShaderProgram colorShader;
+	ShaderProgram shader;
+	ShaderProgram skyboxShader;
 	Texture2D texture1;
 	Texture2D texture2;
+	Texture2D texture3;
+	GLuint cubeMapTexture;
+	GLuint cubeVAO, cubeVBO;
+	GLuint skyboxVAO, skyboxVBO;
 
 };

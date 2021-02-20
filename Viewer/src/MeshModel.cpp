@@ -7,7 +7,26 @@
 #include <sstream>
 #include <random>
 #include <glm/gtc/matrix_transform.hpp>
+
+float max(float x, float y) {
+	if (x > y){
+		return x;
+	}
+	return y;
+}
+float min(float x, float y) {
+	if (x < y) {
+		return x;
+	}
+	return y;
+}
+
 float PI = 3.14159265359f;
+float sinCosRestrain(float v)
+{
+	return max(-1.0, min(1.0, v));
+}
+
 MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords, const std::string& model_name) :
 	faces_(faces),
 	vertices_(vertices),
@@ -61,16 +80,36 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 				/*float theta = glm::atan(vertex.position.z / vertex.position.x);
 				vertex.textureCoords.x = 0.5 * glm::sin(2 * PI * theta);
 				vertex.textureCoords.y = 0.5 * glm::cos(2 * PI * theta);*/
-				float radius = 0.5;
+				//float radius = 0.5;
 				//float theta = atan2(vertex.position.z, vertex.position.x) + glm::pi<float>();
 				//vertex.textureCoords = glm::vec2(theta, vertex.position.y);
-				vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
-				vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
+				//vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
+				//vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
+				
 				
 			
-			
-				//vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
+				vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
+				vertex.textureCoords = glm::vec2(vertex.position.x/(vertex.position.z), vertex.position.y/  (vertex.position.z));
+				float r = sqrt(pow(vertex.position.x, 2.0) + pow(vertex.position.y, 2.0) + pow(vertex.position.z, 2.0));
+				float val = max(-1.0, min(1.0, vertex.position.z / r));
+				float theta = acos(val);
+				
+				float phi;
+				val = vertex.position.x / (r * sin(theta));
+				float first = acos(sinCosRestrain(val));
+				val = vertex.position.y / (r * sin(theta));
+				float second = asin(sinCosRestrain(val));
+				if (second >= 0.0)
+				    phi = first;
+				else
+				    phi = 2.0 * PI - first;
+				
+				vertex.textureCoords.x = theta * cos(phi);
+				vertex.textureCoords.y = theta * sin(phi);
+				vertex.textureCoords.y /= PI;
+				vertex.textureCoords.x /= PI;
 
+				vertex.textureCoords = temp * glm::vec4(vertex.textureCoords, 1, 1);
 			}
 
 			modelVertices.push_back(vertex);

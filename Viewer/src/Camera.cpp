@@ -271,7 +271,9 @@ glm::mat4x4 Camera::GetTransform()
 {
 	UpdateObjcetTransform();
 	c = c * glm::lookAt(eye, at, up);
-	return c;
+	glm::mat4 temp = c;
+	c = cinv = glm::mat4(1);
+	return temp;
 }
 
 //camera local rotate giving one number , changing c-invers
@@ -298,6 +300,15 @@ void Camera::TranslatLocal(float x, float y, float z) {
 glm::vec3 Camera::GetPosition()
 {
 	return c * glm::vec4(vertices_[0],1);
+}
+
+glm::vec3 Camera::GetDirection()
+{
+	LocalRotationTransform_Z();
+	LocalRotationTransform_Y();
+	LocalRotationTransform_X();
+	return localRotationTransform_X *
+		localRotationTransform_Y * localRotationTransform_Z * glm::vec4(1, 1, 1, 0);
 }
 
 //camera get transform
@@ -462,6 +473,7 @@ void Camera::SetLookAt(MeshModel& obj)
 
 
 void Camera::LocalRotationTransform_Z() {
+	glm::mat4 temp = glm::mat4(1);
 	localRotationTransform_Z[0][0] = cos((localRotateBarValue_Z * 3.14) / 180);
 	localRotationTransform_Z[0][1] = sin((localRotateBarValue_Z * 3.14) / ( 180));
 	localRotationTransform_Z[1][0] = -sin((localRotateBarValue_Z * 3.14) / ( 180));

@@ -5,9 +5,10 @@ struct Material
 	sampler2D textureMap;
 	
 };
-
+uniform samplerCube cubemap;
 uniform Material material;
 uniform bool normalFlag;
+uniform bool envFlag;
 uniform vec3 K_A;
 uniform vec3 K_S;
 uniform vec3 K_D;
@@ -18,11 +19,13 @@ uniform vec3 lightPos;
 uniform vec3 cameraPos;
 uniform float user_angle;
 uniform sampler2D normalMap;
+uniform samplerCube skybox;
+
 
 in vec3 fragPos;
 in vec3 fragNormal;
 in vec2 fragTexCoords;
-
+in vec3 textureDir;
 
 
 out vec4 frag_color;
@@ -42,13 +45,25 @@ void main()
 	if(normalFlag){
 		N = normal;
 	}
-	vec3 I_A = (textureColor * L_A);
-	vec3 I_D = (max(dot(N, I), 0.0f) * normalize(textureColor * L_D));
-	vec3 I_S = (pow(max(dot(R, V),0.0f), user_angle) * normalize(textureColor * L_S));
-
+	float levels = 6;
+	float bright = max(dot(N, I), 0.0f);
+	float level = floor(bright * levels);
+	bright = level/levels;
+	vec3 I_A = (textureColor * L_A) * bright;
+	vec3 I_D = (max(dot(N, I), 0.0f) * normalize(textureColor * L_D)) * bright;
+	vec3 I_S = (pow(max(dot(R, V),0.0f), user_angle) * normalize(textureColor * L_S)) * bright;
 	vec3 final_light = (I_A + I_D + I_S);
-	final_light.x = final_light.x/2;
-	final_light.y = final_light.y/2;
-	final_light.z = final_light.z/2;
-	frag_color = vec4(final_light,1);
+
+	final_light.x = final_light.x/1.5;
+	final_light.y = final_light.y/1.5;
+	final_light.z = final_light.z/1.5;
+	//textureColor.x = textureColor.x * bright * 1.3;
+	//textureColor.y = textureColor.y * bright * 1.3;
+	//textureColor.z = textureColor.z * bright * 1.3;
+
+	
+
+	I = normalize(vec3((cameraPos.x - fragPos.x), (cameraPos.y - fragPos.y) , (cameraPos.z + fragPos.z)));
+    R = reflect(-I, N);
+	frag_color = vec4(textureColor,1);
 }

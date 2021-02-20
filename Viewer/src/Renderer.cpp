@@ -225,64 +225,180 @@ void Renderer::Render(const Scene& scene)
 
 
 	int cameraCount = scene.GetCameraCount();
+
+
+
+
+
+
+
 	if (cameraCount > 0)
 	{
 		int modelCount = scene.GetModelCount();
 		Camera& camera = scene.GetActiveCamera();
+		bool envFlag = 0;
 
-		for (int currentModelIndex = 0; currentModelIndex < modelCount; currentModelIndex++)
-		{
-			MeshModel& currentModel = scene.GetModel(currentModelIndex);
+		//shader.use();
+		//// ... set view and projection matrix
+		//skyboxShader.setUniform("view", camera.GetCameraTransform());
+		//skyboxShader.setUniform("projection", camera.GetProjectionTransformation());
+		//glBindVertexArray(cubeVAO);
+		//glBindTexture(GL_TEXTURE_2D, cubeMapTexture);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(0);
+	
+		// ... draw rest of the scene
+		// Draw our first triangle
+		colorShader.use();
 
-			// Activate the 'colorShader' program (vertex and fragment shaders)
-			colorShader.use();
 
 		
-			// Set the uniform variables
-			colorShader.setUniform("model", currentModel.GetTransform());
-			colorShader.setUniform("view", camera.GetCameraTransform());
-			colorShader.setUniform("projection", camera.GetProjectionTransformation());
-			colorShader.setUniform("material.textureMap", 0);
-			colorShader.setUniform("normalFlag", currentModel.useNormalMapping);
-			colorShader.setUniform("K_A", currentModel.K_A);
-			colorShader.setUniform("K_D", currentModel.K_D);
-			colorShader.setUniform("K_S", currentModel.K_S);
-			if (scene.GetActiveLightIndex() != -1) {
-				light light1 = scene.GetActiveLight();
-				colorShader.setUniform("lightPos", light1.GetPosVec());
-				colorShader.setUniform("user_angle", light1.user_angle);
-				colorShader.setUniform("lightTransform", light1.GetTransform());
-				colorShader.setUniform("L_A", light1.L_A);
-				colorShader.setUniform("L_D", light1.L_D);
-				colorShader.setUniform("L_S", light1.L_S);
-			}
-			colorShader.setUniform("cameraPos", camera.GetPosition());
-			colorShader.setUniformSampler("normalMap", 1);
-			// Set 'texture1' as the active texture at slot #	0
-			texture1.bind(0);
-			texture2.bind(1);
-			
-			
 
-			// Drag our model's faces (triangles) in fill mode
-			glBindVertexArray(camera.GetVAO());
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBindVertexArray(currentModel.GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, currentModel.GetModelVertices().size());
-			glBindVertexArray(0);
 
-			// Unset 'texture1' as the active texture at slot #0
-			texture1.unbind(0);
-			texture2.unbind(1);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
-			//colorShader.setUniform("color", glm::vec3(0, 0, 0));
+		// Get the uniform locations
+		colorShader.setUniform("model", scene.GetActiveModel().GetTransform());
+		colorShader.setUniform("view", camera.GetCameraTransform());
+		colorShader.setUniform("projection", camera.GetProjectionTransformation());
+		colorShader.setUniform("normalFlag", scene.GetActiveModel().useNormalMapping);
+		colorShader.setUniform("cameraPos", camera.GetPosition());
+		colorShader.setUniformSampler("normalMap", 1);
 
-			// Drag our model's faces (triangles) in line mode (wireframe)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glBindVertexArray(currentModel.GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, currentModel.GetModelVertices().size());
-			glBindVertexArray(0);
+		if (scene.GetActiveLightIndex() != -1) {
+			light light1 = scene.GetActiveLight();
+			colorShader.setUniform("lightPos", light1.GetPosVec());
+			colorShader.setUniform("user_angle", light1.user_angle);
+			colorShader.setUniform("lightTransform", light1.GetTransform());
+			colorShader.setUniform("L_A", light1.L_A);
+			colorShader.setUniform("L_D", light1.L_D);
+			colorShader.setUniform("L_S", light1.L_S);
 		}
+	
+		texture1.bind(0);
+		// Drag our model's faces (triangles) in fill mode
+		glBindVertexArray(camera.GetVAO());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glBindVertexArray(scene.GetActiveModel().GetVAO());
+		glDrawArrays(GL_TRIANGLES, 0, scene.GetActiveModel().GetModelVertices().size());
+		glBindVertexArray(0);
+		// Bind Textures using texture units
+
+
+
+
+
+		//glBindVertexArray(cubeVAO);
+		//// Calculate the model matrix for each object and pass it to shader before drawing
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(0);
+		texture1.unbind(0);
+
+		/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glBindVertexArray(scene.GetActiveModel().GetVAO());
+		glDrawArrays(GL_TRIANGLES, 0, scene.GetActiveModel().GetModelVertices().size());
+		glBindVertexArray(0);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//Draw skybox as last
+		glDepthFunc(GL_LEQUAL);  // Change depth function so depth test passes when values are equal to depth buffer's content
+		skyboxShader.use();
+		glm::mat4 view = glm::mat4(glm::mat3(camera.GetTransform()));	// Remove any translation component of the view matrix
+
+		skyboxShader.setUniform("view", view);
+		skyboxShader.setUniform("projection", camera.GetProjectionTransformation());
+
+		// skybox cube
+		texture3.bind(cubeMapTexture);
+		glBindVertexArray(skyboxVAO);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // Set depth function back to default
+		texture3.unbind(cubeMapTexture);
+		
+
+
+
+
+
+
+
+		//for (int currentModelIndex = 0; currentModelIndex < modelCount; currentModelIndex++)
+		//{
+		//	MeshModel& currentModel = scene.GetModel(currentModelIndex);
+		//	if (currentModelIndex == scene.GetModelCount() - 1)
+		//	{
+		//		envFlag = 1;
+		//	}
+		//	// Activate the 'colorShader' program (vertex and fragment shaders)
+		//	colorShader.use();
+
+		//	
+		//	// Set the uniform variables
+		//	colorShader.setUniform("model", currentModel.GetTransform());
+		//	colorShader.setUniform("view", camera.GetCameraTransform());
+		//	colorShader.setUniform("projection", camera.GetProjectionTransformation());
+		//	colorShader.setUniform("material.textureMap", 0);
+		//	colorShader.setUniform("normalFlag", currentModel.useNormalMapping);
+		//	colorShader.setUniform("K_A", currentModel.K_A);
+		//	colorShader.setUniform("K_D", currentModel.K_D);
+		//	colorShader.setUniform("K_S", currentModel.K_S);
+		//	colorShader.setUniform("envFlag", envFlag);
+		//	colorShader.setUniform("textureDir", camera.GetDirection());
+		//	if (scene.GetActiveLightIndex() != -1) {
+		//		light light1 = scene.GetActiveLight();
+		//		colorShader.setUniform("lightPos", light1.GetPosVec());
+		//		colorShader.setUniform("user_angle", light1.user_angle);
+		//		colorShader.setUniform("lightTransform", light1.GetTransform());
+		//		colorShader.setUniform("L_A", light1.L_A);
+		//		colorShader.setUniform("L_D", light1.L_D);
+		//		colorShader.setUniform("L_S", light1.L_S);
+		//	}
+		//	colorShader.setUniform("cameraPos", camera.GetPosition());
+		//	colorShader.setUniformSampler("normalMap", 1);
+		//	colorShader.setUniformSampler("cubemap", 2);
+		//	// Set 'texture1' as the active texture at slot #	0
+		//	texture1.bind(0);
+		//	texture2.bind(1);
+		//	
+		//	
+
+		//	// Drag our model's faces (triangles) in fill mode
+		//	glBindVertexArray(camera.GetVAO());
+		//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//	glBindVertexArray(currentModel.GetVAO());
+		//	glDrawArrays(GL_TRIANGLES, 0, currentModel.GetModelVertices().size());
+		//	glBindVertexArray(0);
+
+		//	// Unset 'texture1' as the active texture at slot #0
+		//	texture1.unbind(0);
+		//	texture2.unbind(1);
+
+		//	//colorShader.setUniform("color", glm::vec3(0, 0, 0));
+
+		//	// Drag our model's faces (triangles) in line mode (wireframe)
+		//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//	glBindVertexArray(currentModel.GetVAO());
+		//	glDrawArrays(GL_TRIANGLES, 0, currentModel.GetModelVertices().size());
+		//	glBindVertexArray(0);
+		//	
+		//}
 	}
 
 }
@@ -298,29 +414,194 @@ int Renderer::GetViewportHeight() const
 }
 
 
+
+
 void Renderer::LoadShaders()
 {
 	colorShader.loadShaders("vshader.glsl", "fshader.glsl");
+	shader.loadShaders("vcubemap.glsl", "fcubemap.glsl");
+	skyboxShader.loadShaders("vskybox.glsl", "fskybox.glsl");
 }
 
 
 
 void Renderer::LoadTextures()
 {
-	if (!texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate.jpg", true))
+	if (!texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true))
 	{
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_C.jpg", true);
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_N.jpg", true);
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//handGun_S.jpg", true);
 		//texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//normal_4k.jpg", true);
-		texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate.jpg", true);
+		texture1.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//board.jpg", true);
 	}
-	if (!texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate_normal_map.jpg", true))
+	if (!texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//Tex_0002.jpg", true))
 	{
-		texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//crate_normal_map.jpg", true);
+		texture2.loadTexture("C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//Tex_0002.jpg", true);
 		
 	}
+
+
+	GLfloat cubeVertices[] =
+	{
+		// Positions          // Texture Coords
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
+	GLfloat skyboxVertices[] = {
+		// Positions
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+	};
+	//shader.use();
+	// Setup cube VAO
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glBindVertexArray(0);
+
+	//skyboxShader.use();
+	// Setup skybox VAO
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glBindVertexArray(0);
+
+
+
+	std::vector<std::string> faces
+	{
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posx.jpg",
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negx.jpg",
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posy.jpg",
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negy.jpg",
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//posz.jpg",
+		"C://Users//Eitan//Documents//GitHub//computergraphics2021-eitan-and-hadar//computergraphics2021-eitan-and-hadar//Data//negz.jpg"
+	};
+	cubeMapTexture = texture3.loadCubemap(faces);
+
+
+
 }
 
 
 
+
+
+
+//float temp = (brightness.x + brightness.y + brightness.z) / 3;
+//if (temp > 1) {
+//	brightness.x = 1;
+//	brightness.y = 1;
+//	brightness.z = 1;
+//}
+//
+//if (temp > 0.75 && temp < 1) {
+//	brightness.x = 0.75;
+//	brightness.y = 0.75;
+//	brightness.z = 0.75;
+//}
+//if (temp > 0.5 && temp < 0.75) {
+//	brightness.x = 0.5;
+//	brightness.y = 0.5;
+//	brightness.z = 0.5;
+//}
+//if (temp > 0.25 && temp < 0.5) {
+//	brightness.x = 0.25;
+//	brightness.y = 0.25;
+//	brightness.z = 0.25;
+//}
+//if (temp < 0.25) {
+//	brightness.x = 0;
+//	brightness.y = 0;
+//	brightness.z = 0;
+//}

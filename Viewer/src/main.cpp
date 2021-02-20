@@ -32,7 +32,6 @@ static float previous_mouse_y = 0;
 static double previous_time = 0;
 std::vector<MeshModel*> mouse_models;
 
-glm::vec4 clearColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 Scene scene = Scene();
 
@@ -80,12 +79,11 @@ int main(int argc, char** argv)
 		std::cerr << "Setup failed" << std::endl;
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
+	//glfwMakeContextCurrent(window);
 	int frameBufferWidth, frameBufferHeight;
 
+
 	
-
-
 
 	if (!window)
 		return 1;
@@ -107,14 +105,13 @@ int main(int argc, char** argv)
 
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
-
+	
 
 	while (!glfwWindowShouldClose(window))
 	{
 
 		glfwPollEvents();
 		StartFrame();
-		glfwMakeContextCurrent(window);
 		DrawImguiMenus(io, scene);
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -267,7 +264,7 @@ bool Setup(int windowWidth, int windowHeight, const char* windowName)
 	}
 	imgui = &SetupDearImgui(window);
 
-	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+	glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
 	glEnable(GL_DEPTH_TEST);
 
 	return true;
@@ -401,7 +398,6 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
-	glfwMakeContextCurrent(window);
 
 }
 
@@ -449,7 +445,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	 * MeshViewer menu
 	 */
 	ImGui::Begin("MeshViewer Menu");
-
+	
 	// Menu Bar
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -482,6 +478,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// Controls
 	if (scene.GetModelCount() != 0) {
 		ImGui::ColorEdit3("Clear Color", (float*)&clear_color);
+		glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
 		ImGui::ColorEdit3("model K_A", (float*)&scene.GetActiveModel().K_A);
 		ImGui::ColorEdit3("model K_S", (float*)&scene.GetActiveModel().K_S);
 		ImGui::ColorEdit3("model K_D", (float*)&scene.GetActiveModel().K_D);
@@ -576,7 +573,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ImGui::SliderFloat("> object translate", &obj.localTranslateBarValue_Z, -600, 200);
 
 			ImGui::SetNextItemWidth(400);
-			ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0, 1000);
+			ImGui::SliderFloat("Object_Scale", &obj.localScaleBarValue, 0.02, 1);
 
 
 
