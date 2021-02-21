@@ -6,7 +6,12 @@
 #include <fstream>
 #include <sstream>
 #include <random>
+#include <algorithm>
+#include <cstdint>
+#include <iomanip>
 #include <glm/gtc/matrix_transform.hpp>
+
+
 
 float max(float x, float y) {
 	if (x > y){
@@ -19,6 +24,11 @@ float min(float x, float y) {
 		return x;
 	}
 	return y;
+}
+
+template<class T>
+const T& clamp(const T& x, const T& upper, const T& lower) {
+	return min(upper, max(x, lower));
 }
 
 float PI = 3.14159265359f;
@@ -67,11 +77,20 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 			
 
 
-			if (textureCoords.size() > 0)
+			//if (textureCoords.size() > 0)
+			if(0)
 			{
 				int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
 				vertex.textureCoords = textureCoords[textureCoordsIndex];
-				
+				float val;
+
+				// radius, theta, phi
+				/*float r = sqrt(pow(vertex.textureCoords.x, 2.0) + pow(vertex.textureCoords.y, 2.0) + pow(1, 2.0));
+				float theta = acos(1 / r);
+				float phi = atan(vertex.textureCoords.y / vertex.textureCoords.x);
+
+				vertex.textureCoords.x = (float((0.5 + phi / (2.0 * glm::pi<float>())) * 5));
+				vertex.textureCoords.y = (float((theta / glm::pi<float>()) * 5));*/
 
 
 			}
@@ -80,36 +99,36 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 				/*float theta = glm::atan(vertex.position.z / vertex.position.x);
 				vertex.textureCoords.x = 0.5 * glm::sin(2 * PI * theta);
 				vertex.textureCoords.y = 0.5 * glm::cos(2 * PI * theta);*/
-				//float radius = 0.5;
-				//float theta = atan2(vertex.position.z, vertex.position.x) + glm::pi<float>();
-				//vertex.textureCoords = glm::vec2(theta, vertex.position.y);
-				//vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
-				//vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
-				
-				
-			
-				vertex.textureCoords = glm::vec2(vertex.position.x, vertex.position.y);
-				vertex.textureCoords = glm::vec2(vertex.position.x/(vertex.position.z), vertex.position.y/  (vertex.position.z));
-				float r = sqrt(pow(vertex.position.x, 2.0) + pow(vertex.position.y, 2.0) + pow(vertex.position.z, 2.0));
-				float val = max(-1.0, min(1.0, vertex.position.z / r));
-				float theta = acos(val);
-				
-				float phi;
-				val = vertex.position.x / (r * sin(theta));
-				float first = acos(sinCosRestrain(val));
-				val = vertex.position.y / (r * sin(theta));
-				float second = asin(sinCosRestrain(val));
-				if (second >= 0.0)
-				    phi = first;
-				else
-				    phi = 2.0 * PI - first;
-				
-				vertex.textureCoords.x = theta * cos(phi);
-				vertex.textureCoords.y = theta * sin(phi);
-				vertex.textureCoords.y /= PI;
-				vertex.textureCoords.x /= PI;
 
-				vertex.textureCoords = temp * glm::vec4(vertex.textureCoords, 1, 1);
+
+				float radius = 0.5;
+				float theta = atan2(vertex.position.z, vertex.position.x) + glm::pi<float>();
+				vertex.textureCoords = glm::vec2(theta, vertex.position.y);
+
+
+				/*vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
+				vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();*/
+				
+				
+				glm::vec3 temp_position = temp * glm::vec4(vertex.position.x,vertex.position.y, vertex.position.z, 1);
+				//vertex.textureCoords = glm::vec2(temp_position.x, temp_position.y);
+				//vertex.textureCoords = glm::vec2(temp_position.x/(temp_position.z), temp_position.y/  (temp_position.z));
+
+
+
+				
+
+				//float val;
+
+				// radius, theta, phi
+				float r = sqrt(pow(temp_position.x, 2.0) + pow(temp_position.y, 2.0) + pow(temp_position.z, 2.0));
+				float theta = acos(temp_position.z / r);
+				float phi = atan(temp_position.y / temp_position.x);
+
+				vertex.textureCoords.x = (float((0.5 + phi / (2.0 * glm::pi<float>()))*5));
+				vertex.textureCoords.y = (float((theta / glm::pi<float>())*5));
+
+
 			}
 
 			modelVertices.push_back(vertex);
