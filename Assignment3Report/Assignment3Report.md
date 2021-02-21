@@ -10,7 +10,7 @@ finally we pass the texture to the shaders, and they will draw the screen.
 
 
 part 3:
-{
+```
 vertex shader
 #version 330 core
 
@@ -41,13 +41,14 @@ void main()
 	gl_Position = projection * view *  model * vec4(pos, 1.0f);
 }
 
-}
+```
 
 
 
 
 
 part 4:
+```
 {
 #version 330 core
 
@@ -73,7 +74,9 @@ void main()
 }
 
 }
+```
 part 5: 
+```
 void Renderer::Render(const Scene& scene)
 {
 
@@ -137,6 +140,7 @@ void Renderer::Render(const Scene& scene)
 	}
 
 }
+```
 light from below - alpha 1:
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20below%20-%20alpha%201.png)
@@ -201,9 +205,18 @@ planar:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_planar.png)
 
 cylincdircal: i have no idea why or how this turned out to be well fitted but different color
-![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical2.png)
+
 sphearical:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical.png)
+
+in this picture i accidentally used an equation with normals as texture coordinates and it somehow came out half decent so thought it was pretty cool
+the code that resulted in this:
+```
+	vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
+	vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
+```
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical.png)
 
 
 
