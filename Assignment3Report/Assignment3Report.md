@@ -10,7 +10,7 @@ finally we pass the texture to the shaders, and they will draw the screen.
 
 
 part 3:
-
+{
 vertex shader
 #version 330 core
 
@@ -41,13 +41,14 @@ void main()
 	gl_Position = projection * view *  model * vec4(pos, 1.0f);
 }
 
-
+}
 
 
 
 
 
 part 4:
+{
 #version 330 core
 
 struct Material
@@ -71,7 +72,7 @@ void main()
 	frag_color = vec4(1,0,0,1);
 }
 
-
+}
 part 5: 
 void Renderer::Render(const Scene& scene)
 {
