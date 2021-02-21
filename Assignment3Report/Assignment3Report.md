@@ -1,4 +1,14 @@
-part1 TODO
+part 1:
+at first the function creates a texture and a single vertex array object, and returns a GLuint thatis basically a pointer we can use later to find them.
+next we bind the vertex array object we created using the pointer, and then we generate a single buffer and get a pointer to it.
+after that we define a vertex array and a texture array of our own, we bind the buffer and finally we allocate room for data and pass it.
+then we initiate the shaders, and activate these shaders.
+next we find the arrays we passed earlier, both vertex and texture, and send them to the shaders.
+finally we pass the texture to the shaders, and they will draw the screen.
+
+
+
+
 part 3:
 
 vertex shader
@@ -32,30 +42,6 @@ void main()
 }
 
 
-fragment shader
-
-#version 330 core
-
-struct Material
-{
-	sampler2D textureMap;
-
-};
-
-uniform Material material;
-
-in vec3 fragPos;
-in vec3 fragNormal;
-in vec2 fragTexCoords;
-
-out vec4 frag_color;
-
-void main()
-{
-	vec3 textureColor = vec3(texture(material.textureMap, fragTexCoords));
-
-	frag_color = vec4(fragPos,1);
-}
 
 
 
@@ -223,15 +209,15 @@ sphearical:
 
 part 8:
 
-normal mapping:
-without normals:
+normal mapping: here we did nothing fancy, simply took the normal map, transtlated its colors into normals, and used those normals in the light calculation instead of the fragNormal
+without normal mapping:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/normal_2.png)
 
 
-with normals:
+with normal mapping:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/normal_1.png)
 
-environmental mapping:
+environmental mapping: here we implemented a sky box so we could clearly see the reflection and if it is correct, showed the reflection on a cube that acted as a mirror and a bit on the teapot which was cool
 
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_1.png)
@@ -242,7 +228,7 @@ environmental mapping:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_6.png)
 
 
-toon shading:
+toon shading: nothing special, did as we learned, first picture had 10 levels of color but it was too much so the rest of the pictures have less (4-6)
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_1.png)
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_2.png)
