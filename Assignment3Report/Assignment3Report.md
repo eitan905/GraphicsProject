@@ -196,12 +196,28 @@ light front - alpha 5:
 
 
 part 7:
+
+planar:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/planar_projection.png)
+
+cylindrical:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/cylindrical_projection.png)
 
+sphearical:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/sphearical_1.png)
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/spherical_2.png)
+
+textured mesh with texture mapping:
+
+planar:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_planar.png)
+
+cylincdircal: i have no idea why or how this turned out to be well fitted but different color
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical.png)
+sphearical:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical.png)
+
 
 
 
