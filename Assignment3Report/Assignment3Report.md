@@ -1,6 +1,16 @@
-part1 TODO
-part 3:
+part 1:
+at first the function creates a texture and a single vertex array object, and returns a GLuint thatis basically a pointer we can use later to find them.
+next we bind the vertex array object we created using the pointer, and then we generate a single buffer and get a pointer to it.
+after that we define a vertex array and a texture array of our own, we bind the buffer and finally we allocate room for data and pass it.
+then we initiate the shaders, and activate these shaders.
+next we find the arrays we passed earlier, both vertex and texture, and send them to the shaders.
+finally we pass the texture to the shaders, and they will draw the screen.
 
+
+
+
+part 3:
+```
 vertex shader
 #version 330 core
 
@@ -31,37 +41,15 @@ void main()
 	gl_Position = projection * view *  model * vec4(pos, 1.0f);
 }
 
-
-fragment shader
-
-#version 330 core
-
-struct Material
-{
-	sampler2D textureMap;
-
-};
-
-uniform Material material;
-
-in vec3 fragPos;
-in vec3 fragNormal;
-in vec2 fragTexCoords;
-
-out vec4 frag_color;
-
-void main()
-{
-	vec3 textureColor = vec3(texture(material.textureMap, fragTexCoords));
-
-	frag_color = vec4(fragPos,1);
-}
+```
 
 
 
 
 
 part 4:
+```
+{
 #version 330 core
 
 struct Material
@@ -85,8 +73,10 @@ void main()
 	frag_color = vec4(1,0,0,1);
 }
 
-
+}
+```
 part 5: 
+```
 void Renderer::Render(const Scene& scene)
 {
 
@@ -150,6 +140,7 @@ void Renderer::Render(const Scene& scene)
 	}
 
 }
+```
 light from below - alpha 1:
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/light%20from%20below%20-%20alpha%201.png)
@@ -193,5 +184,76 @@ light front - alpha 5:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/6.png)
 
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/7.png)
+
+
+part 7:
+
+planar:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/planar_projection.png)
+
+cylindrical:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/cylindrical_projection.png)
+
+sphearical:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/sphearical_1.png)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/spherical_3.png)
+
+textured mesh with texture mapping:
+
+planar:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_planar.png)
+
+cylincdircal: i have no idea why or how this turned out to be well fitted but different color
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical2.png)
+
+sphearical:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical.png)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical2.png)
+
+
+in this picture i accidentally used an equation with normals as texture coordinates and it somehow came out half decent so thought it was pretty cool
+the code that resulted in this:
+```
+	vertex.textureCoords.x = radius + atan2(vertex.normal.z, vertex.normal.x)/2.f * glm::pi<float>();
+	vertex.textureCoords.y = radius - asin(vertex.normal.y) / glm::pi<float>();
+```
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_cylindrical.png)
+
+
+
+
+part 8:
+
+normal mapping: here we did nothing fancy, simply took the normal map, transtlated its colors into normals, and used those normals in the light calculation instead of the fragNormal
+without normal mapping:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/normal_2.png)
+
+
+with normal mapping:
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/normal_1.png)
+
+environmental mapping: here we implemented a sky box so we could clearly see the reflection and if it is correct, showed the reflection on a cube that acted as a mirror and a bit on the teapot which was cool
+
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_1.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_2.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_3.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_4.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_5.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/env_mapping_6.png)
+
+
+toon shading: nothing special, did as we learned, first picture had 10 levels of color but it was too much so the rest of the pictures have less (4-6)
+
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_1.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_2.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_3.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_4.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_5.png)
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/toon_shading_6.png)
+
+
 
 
