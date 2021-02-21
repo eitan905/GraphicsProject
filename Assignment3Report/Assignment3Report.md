@@ -210,6 +210,9 @@ cylincdircal: i have no idea why or how this turned out to be well fitted but di
 sphearical:
 ![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical.png)
 
+![alt text](https://github.com/HaifaGraphicsCourses/computergraphics2021-eitan-and-hadar/blob/master/Assignment3Report/goku_sphearical2.png)
+
+
 in this picture i accidentally used an equation with normals as texture coordinates and it somehow came out half decent so thought it was pretty cool
 the code that resulted in this:
 ```
