@@ -2,10 +2,8 @@
 ## Students Team data
 
 Name: 'Hadar Mucthar'  
-Student Number: '324248749'
 
 Name: 'Eitan Sharabi'  
-Student Number: '205795966'
 
 ### Lecturer
 *Roi Poranne*
